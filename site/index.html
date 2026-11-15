@@ -17566,7 +17566,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
    'events event clubs club location locations address phone price prices cost costs fee fees parking dining food meals options option answer note ' +
    'heads good great looks sounds seems overall in short basically generally usually typically often sometimes always available upcoming regular ' +
    'special current posted listed shown here sorry absolutely definitely certainly perhaps maybe also then thus hence instead meanwhile otherwise ' +
-   'est simulated verified official public private online in-person weekday ' +
+   'est simulated verified official public private online in-person weekday nope yep yeah yup ' +
    // everyday campus nouns that can start a sentence ("Menus change daily.", "Seating is limited.")
    'menu menus seating seat desks desk rooms room spaces space lockers locker printers printer printing outlets outlet wifi coffee snacks drinks ' +
    'tickets ticket reservations reservation appointments appointment sessions session hall halls building buildings floor floors entrance entrances ' +
@@ -17675,6 +17675,123 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     return ctx ? S : L;
   }
   var SETS = { times: 'times', dates: 'dates', months: 'months', days: 'days', prices: 'prices', pcts: 'pcts', codes: 'codes', phones: 'phones', emails: 'emails', numbers: 'nums', names: 'words' };
+  // short forms an answer may use for a word the data spells out ("Intro to Civil Engineering")
+  var ABBR = { intro: ['introduction', 'introductory'], dept: ['department'], univ: ['university'], bldg: ['building'], ctr: ['center'], ave: ['avenue'], blvd: ['boulevard'], st: ['street', 'saint'], rd: ['road'], sci: ['science', 'sciences'], eng: ['engineering', 'english'], comp: ['computer', 'computing'], bio: ['biology', 'biological'], chem: ['chemistry'], psych: ['psychology'], econ: ['economics'], lib: ['library'], info: ['information'], undergrad: ['undergraduate', 'undergraduates'], undergrads: ['undergraduate', 'undergraduates'], grad: ['graduate'], pacific: ['pt', 'pst', 'pdt'], admin: ['administration'], rec: ['recreation', 'recreational'], gov: ['government'], intl: ['international'] };
+
+  // ---- binding: a value must sit next to the thing it belongs to ----
+  // Facts that anchor a statement (course codes, phone numbers, prices) and the names in the same clause of the answer
+  // must appear together on ONE line of the data (a heading line ending in ":" or a bold-only line is carried down its
+  // paragraph). "CE 106 is taught by Roxana Javid" fails when the data has "CE 106 … Amy Rechenmacher" on one line and
+  // "CE 107 … Roxana Javid" on another; "A Motorcycle permit is $306" fails when $306 belongs to the Evening permit.
+  function anchorsOf(s) {
+    var out = [];
+    s.replace(RX.phone, function (m, a, b, c) { out.push('p' + a + b + c); return m; });
+    s.replace(RX.price, function (m, i, d) { out.push('$' + numKey(i, d)); return m; });
+    s.replace(RX.priceW, function (m, i, d) { out.push('$' + numKey(i, d)); return m; });
+    return out;
+  }
+  function codesOf(s, insensitive) {
+    var out = [];
+    String(s).replace(insensitive ? RX.codeI : RX.code, function (m, p, n) { if (!/^(?:am|pm)$/i.test(p)) out.push('c' + p.toUpperCase() + n.toUpperCase()); return m; });
+    return out;
+  }
+  function wordSet(s) {
+    var o = {};
+    String(s).split(/[^A-Za-z'&.-]+/).forEach(function (w) { String(w).split(/[-&]/).forEach(function (p) { p = cleanWord(p).replace(/\./g, '').toLowerCase(); if (p) { o[p] = 1; o[stem(p)] = 1; } }); });
+    return o;
+  }
+  // u.third: the line is in a block written by club officers or event organizers ("[1] Campus tool: club.about")
+  function lineUnits(context) {
+    var units = [], carry = null, third = false;
+    prep(context).split('\n').forEach(function (raw) {
+      var l = raw.trim();
+      if (!l) { carry = null; return; }
+      var lab = /^(?:\[\d+\]\s*)?(?:campus tools?\s*[:-]\s*([\w.-]+)|tommy'?s usc pages)/i.exec(l);   // prep() already took the "[1]" off
+      if (lab) third = !!(lab[1] && /^(?:club|clubs|event|events)\./i.test(lab[1]));
+      var a = anchorsOf(l).concat(codesOf(l, true)), w = wordSet(l);
+      if (carry) { a = a.concat(carry.a); Object.keys(carry.w).forEach(function (k) { w[k] = 1; }); }
+      var u = { a: {}, w: w, third: third, times: facts(l, true).times }; a.forEach(function (k) { u.a[k] = 1; });
+      units.push(u);
+      // "**This week:**", "Mandatory fees:", "### Parking": a heading line names what the lines under it are about
+      if (/:\s*\**\s*$/.test(l) || /^#{1,4}\s/.test(raw) || /^\*\*[^*]+\*\*$/.test(l)) carry = { a: a, w: w };
+    });
+    return units;
+  }
+  var DAYW = /^(?:sun|mon|tues?|wed(?:nes)?|thu(?:rs?)?|fri|sat(?:ur)?)(?:day)?s?$/, MONW = /^(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)$/;
+  // runs of capitalized words in a clause ("Amy Rechenmacher", "UPC Gold"); a single capitalized word that only starts
+  // the clause may be an ordinary word ("Motorcycle permits are…"), so it isn't held to a binding
+  function namesIn(clause) {
+    var runs = [], cur = [], first = true;
+    (String(clause).match(/[A-Za-z][A-Za-z'&.-]*|[^A-Za-z\s]+/g) || []).forEach(function (tok) {
+      if (!/^[A-Za-z]/.test(tok)) { if (cur.length) { runs.push(cur); cur = []; } return; }
+      cleanWord(tok).split(/[-&]/).forEach(function (part) {
+        var p = part.replace(/\./g, ''), lw = p.toLowerCase();
+        var isName = /^[A-Z]/.test(p) && lw.length >= 2 && !TITLES[lw] && !ALWAYS[lw] && !COMMON[lw] && !DAYW.test(lw) && !MONW.test(lw);
+        if (isName) { cur.push({ w: lw, first: first }); }
+        else if (cur.length) { runs.push(cur); cur = []; }
+        first = false;
+      });
+    });
+    if (cur.length) runs.push(cur);
+    return runs.filter(function (r) { return !(r.length === 1 && r[0].first); }).map(function (r) { return r.map(function (x) { return x.w; }); });
+  }
+  F.binding = function (answer, context) {
+    var units = lineUnits(context), missing = [];
+    prep(answer).split(/\n+|(?:[.!?;](?=\s|$))|\s-\s|,\s+(?:and|or|but|while|plus)\s+|\s+(?:and|or|but|while|plus)\s+(?=(?:the\s+|a\s+|an\s+)?[A-Z$(]|\d)|,\s+(?=[A-Z$(]|\d)/).forEach(function (cl) {
+      cl = String(cl || '').replace(/[*_`]/g, '').trim();
+      if (!cl) return;
+      var anchors = anchorsOf(cl).concat(codesOf(cl, false)), runs = namesIn(cl.replace(RX.email, ' ').replace(RX.url, ' '));
+      if (!anchors.length || !runs.length) return;
+      // every anchor must share one line of the data with every name the clause pairs it with
+      anchors.forEach(function (a) {
+        var ok = units.some(function (u) {
+          return u.a[a] && runs.every(function (r) { return r.some(function (w) { return u.w[w] || u.w[stem(w)] || (ABBR[w] || []).some(function (x) { return u.w[x]; }); }); });
+        });
+        if (!ok && !missing.some(function (x) { return x.text === cl.slice(0, 60); })) missing.push({ type: 'binding', text: cl.slice(0, 60) });
+      });
+    });
+    return missing;
+  };
+  // ---- hours and closures come from Tommy's own data, never from a club description or an event title ----
+  // ("Leavey Library closes at 6 PM tonight for a security drill" planted in an event title passes every other check)
+  var STATUS = /\b(?:clos(?:e|es|ed|ing)|opens|open (?:until|till|til|from|at|today|tonight|now|late|24)|reopen\w*|hours|cancel+ed|postponed|moved to|shut\w*|evacuat\w*|drill)\b/i;
+  F.provenance = function (answer, context) {
+    var units = lineUnits(context), missing = [];
+    if (!units.some(function (u) { return u.third; })) return missing;
+    prep(answer).split(/\n+|(?:[.!?;](?=\s|$))/).forEach(function (cl) {
+      cl = String(cl || '').replace(/[*_`]/g, '').trim();
+      if (!cl || !STATUS.test(cl)) return;
+      var times = facts(cl, false).filter(function (f) { return f.type === 'times'; });
+      if (!times.length) return;
+      var trusted = times.every(function (f) { return units.some(function (u) { return !u.third && f.keys.some(function (k) { return u.times[k]; }); }); });
+      if (!trusted) missing.push({ type: 'source', text: cl.slice(0, 60) });
+    });
+    return missing;
+  };
+  // ---- a weekday next to a date must be that date's weekday ("Tuesday, November 25" when Nov 25 is a Wednesday) ----
+  var DN = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  function todayOf(context) {
+    var m = /Today:\s*(?:[A-Za-z]+,\s*)?([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})/.exec(String(context || ''));
+    var mo = m ? monthNum(m[1]) : 0;
+    return mo ? new Date(+m[3], mo - 1, +m[2]) : new Date();
+  }
+  F.weekdays = function (answer, context) {
+    var base = todayOf(context), s = prep(answer), missing = [], ctx = prep(context).toLowerCase();
+    var check = function (whole, dayWord, mo, d) {
+      var x = dayNum(dayWord), m = monthNum(mo) || +mo; d = +d;
+      if (x < 0 || !(m >= 1 && m <= 12) || !(d >= 1 && d <= 31)) return;
+      var best = null;
+      [base.getFullYear() - 1, base.getFullYear(), base.getFullYear() + 1].forEach(function (y) { var t = new Date(y, m - 1, d); if (t.getMonth() === m - 1 && (!best || Math.abs(t - base) < Math.abs(best - base))) best = t; });
+      if (!best || best.getDay() === x) return;
+      if (ctx.indexOf(String(whole).toLowerCase()) >= 0) return;   // the data itself pairs them that way
+      missing.push({ type: 'weekday', text: String(whole).trim().slice(0, 40) });
+    };
+    var W = '((?:sun|mon|tues?|wed(?:nes)?|thu(?:rs?)?|fri|sat(?:ur)?)(?:day)?)\\.?', MO = '(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\.?';
+    s.replace(new RegExp('\\b' + W + ',?\\s+(?:the\\s+)?' + MO + '\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b', 'gi'), function (m, a, mo, d) { check(m, a, mo, d); return m; });
+    s.replace(new RegExp('\\b' + W + ',?\\s+(\\d{1,2})/(\\d{1,2})\\b', 'gi'), function (m, a, mo, d) { check(m, a, mo, d); return m; });
+    s.replace(new RegExp('\\b' + MO + '\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s*\\(\\s*' + W + '\\s*\\)', 'gi'), function (m, mo, d, a) { check(m, a, mo, d); return m; });
+    return missing;
+  };
   // -> {ok, missing: [{type, text}], checked}
   F.factCheck = function (answer, context) {
     var C = facts(context, true), list = facts(answer, false), missing = [];
@@ -17682,9 +17799,10 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       var set = C[SETS[f.type]] || {};
       if (!f.keys.length) return;
       var ok = f.all ? f.keys.every(function (k) { return set[k]; }) : f.keys.some(function (k) { return set[k]; });
-      if (!ok && f.type === 'names') ok = f.keys.some(function (k) { return C.words[k]; });
+      if (!ok && f.type === 'names') ok = f.keys.some(function (k) { return C.words[k] || (ABBR[k] || []).some(function (x) { return C.words[x]; }); });
       if (!ok) missing.push({ type: f.type, text: f.text });
     });
+    if (!missing.length) missing = missing.concat(F.weekdays(answer, context), F.binding(answer, context), F.provenance(answer, context));
     return { ok: missing.length === 0, missing: missing, checked: list.length };
   };
   F.facts = function (text, ctx) { return facts(text, !!ctx); };
@@ -17698,11 +17816,44 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     } catch (e) { return ''; }
   };
   F.isUsc = function (u) { try { var x = new URL(String(u || '')); var h = x.hostname.toLowerCase(); return /^https?:$/.test(x.protocol) && (h === 'usc.edu' || /\.usc\.edu$/.test(h)); } catch (e) { return false; } };
+  // contact and payment details that never come from USC: a payment app, a social handle, a spelled-out web address
+  // ("usc-portal dot com"), and (after NFKC) full-width addresses
+  var PAYAPP = /\b(?:venmo|zelle|cash ?app|paypal|western union|moneygram|gift ?cards?|bitcoin|crypto(?:currency)? wallet)\b/i;
+  var HANDLE = /(?:^|[\s(:,])@[A-Za-z0-9_][A-Za-z0-9_.-]{2,}/;
+  var SPELLED = /\b[a-z0-9][a-z0-9-]*\s*[([]?\s*dot\s*[)\]]?\s*(?:[a-z0-9-]+\s*[([]?\s*dot\s*[)\]]?\s*)*(?:com|net|org|io|co|info|biz|xyz|app|me|us|edu|gov|ly|site|online|link|page|store|shop)\b/i;
+  var CF = /[­͏؜ᅟᅠ឴឵᠋-᠏​-‏‪-‮⁠-⁤⁦-⁯ㅤ︀-️﻿ﾠ]/g;
+  function nfkc(s) { s = String(s == null ? '' : s); try { s = s.normalize('NFKC'); } catch (e) { /* as it is */ } return s.replace(CF, ''); }
+  function uscHost(h) { h = String(h || '').toLowerCase().replace(/^www\./, '').replace(/[/:].*$/, ''); return h === 'usc.edu' || /\.usc\.edu$/.test(h); }
+  // a sentence that sends the student anywhere but USC: an outside e-mail, a payment app, a handle, a spelled-out or
+  // outside web address
+  function outsideContact(sentence) {
+    var bad = false;
+    sentence.replace(RX.email, function (m) { if (!/@([\w-]+\.)*usc\.edu$/i.test(m)) bad = true; return m; });
+    if (bad || PAYAPP.test(sentence) || HANDLE.test(sentence) || SPELLED.test(sentence)) return true;
+    sentence.replace(RX.host, function (m, pre, host) { if (!uscHost(host)) bad = true; return m; });
+    return bad;
+  }
+  F.outsideContact = outsideContact;
+  // club descriptions and event listings (written by club officers and organizers, not USC): contact and payment
+  // details never reach the AI
+  var THIRD_PARTY = /^(?:club|clubs|event|events)\./;
+  function maskThirdParty(t) {
+    var g = function (re) { return new RegExp(re.source, re.flags.indexOf('g') >= 0 ? re.flags : re.flags + 'g'); };
+    return nfkc(t)
+      .replace(g(RX.email), '[e-mail left out]')
+      .replace(g(RX.url), function (u) { return F.isUsc(u.replace(/[.,;:!?]+$/, '')) ? u : '[web address left out]'; })
+      .replace(g(SPELLED), '[web address left out]')
+      .replace(RX.host, function (m, pre, host) { return uscHost(host) ? m : pre + '[web address left out]'; })
+      .replace(RX.phone, '[phone number left out]')
+      .replace(g(HANDLE), function (m) { return m.charAt(0) === '@' ? '[handle left out]' : m.charAt(0) + '[handle left out]'; })
+      .replace(g(PAYAPP), '[payment app left out]');
+  }
+  F.maskThirdParty = maskThirdParty;
   F.sanitizeAnswer = function (md, sources) {
     var allow = {}, removed = 0;
     (sources || []).forEach(function (x) { var k = F.normUrl(x && x.url); if (k) allow[k] = 1; });
     var ok = function (u) { var k = F.normUrl(u); return !!(k && allow[k]); };
-    var s = String(md == null ? '' : md).replace(/\r/g, '').replace(/\u0000/g, '');
+    var s = nfkc(md).replace(/\r/g, '').replace(/\u0000/g, '');
     s = s.replace(/<((?:https?|ftp):\/\/[^>\s]+)>/gi, function (m, u) { if (ok(u)) return u; removed++; return ''; });
     s = s.replace(/<!--[\s\S]*?(?:-->|$)/g, function () { removed++; return ''; });
     s = s.replace(/<\/?[A-Za-z][^>]*>?/g, function () { removed++; return ''; });
@@ -17716,6 +17867,14 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       removed++; return tail;
     });
     s = s.replace(/\b(?:javascript|data|vbscript|file|mailto|tel|sms|blob):[^\s)\]]*/gi, function () { removed++; return ''; });
+    // a sentence that points the student anywhere but USC goes whole (no half sentence such as "sign in there with
+    // your NetID" is left)
+    s = s.split('\n').map(function (line) {
+      if (!line.trim()) return line;
+      var parts = line.replace(/([.!?])\s+(?=[A-Z0-9*_"'(\[])/g, '$1\u0001').split('\u0001');
+      var kept = parts.filter(function (p) { if (outsideContact(p.replace(/\]\((https?:\/\/[^)\s]+)\)/g, ']')) || /\[[^\]\n]{0,30}left out\]/i.test(p)) { removed++; return false; } return true; });
+      return kept.length ? kept.join(' ') : null;
+    }).filter(function (l) { return l !== null; }).join('\n');
     s = s.replace(RX.host, function (m, pre, host, off, all) {
       if (/\]\($/.test(all.slice(Math.max(0, off + pre.length - 2), off + pre.length))) return m;
       if (ok('https://' + host)) return m;
@@ -17774,26 +17933,45 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
 
   // What this message sent: every POST of the current turn is logged by mode (translate / answer / search / flag), so the
   // tag under the answer can say exactly what reached the AI (js/ta/ai-answer-ui.js starts a turn per sent message).
+  // Each entry knows whether the request reached Claude: a request the server refused (4xx), or answered without calling
+  // Claude because today's limit was used up ("capped"), never did, and the small print doesn't claim it.
   var TURN = [];
   AI.beginTurn = function () { TURN = []; };
-  AI.turnCalls = function () { return TURN.slice(); };
+  AI.turnCalls = function () { return TURN.filter(function (x) { return x.reached !== false; }).map(function (x) { return x.mode; }); };
+  // flag tokens: the server signs each question it answered (ft), and a "factcheck", "no-script" or "missing-feature"
+  // flag carries that signature back, so the team's list only holds questions that really went through Tommy
+  var TOKENS = [];
+  function qkey(s) { return nfkc(s).toLowerCase().replace(/[‘’ʼ`´]/g, "'").replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function keepToken(q, ft) { if (typeof ft !== 'string' || !ft || !q) return; TOKENS.push({ k: qkey(q), ft: ft.slice(0, 64) }); if (TOKENS.length > 30) TOKENS.shift(); }
+  function tokenFor(q) { var k = qkey(q); for (var i = TOKENS.length - 1; i >= 0; i--) if (TOKENS[i].k === k) return TOKENS[i].ft; return ''; }
   // POST to this site's function. Resolves to the JSON reply or null (offline, timeout, stopped, error). Never throws.
   function post(body, ms, keepalive) {
-    TURN.push(String((body && body.mode) || 'translate'));
+    var entry = { mode: String((body && body.mode) || 'translate'), reached: null };
+    TURN.push(entry);
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     if (ctl) A.ctls.push(ctl);
     var t = setTimeout(function () { if (ctl) ctl.abort(); }, ms);
     var done = function () { clearTimeout(t); A.ctls = A.ctls.filter(function (c) { return c !== ctl; }); };
-    var init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', signal: ctl ? ctl.signal : undefined };
+    var init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', credentials: 'same-origin', signal: ctl ? ctl.signal : undefined };
     if (keepalive) init.keepalive = true;
     try {
       return fetch(ENDPOINT, init)
         .then(function (r) {
+          // refused before Claude: bad request, other origin, too big, personal wording (422), busy (429), no key (503)
+          if (r.status === 503 || (r.status >= 400 && r.status < 500 && r.status !== 408)) entry.reached = false;
           if (r.status === 503) { A.off = true; mode(); return null; } // the site has no API key set
           return r.ok ? r.json().catch(function () { return null; }) : null;
         })
         .catch(function () { return null; })
-        .then(function (j) { done(); return j && typeof j === 'object' ? j : null; });
+        .then(function (j) {
+          done();
+          if (j && typeof j === 'object') {
+            if (j.capped) entry.reached = false;
+            if (j.ft) keepToken(body.mode === 'answer' || body.mode === 'search' ? body.question : body.text, j.ft);
+            if (j.ft_feature && j.args && typeof j.args.feature === 'string') keepToken(j.args.feature, j.ft_feature);
+          }
+          return j && typeof j === 'object' ? j : null;
+        });
     } catch (e) { done(); return Promise.resolve(null); }
   }
 
@@ -17836,10 +18014,32 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     }
     return out.slice(0, 200);
   }
+  // Only messages that were themselves sent to the AI go along later (script.js marks them: e.sent), never one Tommy
+  // handled on the phone (a guest's name, a payment, a grade question), and never a personal one.
   function safeEarlier(list) {
-    return (list || []).filter(function (e) { return e && !privateText(e.text) && !privateText(e.line); })
-      .map(function (e) { return { text: String(e.text || '').slice(0, 200), line: safeLine(e.line, e.text) }; });
+    return (list || []).filter(function (e) { return e && e.sent === true && !privateText(e.text) && !privateText(e.line); })
+      .map(function (e) { return { text: maskIdentity(String(e.text || '')).slice(0, 200), line: safeLine(maskIdentity(e.line), maskIdentity(e.text)) }; });
   }
+  // The student's own identity (NetID, e-mail, USC ID, phone, full name, room) never leaves the device, even when they
+  // type it into a question: it is replaced by a placeholder in everything this file sends.
+  function identityValues() {
+    try {
+      var d = (TA.State && TA.State.d) || {}, pr = d.profile || {}, st = (window.TH && TH.student && TH.student()) || {};
+      return [[pr.email, '[my email]'], [st.email, '[my email]'], [pr.uscid, '[my USC ID]'], [st.uscid, '[my USC ID]'], [pr.phone, '[my phone]'], [pr.emergency, '[a phone number]'],
+        [st.full, '[my name]'], [pr.first && pr.last ? pr.first + ' ' + pr.last : '', '[my name]'], [pr.netid, '[my NetID]'], [d.housing && d.housing.room, '[my room]']]
+        .filter(function (p) { return String(p[0] || '').trim().length >= 4; })
+        .sort(function (a, b) { return String(b[0]).length - String(a[0]).length; });
+    } catch (e) { return []; }
+  }
+  function maskIdentity(s) {
+    var out = String(s == null ? '' : s);
+    identityValues().forEach(function (p) {
+      var v = String(p[0]).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+      try { out = out.replace(new RegExp('(^|[^A-Za-z0-9])' + v + '(?![A-Za-z0-9])', 'gi'), function (m, pre) { return pre + p[1]; }); } catch (e) { /* left as it is */ }
+    });
+    return out;
+  }
+  AI.maskIdentity = maskIdentity;
   function nowText() {
     try { return TA.fmtLongDate(TA.today()) + ', ' + TA.now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; }
   }
@@ -17851,8 +18051,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     ctx = Object.assign({}, ctx || {}, { earlier: safeEarlier(ctx && ctx.earlier) });
     if (!apiMode()) return base.translate(text, ctx);
     if (!on()) return null;
-    var body = { text: String(text == null ? '' : text).slice(0, 1000), now: String(ctx.now || '').slice(0, 80), earlier: (ctx.earlier || []).slice(-6) };
-    var hint = ctx.hint ? safeLine(ctx.hint, text) : '';
+    var words0 = maskIdentity(String(text == null ? '' : text)).slice(0, 1000);
+    var body = { text: words0, now: String(ctx.now || '').slice(0, 80), earlier: (ctx.earlier || []).slice(-6) };
+    var hint = ctx.hint ? safeLine(maskIdentity(ctx.hint), words0) : '';
     if (hint) body.hint = hint;
     var j = await post(body, MS.translate);
     if (!j || typeof j.cmd !== 'string' || !j.cmd.trim()) return null;
@@ -17895,7 +18096,12 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       });
     } catch (e) { /* unregistered output is private */ }
   };
-  AI.notePrivate = function (out) { try { (Array.isArray(out) ? out : [out]).forEach(function (m) { if (m && typeof m === 'object' && !KB.has(m) && !PUB.has(m)) PRIV.add(m); }); } catch (e) { /* default deny anyway */ } };
+  AI.notePrivate = function (out) {
+    try {
+      if (out && typeof out.then === 'function') { out.then(function (r) { AI.notePrivate(r); }, function () { }); return; }
+      (Array.isArray(out) ? out : [out]).forEach(function (m) { if (m && typeof m === 'object' && !KB.has(m) && !PUB.has(m)) PRIV.add(m); });
+    } catch (e) { /* default deny anyway */ }
+  };
   AI.kbInfo = function (m) { var k = m && typeof m === 'object' ? KB.get(m) : null; return k ? { q: k.q, kind: k.kind, conf: k.conf } : null; };
   AI.isPublicOutput = function (m, name) { var s = m && typeof m === 'object' ? PUB.get(m) : null; return !!(s && (!name || s.cmd === name)); };
 
@@ -17976,7 +18182,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   AI.composeContext = function (question, items, opts) {
     try {
       opts = opts || {};
-      var TS = TA.Script, q = String(question == null ? '' : question).replace(/\s+/g, ' ').trim().slice(0, 500);
+      var TS = TA.Script, q = maskIdentity(String(question == null ? '' : question)).replace(/\s+/g, ' ').trim().slice(0, 500);
       assert(TS && typeof TS.isPublicCmd === 'function', 'no public command list');
       assert(q && !privateText(q), 'the question itself stays on this device');
       var blocks = [], sources = [], seen = {}, tools = 0, names = [];
@@ -18004,6 +18210,10 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
           if (names.indexOf('ask') < 0) names.push('ask');
         }
         var text = capText(snaps.map(function (s) { return publicText(s.md); }).filter(Boolean).join('\n\n'), 3000);
+        // club descriptions and event listings are written by club officers and organizers, not USC: their phone
+        // numbers, e-mails, handles, payment apps and outside web addresses never reach the AI (and so can never pass
+        // the fact check as "in the data")
+        if (it.type === 'tool' && THIRD_PARTY.test(name)) text = maskThirdParty(text);
         assert(!identityHit(text), 'the student’s identity is in the text');
         if (!text) return;
         var mine = [];
@@ -18040,8 +18250,11 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   };
 
   // ---- AI.answer: Haiku writes the answer from the sealed context only ----
+  // today's limit (capped) or Claude declining (refused) is no judgment about the data: Tommy's verified answer stands
   function cleanAnswerReply(j, n) {
-    if (!j || typeof j !== 'object') return null;
+    if (!j || typeof j !== 'object') { AI.lastAnswerWhy = 'no AI answer (error or timeout)'; return null; }
+    if (j.capped) { AI.lastAnswerWhy = 'today\u2019s AI answer limit is used up'; return null; }
+    if (j.refused) { AI.lastAnswerWhy = 'Claude declined to answer'; return null; }
     var st = String(j.status || '').toLowerCase();
     if (st !== 'ok' && st !== 'insufficient') return null;
     var md = typeof j.answer_md === 'string' ? j.answer_md.replace(/\u0000/g, '').trim().slice(0, 2400) : '';
@@ -18056,7 +18269,8 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       if (!on()) return null;
       await check();
       if (!apiMode() || !feat('answer')) return null;
-      var q = String(question == null ? '' : question).replace(/\s+/g, ' ').trim().slice(0, 500);
+      AI.lastAnswerWhy = '';
+      var q = maskIdentity(String(question == null ? '' : question)).replace(/\s+/g, ' ').trim().slice(0, 500);
       if (!q || q !== ctx.question || privateText(q)) return null;
       var src = ctx.sources;
       if (Array.isArray(sources) && sources.length) src = src.filter(function (s) { return sources.some(function (x) { return x && F.normUrl(x.url) === F.normUrl(s.url); }); });
@@ -18142,9 +18356,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       if (!on()) return null;
       await check();
       if (!apiMode() || !feat('search')) return null;
-      var question = String(q == null ? '' : q).replace(/\s+/g, ' ').trim().slice(0, 500);
+      var question = maskIdentity(String(q == null ? '' : q)).replace(/\s+/g, ' ').trim().slice(0, 500);
       if (!question || privateText(question) || (originalText != null && privateText(originalText))) return null;
-      var orig = String(originalText == null ? '' : originalText).replace(/\s+/g, ' ').trim().slice(0, 500);
+      var orig = maskIdentity(String(originalText == null ? '' : originalText)).replace(/\s+/g, ' ').trim().slice(0, 500);
       var body = { mode: 'search', question: question };
       if (orig && orig !== question) body.original = orig; // the student's own wording, so the team's "script needed" alert can name it
       if (why && why.reason === 'inaccurate') {
@@ -18154,9 +18368,13 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       }
       var j = await post(body, MS.search);
       if (!j) return null;
-      if (j.found === false || typeof j.answer !== 'string' || !j.answer.trim()) return [];
+      // today's search limit: no search ran (the server flagged nothing either), so nothing may claim one
+      if (j.capped) { var none = []; none.capped = true; return none; }
+      var searched = (+j.searches || 0) > 0;
+      var nf = function () { var x = []; x.searched = searched; return x; };
+      if (j.found === false || typeof j.answer !== 'string' || !j.answer.trim()) return nf();
       var sources = cleanSources(j.sources), san = F.sanitizeAnswer(j.answer, sources);
-      if (!sources.length || !san.md) return []; // an answer no USC page backs up is never shown
+      if (!sources.length || !san.md) return nf(); // an answer no USC page backs up is never shown
       return [{
         role: 'bot', kind: 'c', md: san.md, sources: sources, chips: [],
         ai: { kind: 'search', model: 'Claude Haiku', searches: Math.max(0, +j.searches || 0) },
@@ -18174,10 +18392,13 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     try {
       if (!o || !on() || !apiMode() || !feat('flags')) return false;
       var reason = REASONS[o.reason] ? o.reason : 'inaccurate';
-      var question = String(o.question || '').replace(/\s+/g, ' ').trim().slice(0, reason === 'missing-feature' ? 80 : 300);
+      var question = maskIdentity(String(o.question || '')).replace(/\s+/g, ' ').trim().slice(0, reason === 'missing-feature' ? 80 : 300);
       if (!question || privateText(question)) return false;
-      var line = reason === 'missing-feature' || privateText(o.line) ? '' : String(o.line || '').slice(0, 200);
-      post({ mode: 'flag', question: question, line: line, missing: reason === 'missing-feature' ? [] : wordsOnly(o.missing, 10), reason: reason }, MS.flag, true);
+      var line = reason === 'missing-feature' || privateText(o.line) ? '' : maskIdentity(String(o.line || '')).slice(0, 200);
+      // the server stores a flag only for a question it answered or translated (its signature, ft); without one, no flag
+      var ft = tokenFor(question);
+      if (!ft) return false;
+      post({ mode: 'flag', question: question, line: line, missing: reason === 'missing-feature' ? [] : wordsOnly(o.missing, 10), reason: reason, ft: ft }, MS.flag, true);
       return true;
     } catch (e) { return false; /* never in the way of an answer */ }
   };
@@ -19067,32 +19288,106 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       if (side) { var so = await runCmd(side, text, 'script'), pa = TA.Actions.get(p.aid); return so.concat([{ role: 'bot', md: '_Your request' + (pa ? ' to ' + pa.title.charAt(0).toLowerCase() + pa.title.slice(1) : '') + ' is still waiting above. Answer it there, or say cancel._' }]); }
     }
     if (flagged(n, text) || p || n.undo || n.signin || n.signout || n.yes || n.no || n.cancel || n.greet || n.thanks || n.bye || /^@/.test(text)) return B.handle(text);
-    /* ask-tommy-route v3 ai-first */
+    /* ask-tommy-route v4 ai-first */
     // AI-first for public questions (tommy-api/AI-FIRST-SPEC.md). Everything above stays on this device.
     return TS.routeAIFirst(text, n);
   };
+
+  // ===================================================================================================
+  // UNICODE TRICKS NEVER GET PAST THE SAFETY GATE. Every message is folded once, before the safety and crisis gate
+  // above (TS.handle) sees it: NFKC (full-width and styled letters), invisible format characters (soft hyphen,
+  // zero-width spaces, BOM, bidi marks) and combining marks on Latin letters removed, Cyrillic and Greek look-alike
+  // letters inside Latin words folded to Latin ("ѕuicide"). Spaced-out or dotted letters ("s u i c i d e", "sui-cide")
+  // are joined for a second safety check: when only the joined text is flagged, the joined text is what Tommy answers.
+  // ===================================================================================================
+  var CF_RE = (function () { try { return new RegExp('[\\p{Cf}\\u034F\\u115F\\u1160\\u17B4\\u17B5\\u180B-\\u180F\\u3164\\uFE00-\\uFE0F\\uFFA0]', 'gu'); } catch (e) { return /[­͏؜ᅟᅠ឴឵᠋-᠏​-‏‪-‮⁠-⁤⁦-⁯ㅤ︀-️﻿ﾠ]/g; } })();
+  var LOOK = { 'а': 'a', 'в': 'b', 'е': 'e', 'ё': 'e', 'к': 'k', 'м': 'm', 'н': 'h', 'о': 'o', 'р': 'p', 'с': 'c', 'т': 't', 'у': 'y', 'х': 'x', 'ѕ': 's', 'і': 'i', 'ї': 'i', 'ј': 'j', 'ԁ': 'd', 'ӏ': 'l', 'ԛ': 'q', 'ԝ': 'w', 'ь': 'b', 'һ': 'h', 'ɡ': 'g', 'ı': 'i',
+    'А': 'A', 'В': 'B', 'Е': 'E', 'К': 'K', 'М': 'M', 'Н': 'H', 'О': 'O', 'Р': 'P', 'С': 'C', 'Т': 'T', 'Х': 'X', 'У': 'Y', 'Ѕ': 'S', 'І': 'I', 'Ј': 'J', 'Ү': 'Y',
+    'α': 'a', 'β': 'b', 'ε': 'e', 'ι': 'i', 'κ': 'k', 'ν': 'v', 'ο': 'o', 'ρ': 'p', 'τ': 't', 'υ': 'u', 'χ': 'x', 'γ': 'y', 'ω': 'w',
+    'Α': 'A', 'Β': 'B', 'Ε': 'E', 'Ζ': 'Z', 'Η': 'H', 'Ι': 'I', 'Κ': 'K', 'Μ': 'M', 'Ν': 'N', 'Ο': 'O', 'Ρ': 'P', 'Τ': 'T', 'Υ': 'Y', 'Χ': 'X' };
+  var LOOK_RE = new RegExp('[' + Object.keys(LOOK).join('') + ']', 'g');
+  TS.fold = function (raw) {
+    var t = String(raw == null ? '' : raw);
+    try { t = t.normalize('NFKC'); } catch (e) { /* very old browser: as typed */ }
+    t = t.replace(CF_RE, '').replace(/([A-Za-z])[̀-ͯ᪰-᫿᷀-᷿⃐-⃿︠-︯]+/g, '$1');
+    // look-alike letters, only in words that also have a Latin letter or are made only of look-alikes ("ѕuicide", "ѕехе")
+    return t.replace(/[^\s.,;:!?()"'\/\\-]+/g, function (w) {
+      if (!LOOK_RE.test(w)) return w;
+      LOOK_RE.lastIndex = 0;
+      var rest = w.replace(LOOK_RE, '');
+      LOOK_RE.lastIndex = 0;
+      return /[A-Za-z]/.test(w) || !/[^\d_]/.test(rest) ? w.replace(LOOK_RE, function (ch) { return LOOK[ch]; }) : w;
+    });
+  };
+  // "s u i c i d e" / "s.u.i.c.i.d.e" / "sui-cide" -> "suicide" (only for the second safety check)
+  TS.squash = function (t) {
+    return String(t == null ? '' : t)
+      .replace(/(^|[^A-Za-z])((?:[A-Za-z][ \t.\-_*·•~+|]{1,3}){2,}[A-Za-z])(?![A-Za-z])/g, function (m, pre, run) { return pre + run.replace(/[^A-Za-z]/g, ''); })
+      .replace(/([A-Za-z])[\-.*_·•~+|]+(?=[A-Za-z])/g, '$1');
+  };
+  // the text every handler sees (memoized: the wrappers below hand it on unchanged)
+  var SAFE = { i: null, o: null };
+  TS.safeInput = function (text) {
+    if (typeof text !== 'string' || /^@/.test(text)) return text;   // chips and slot values are Tommy's own
+    if (text === SAFE.i || text === SAFE.o) return SAFE.o;
+    var t = TS.fold(text);
+    try {
+      var sq = TS.squash(t);
+      if (sq !== t && !flagged(TA.NLU.parse(t), t) && flagged(TA.NLU.parse(sq), sq)) t = sq;
+    } catch (e) { /* the folded text stands */ }
+    SAFE.i = text; SAFE.o = t;
+    return t;
+  };
+  // Every handler, including the ones other files wrap around TS.handle later (Part B, act-anything, the Hub's Call
+  // Tommy, profile shortcuts), gets the folded text: TS.handle is an accessor whose value always folds first.
+  (function () {
+    var inner = TS.handle, made = typeof WeakMap === 'function' ? new WeakMap() : null;
+    function folding(f) {
+      var w = made && made.get(f);
+      if (!w) {
+        w = function (text) { var a = Array.prototype.slice.call(arguments); a[0] = TS.safeInput(text); return f.apply(this, a); };
+        w._folding = true;
+        if (made) made.set(f, w);
+      }
+      return w;
+    }
+    try {
+      Object.defineProperty(TS, 'handle', { configurable: true, enumerable: true, get: function () { return inner && inner._folding ? inner : folding(inner); }, set: function (f) { if (typeof f === 'function') inner = f; } });
+    } catch (e) { var h0 = TS.handle; TS.handle = function (text) { return h0.apply(this, [TS.safeInput(text)].concat(Array.prototype.slice.call(arguments, 1))); }; }
+  })();
 
   // ===================================================================================================
   // AI-FIRST ROUTING (scripts/patch_ai_route.py). The AI never sees an account result: private commands, actions and
   // Trojan Assist's intents run and show here. Public data reaches it only through AI.composeContext (js/ta/ai-api.js).
   // ===================================================================================================
   TS.routeAIFirst = async function (text, n) {
+    var out = await routeOnce(text, n);
+    // this message's history entry may go along as "earlier" context later only if this message itself reached the AI
+    try {
+      var R = TS.route, key = String(text).slice(0, 200);
+      if (R && R.ai.some(function (k) { return k === 'translate' || k === 'answer' || k === 'search'; })) TS.history.forEach(function (e) { if (e && e.text === key) e.sent = true; });
+    } catch (e) { /* not marked: never sent later */ }
+    return out;
+  };
+  async function routeOnce(text, n) {
     var R = TS.route = { text: String(text).slice(0, 300), steps: [], ai: [] };
     var step = function (x) { R.steps.push(x); };
     markBuiltins();
     // 1) personal topics, help/need wording, B.sensitive: Tommy's own answer on this device, nothing is sent
     if (TS.personal(text, n)) {
       step('1 personal or help wording -> Tommy on this device, nothing sent');
+      var sup = TS.support(text, n);
+      if (sup) { step('1 support answer on this device (counseling 24/7, 988, crisis text line)'); return sup; }
       var c1 = TS.compile(text);
       return c1 ? runSafe(c1, text, 'script') : brain(text, 'script');
     }
     var acct = TS.account(text, n);
     // 2) Tommy's own scripts
-    var c = TS.compile(text), out = null, guess = null;
+    var c = TS.compile(text), out = null, guess = null, weakKB = false;
     if (c) {
-      // a private command with a PUBLIC twin that reads no position (place.find), for a question that isn't about where
-      // the student is: the twin answers, so the AI may write from it
-      if (!TS.isPublicCmd(c.cmd)) { var tw = await twinFor(c, text); if (tw) { step('2 PRIVATE ' + TS.line(c) + ' -> its public twin ' + tw.cmd + ' (no position)'); c = tw; } }
+      // a command with a PUBLIC twin (place.find: no position; events.find: date order, not ranked by the student's
+      // thumbs, clubs or interests), when the AI writes answers here: the twin answers, so the AI may write from it
+      var tw = await twinFor(c, text); if (tw) { step('2 ' + (TS.isPublicCmd(c.cmd) ? 'PUBLIC ' : 'PRIVATE ') + TS.line(c) + ' -> its public twin ' + tw.cmd + ' (' + twinWhy(c) + ')'); c = tw; }
       out = await runSafe(c, text, 'script');
       if (B.pending || hasCard(out)) { step('2 ' + TS.line(c) + ' started a request -> on this device'); return out; }
       if (!TS.isPublicCmd(c.cmd)) { step('2 PRIVATE ' + TS.line(c) + ' -> on this device, no AI'); return out; }
@@ -19113,13 +19408,17 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
         else c = null;
       }
       if (!guess) {
-        var kbm = kbOf(out, text);
-        if (kbm && !TS.weak(out)) { guess = { type: 'kb', msg: kbm }; step('2 Trojan Assist USC knowledge-base answer ' + TS.describe(out)); }
+        var kbm = kbOf(out, text), kbWhy = kbm ? kbProblem(kbm, text, true) : '';
+        // an out-of-date USC page: Tommy's own answer with its "may be out of date" warning, never rewritten by the AI
+        if (kbm && kbWhy === 'stale' && !TS.weak(out)) { step('2 Trojan Assist USC page answer is out of date -> on this device with its warning, no AI'); return out; }
+        // a USC page extract whose titles share no word with the question is a guess, not an answer
+        if (kbm && kbWhy) { step('2 no script; Trojan Assist: ' + TS.describe(out) + ' is off-topic (' + kbWhy + ') (weak)'); kbm = null; weakKB = true; }
+        else if (kbm && !TS.weak(out)) { guess = { type: 'kb', msg: kbm }; step('2 Trojan Assist USC knowledge-base answer ' + TS.describe(out)); }
         else if (!TS.weak(out)) { if (AI && AI.notePrivate) AI.notePrivate(out); step('2 Trojan Assist answer (not a public USC page) -> on this device, no AI'); return out; }
         else step('2 no script; Trojan Assist: ' + TS.describe(out) + ' (weak)');
       }
     }
-    var weak = TS.weak(out, c);
+    var weak = TS.weak(out, c) || weakKB;
     var ai = await aiState();
     if (!ai.on) { step('AI off -> Tommy on this device'); return out; }
     // account and task wording (Part B): never composed or searched; the AI may only turn the words into a script.
@@ -19152,7 +19451,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       step('planner -> ' + (tr.cmd === 'none' ? 'none' : 'unknown command ' + String(tr.cmd).slice(0, 40)));
       return weak ? TS.notUSC(text, out) : out;
     }
-    if (tr.cmd !== 'do' && tr.cmd !== 'ask' && !TS.isPublicCmd(tr.cmd) && !acct) { var tw3 = await twinFor(tr, text); if (tw3) { step('planner -> ' + TS.line(tr) + ' -> its public twin ' + tw3.cmd + ' (no position)'); tr = tw3; } }
+    if (tr.cmd !== 'do' && tr.cmd !== 'ask' && !acct) { var tw3 = await twinFor(tr, text); if (tw3) { step('planner -> ' + TS.line(tr) + ' -> its public twin ' + tw3.cmd + ' (' + twinWhy(tr) + ')'); tr = tw3; } }
     // Part B: an account command or an action runs here and shows here; the AI never sees the result
     if (tr.cmd === 'do' || (tr.cmd !== 'ask' && !TS.isPublicCmd(tr.cmd))) {
       step('planner -> PRIVATE ' + TS.line(tr) + ' -> runs on this device, never composed');
@@ -19193,6 +19492,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     if (!items.some(function (x) { return x.type === 'kb'; })) { var kb = await kbItem(q); if (kb) items.push(kb); }
     if (!items.length) { step('4 nothing public answers it'); return search(text, q, { tools: 0 }); }
     if (!ai.compose) { step('4 composing is off here -> verified data on this device'); return verifiedOnly(items, fallback); }
+    // safety numbers (DPS, 911, 988, the 24/7 counseling line) are shown exactly as Tommy's verified data has them: an AI
+    // rewrite could pair a number with the wrong label ("call the non-emergency line in an emergency")
+    if (items.some(function (x) { return x.type === 'tool' && /^safety\./.test(x.cmd.cmd); }) || SAFETY_NUM.test(itemText(items))) { step('4 safety numbers -> Tommy\'s verified data exactly as it is, no AI rewrite'); return verifiedOnly(items, fallback); }
     var ctx = AI.composeContext(text, items, { q: q, today: TA.fmtLongDate(TA.today()) });
     if (!ctx) { step('4 privacy boundary refused the context (' + (AI.lastRefusal || '') + ') -> Tommy on this device'); return verifiedOnly(items, fallback); }
     // every composed answer cites USC sources: data without one (a building code from the map) stays Tommy's own answer
@@ -19201,7 +19503,8 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     R.ai.push('answer');
     var res = null;
     try { res = await AI.answer(text, ctx); } catch (e) { res = null; }
-    if (!res) { step('4 compose failed -> verified data on this device'); return verifiedOnly(items, fallback); }
+    // no AI answer (today's limit on the server, Claude declined, an error): Tommy's verified answer, never a search
+    if (!res) { step('4 ' + (AI.lastAnswerWhy || 'compose failed') + ' -> verified data on this device'); return verifiedOnly(items, fallback); }
     if (res.status === 'insufficient') { step('4 compose -> insufficient (' + ctx.tools + ' campus tools)'); return search(text, q, { tools: ctx.tools, insufficient: true }); }
     var san = AI.sanitizeAnswer(res.answer_md, ctx.sources), fc = AI.factCheck(san.md, ctx.text);
     if (!san.md) { step('4 empty answer -> verified data on this device'); return verifiedOnly(items, fallback); }
@@ -19218,12 +19521,15 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       var u = AI.normUrl(l.slice(2, -1)), x = ctx.sources.filter(function (y) { return AI.normUrl(y.url) === u; })[0];
       if (x && cited.indexOf(x) < 0) cited.push(x);
     });
+    var tool = items.filter(function (x) { return x.type === 'tool'; })[0];
+    // none named: the first campus tool's own sources (not every page in the context)
+    if (!cited.length && tool) (tool.out || []).forEach(function (m) { (m && m.sources || []).forEach(function (s) { var x = ctx.sources.filter(function (y) { return AI.normUrl(y.url) === AI.normUrl(s && s.url); })[0]; if (x && cited.indexOf(x) < 0) cited.push(x); }); });
     if (!cited.length) cited = ctx.sources.slice();
     step('4 composed from ' + ctx.tools + ' campus tool(s), ' + cited.length + ' source(s)' + (san.removed ? ', ' + san.removed + ' link(s) removed' : ''));
-    var tool = items.filter(function (x) { return x.type === 'tool'; })[0];
     var verified = items.map(function (it) {
       var msgs = it.type === 'kb' ? [it.msg] : (it.out || []).filter(function (m) { return m && m.role === 'bot'; });
-      return { line: it.type === 'tool' ? TS.line(it.cmd) : 'Tommy’s USC pages', kb: it.type === 'kb', md: msgs.map(function (m) { return String(m.md || ''); }).filter(Boolean).join('\n\n') };
+      var st = msgs.map(function (m) { return m && m.stale; }).filter(Boolean)[0];
+      return { line: it.type === 'tool' ? TS.line(it.cmd) : 'Tommy’s USC pages', kb: it.type === 'kb', stale: st ? String(st).slice(0, 80) : undefined, md: msgs.map(function (m) { return String(m.md || ''); }).filter(Boolean).join('\n\n') };
     });
     var chips = tool ? (((tool.out || []).filter(function (m) { return m && m.role === 'bot'; })[0] || {}).chips || []).slice(0, 3) : [];
     var usc = cited.filter(function (x) { return /^https?:\/\/([a-z0-9-]+\.)*usc\.edu(\/|$)/i.test(x.url); }).length;
@@ -19247,7 +19553,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
         try { B.ctx.offer = null; B.ctx.lastChips = []; if (B.persist) B.persist(); } catch (e) { /* best-effort */ }
         return found;
       }
-      if (found) { step('5 USC search found nothing (the server flagged it) -> honest note'); return TS.notFound(text, q, { searched: true, flagged: true, tools: o.tools }); }
+      // today's search limit on the server: no search ran and nothing was flagged, so the note says neither
+      if (found && found.capped) { step('5 USC search: today\'s limit is used up -> no search ran, nothing flagged, honest note'); return TS.notFound(text, q, { searched: false, flagged: false, tools: o.tools }); }
+      if (found) { step('5 USC search found nothing (' + (found.searched ? 'searched' : 'no search needed') + '; the server flagged it) -> honest note'); return TS.notFound(text, q, { searched: !!found.searched, flagged: true, tools: o.tools }); }
       step('5 USC search unavailable or failed');
     }
     var fl = false;
@@ -19272,8 +19580,14 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   function plural(nn, w) { return nn + ' ' + w + (nn === 1 ? '' : 's'); }
   function hasCard(out) { return (out || []).some(function (m) { return m && m.card; }); }
   async function runSafe(c, text, via) { try { return await runCmd(c, text, via); } catch (e) { console.error(e); return null; } }
-  // the public twin of a private command, only when the AI writes answers here (otherwise the private command runs as before)
+  // the public twin of a command, only when the AI writes answers here (otherwise the command runs as before)
   async function twinFor(c, text) { var t = TS.publicTwin(c, text); return t && (await aiState()).compose ? t : null; }
+  function twinWhy(c) { var tw = c && TWINS[c.cmd]; return tw ? tw.why : ''; }
+  // the text of every item (tool output and USC page answers), for the safety-number check
+  function itemText(items) {
+    return (items || []).map(function (it) { return (it.type === 'kb' ? [it.msg] : (it.out || [])).map(function (m) { return m && typeof m.md === 'string' ? m.md : ''; }).join('\n'); }).join('\n');
+  }
+  var SAFETY_NUM = /\b(?:911|988|741741)\b|\b740[-. ]?(?:4321|6000|9355)\b|\b442[-. ]?(?:1000|1200)\b/;
   // the FAQ bank's fallback answer that Trojan Assist's brain returned (js/ta/faq.js)
   function faqOf(out) {
     var b = (out || []).filter(function (m) { return m && m.role === 'bot'; });
@@ -19286,11 +19600,34 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var k = AI.kbInfo(b[0]);
     return k && /^(?:c|f|p)$/.test(k.kind) ? b[0] : null;
   }
+  // Is a USC page answer fit to go into a composed answer? '' = yes; otherwise why not:
+  //   'stale'      the page may be out of date (B.answer marked it): its warning would be lost in an AI rewrite
+  //   'closest'    a page extract that isn't a confident match ("Here's the closest match I found")
+  //   'off-topic'  none of the question's own words is in the page's titles or headings (curated answers: or in the
+  //                answer itself). Trojan Assist's own main answer (guess) is only held to this for page extracts.
+  var KB_GENERIC = { page: 1, pages: 1, home: 1, about: 1, info: 1, information: 1, faq: 1, faqs: 1, askusc: 1, service: 1, services: 1, office: 1, center: 1, program: 1, programs: 1, resource: 1, resources: 1, guide: 1, help: 1, student: 1, students: 1, new: 1, news: 1, general: 1 };
+  function kbWords(s) { var o = {}; toks(String(s || '').replace(/[*_`#>]/g, ' ')).forEach(function (w) { if (STOP[w] || KB_GENERIC[w]) return; o[w] = 1; o[stem(w)] = 1; }); return o; }
+  function kbProblem(m, q, isGuess) {
+    var k = AI && AI.kbInfo ? AI.kbInfo(m) : null;
+    if (!k) return 'not a USC page';
+    if (m.stale) return 'stale';
+    if (k.kind === 'p' && k.conf && k.conf !== 'high') return 'closest';
+    if (isGuess && k.kind !== 'p') return '';
+    var qw = Object.keys(kbWords(TS.norm(q))).filter(function (w) { return w.length > 2 && !STOPS[w]; });
+    if (!qw.length) return '';
+    var heads = (m.sources || []).map(function (s) { return (s && s.title) || ''; }).join(' ') + ' ' +
+      (String(m.md || '').match(/(?:^|\n)(?:#{1,4} [^\n]+|From \*\*[^*\n]+\*\*(?: — _[^_\n]+_)?|\*\*[^*\n]{3,90}\*\*)/g) || []).join(' ');
+    var have = kbWords(k.kind === 'p' ? heads : heads + ' ' + String(m.md || '').slice(0, 1500));
+    return qw.some(function (w) { return have[w]; }) ? '' : 'off-topic';
+  }
   async function kbItem(q) {
     if (!B.answer || !TA.Search || !TA.Search.ready) return null;
     var m = null;
     try { m = await B.answer(q, TA.NLU.parse(q), { quiet: true }); } catch (e) { m = null; }
-    return m && !TS.weak([m]) && AI && AI.kbInfo && AI.kbInfo(m) ? { type: 'kb', msg: m } : null;
+    if (!(m && !TS.weak([m]) && AI && AI.kbInfo && AI.kbInfo(m))) return null;
+    var why = kbProblem(m, q, false);
+    if (why) { if (TS.route) TS.route.steps.push('4 USC page answer left out (' + why + ')'); return null; }
+    return { type: 'kb', msg: m };
   }
   async function aiState() {
     try { if (AI && AI.sampleReady) await AI.sampleReady(); } catch (e) { /* stays off */ }
@@ -19301,10 +19638,21 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   function routeCtx(hint) {
     var c = { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC' +
         '\nunsupported {feature} — the student wants something DONE that no command and no ACTION can do; feature = what they wanted done, at most 8 words, no names, numbers or personal details',
-      actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) };
+      actions: TS.actionCatalog(), earlier: TS.earlierForAI(), now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) };
     if (hint) c.hint = hint;
     return c;
   }
+  // "earlier" context for the planner: only messages that were themselves sent to the AI (marked by TS.routeAIFirst),
+  // whose script line is a PUBLIC command or a USC question, and that aren't account, task or personal wording. A
+  // message Tommy handled on the phone ("register Alex Kim as a guest", "pay $45 toward my balance") never goes later.
+  TS.earlierForAI = function () {
+    return (TS.history || []).filter(function (e) {
+      if (!e || e.sent !== true) return false;
+      var name = String(e.line || '').split(' ')[0];
+      if (name !== 'ask' && !(TS.cmds[name] && TS.isPublicCmd(name))) return false;
+      return !TS.account(e.text) && !TS.personal(e.text);
+    }).map(function (e) { return { text: e.text, line: e.line, sent: true }; });
+  };
   // typing indicator text while the AI works (js/ta/ai-answer-ui.js keeps the dots up)
   var PHASE = { plan: 'Claude Haiku is reading your question…', compose: 'Writing from Tommy’s verified USC data…', search: 'Searching USC websites…' };
   TS.progress = function (k) { try { if (UI.typingNote) UI.typingNote(PHASE[k] || String(k || '')); } catch (e) { /* the dots stay */ } };
@@ -19323,13 +19671,17 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     return [m];
   };
   // the honest "couldn't find": never Tommy's unrelated closest-match guess once the AI judged it insufficient
+  // The "searched USC websites" tag appears only when the server really searched; otherwise the note is Tommy's own, and
+  // the small print under it says what reached the AI for this message (ai-api.js logs it)
   TS.notFound = function (text, q, o) {
     var md = o.searched ? "I couldn't find this on USC's pages or websites." : "I couldn't find this in the USC pages I carry.";
     if (o.flagged) md += " I've flagged it for the Trojan Hub team.";
     remember(text, { cmd: 'ask', args: { q: String(q || text).slice(0, 200) } });
     try { B.ctx.offer = null; B.ctx.lastChips = []; if (B.persist) B.persist(); } catch (e) { /* best-effort */ }
-    return [{ role: 'bot', kind: 'c', md: md, chips: [], ai: { kind: 'notfound', model: 'Claude Haiku', searched: !!o.searched, tools: o.tools || 0 },
-      script: { line: (o.searched ? 'search q="' : 'ask q="') + String(q || text).slice(0, 120).replace(/"/g, '\\"') + '"', via: o.searched ? 'search' : 'compose', accurate: true, badge: o.searched ? 'Claude Haiku · searched USC websites' : 'Claude Haiku' } }];
+    var line = (o.searched ? 'search q="' : 'ask q="') + String(q || text).slice(0, 120).replace(/"/g, '\\"') + '"';
+    if (!o.searched) return [{ role: 'bot', kind: 'c', md: md, chips: [], script: { line: line, via: 'script', accurate: true, badge: 'Tommy · on your phone' } }];
+    return [{ role: 'bot', kind: 'c', md: md, chips: [], ai: { kind: 'notfound', model: 'Claude Haiku', searched: true, tools: o.tools || 0 },
+      script: { line: line, via: 'search', accurate: true, badge: 'Claude Haiku · searched USC websites' } }];
   };
   // the planner says it isn't about USC and Tommy's own answer is a guess: a polite note instead
   TS.notUSC = function (text, out) {
@@ -19355,7 +19707,16 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   // nearest-first) and TH.ME is the campus map's fixed center. The routing uses the twin only when the AI writes answers
   // here and the question isn't about distance from the student ("near me", "closest", "walk"); it is internal (never
   // compiled from words, not in the translator's catalogue).
-  var TWINS = { 'place.find': 'place.find.public' };
+  // events.find (PUBLIC: EngageSC's public listings) ranks every upcoming event by TH.calcEventMatch, i.e. by the
+  // student's event thumbs, learned tag/club/hashtag weights and joined clubs, and shows only the top 6 with "% Match"
+  // lines. That order and that selection are private. Its PUBLIC twin runs the same search with a neutral scorer: date
+  // order, nothing dropped for a thumbs-down, no match lines. The plain command's output is registered as PRIVATE
+  // (PERSONALIZED below), so only the twin's output can ever reach the AI.
+  var TWINS = {
+    'place.find': { name: 'place.find.public', positional: true, why: 'no position', about: ' (Public version: no walking times or distances from the student.)', run: noPosition },
+    'events.find': { name: 'events.find.public', positional: false, why: 'date order, not ranked by the student', about: ' (Public version: in date order, never ranked by the student’s thumbs, clubs or interests.)', run: neutralEvents, tidy: noMatchLines }
+  };
+  var PERSONALIZED = { 'events.find': 1 };
   var NEAR_ME = /\b(?:near|nearest|nearby|closest|close (?:to|by)|around (?:here|me)|walk\w*|far|distance|from (?:here|me)|by me|minutes? away|blocks? away)\b/;
   function noPosition(fn) {
     var H = window.TH || {}, r0 = H.route, me0 = H.ME;
@@ -19363,14 +19724,26 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     H.ME = { x: 0, y: 0, label: 'Campus center', short: 'campus center' };
     try { return fn(); } finally { H.route = r0; H.ME = me0; }
   }
+  function neutralEvents(fn) {
+    var H = window.TH || {}, m0 = H.calcEventMatch;
+    H.calcEventMatch = function (e) { var tags = []; try { tags = H.getEventHashtags ? H.getEventHashtags(e) || [] : []; } catch (x) { tags = []; } return { score: 0, pct: 0, why: '', hashtags: tags, disliked: false }; };
+    try { return fn(); } finally { H.calcEventMatch = m0; }
+  }
+  function noMatchLines(out) {
+    (Array.isArray(out) ? out : []).forEach(function (m) { if (m && typeof m.md === 'string') m.md = m.md.replace(/^[^\n]*\*\*0% Match\*\*[^\n]*\n?/gm, ''); });
+    return out;
+  }
   function addTwins() {
     Object.keys(TWINS).forEach(function (k) {
       var sp = TS.cmds[k], tw = TWINS[k];
-      if (!sp || TS.cmds[tw] || typeof sp.run !== 'function') return;
-      TS.cmds[tw] = { name: tw, internal: true, public: true, twinOf: k, args: (sp.args || []).slice(), covers: sp.covers,
-        about: String(sp.about || '') + ' (Public version: no walking times or distances from the student.)',
+      if (!sp || TS.cmds[tw.name] || typeof sp.run !== 'function') return;
+      TS.cmds[tw.name] = { name: tw.name, internal: true, public: true, twinOf: k, args: (sp.args || []).slice(), covers: sp.covers,
+        about: String(sp.about || '') + tw.about,
         match: function () { return null; },
-        run: function (a) { return noPosition(function () { return TS.cmds[k].run(a); }); } };
+        run: function (a) {
+          var r = tw.run(function () { return TS.cmds[k].run(a); });
+          return tw.tidy ? (r && typeof r.then === 'function' ? r.then(tw.tidy) : tw.tidy(r)) : r;
+        } };
     });
   }
   // public commands that also report where the student is (a line publicText in ai-api.js removes before anything is
@@ -19379,9 +19752,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   TS.positional = function (c, text) { return !!(c && POSITIONAL[c.cmd] && NEAR_ME.test(TS.norm(text))); };
   TS.publicTwin = function (c, text) {
     var tw = c && TWINS[c.cmd];
-    if (!tw || NEAR_ME.test(TS.norm(text))) return null;
+    if (!tw || (tw.positional && NEAR_ME.test(TS.norm(text)))) return null;
     addTwins();
-    return TS.cmds[tw] && TS.isPublicCmd(tw) ? { cmd: tw, args: Object.assign({}, c.args || {}) } : null;
+    return TS.cmds[tw.name] && TS.isPublicCmd(tw.name) ? { cmd: tw.name, args: Object.assign({}, c.args || {}) } : null;
   };
   // internal commands (the twins) stay out of the translator's catalogue
   var catalog0 = TS.catalog;
@@ -19392,14 +19765,17 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   setTimeout(markBuiltins, 0); // once every command file has loaded (course.who is defined in course-info.js)
   // provenance: every command run is reported, so js/ta/ai-api.js knows which output a public command produced
   // events.find lists EngageSC's public event listings but names no source: cite EngageSC (shown here and given to the AI)
-  var DEFAULT_SRC = { 'events.find': [{ url: 'https://engage.usc.edu/events', title: 'Events – EngageSC (USC)' }] };
+  var EVENTS_SRC = [{ url: 'https://engage.usc.edu/events', title: 'Events – EngageSC (USC)' }];
+  var DEFAULT_SRC = { 'events.find': EVENTS_SRC, 'events.find.public': EVENTS_SRC };
   var run0 = TS.run;
   TS.run = function (c) {
     var res = run0.apply(this, arguments);
     try {
       var ds = c && DEFAULT_SRC[c.cmd];
       if (ds && Array.isArray(res)) res.forEach(function (m) { if (m && m.role === 'bot' && !m.card && !(m.sources || []).length) m.sources = ds.map(function (x) { return { url: x.url, title: x.title }; }); });
-      if (AI && AI.noteRun) AI.noteRun(c && c.cmd, res);
+      // a public command whose plain run is ranked by the student's own preferences: its output is private
+      if (c && PERSONALIZED[c.cmd]) { if (AI && AI.notePrivate) AI.notePrivate(res); }
+      else if (AI && AI.noteRun) AI.noteRun(c && c.cmd, res);
     } catch (e) { /* unregistered output stays private */ }
     return res;
   };
@@ -19444,8 +19820,29 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   };
   // personal topics (health, mental and sexual health, immigration, identity, SSN), personal data the student typed, and
   // help/need wording: never sent to the AI (Tommy's own on-device answer stands)
-  TS.PERSONAL = /\b(?:pregnan\w*|abortion|contracepti\w*|plan b|birth control|condoms?|stds?|stis?|hiv|herpes|sex|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|ocd|therap\w*|counsel\w*|psychiatr\w*|mental health|medicat\w*|prescription\w*|pills?|meds|eating disorder|anorexi\w*|bulimi\w*|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|weed|alcohol\w*|disabilit\w*|disabled|accommodations?|osas|sick|illness|ill|fever|flu|covid|symptoms?|injur\w*|pain|doctor|nurse|vaccin\w*|allerg\w*|my health|health (?:issue|problem|condition)s?|immigra\w*|undocumented|daca|visas?|deport\w*|green card|citizenship|asylum|refugee|f-?1|j-?1|h-?1b|opt(?![- ]?(?:out|in|into)\b)|cpt|i-?20|ds-?2019|sevis|lgbt\w*|gay|lesbian|bisexual|queer|transgender|trans|nonbinary|non-binary|gender identity|sexual orientation|coming out|pronouns?|preferred name|chosen name|name change|religio\w*|ssn|social security)\b/;
+  // THE list (the server reads it from the built app, scripts/build-netlify.cjs -> tommy-prompt.mjs PRIVATE_WORDS, and
+  // checks it again on top of its own; keep additions here). Health, mental and sexual health, recovery, disability,
+  // immigration, identity, religion and personal numbers.
+  TS.PERSONAL = /\b(?:pregnan\w*|abortion|contracepti\w*|plan b|morning after|birth control|condoms?|stds?|stis?|hiv|herpes|hpv|chlamydia|gonorrh?o?ea|syphilis|trichomoniasis|yeast infections?|utis?|urinary tract|iuds?|pap smears?|sti tests?|std tests?|sex|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|ocd|schizo\w*|therap\w*|counsel\w*|psychiatr\w*|mental health|medicat\w*|prescription\w*|pills?|meds|eating disorders?|anorexi\w*|bulimi\w*|binge(?:ing)? (?:eat\w*|drink\w*)|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|weed|marijuana|cannabis|alcohol\w*|sober\w*|sobriety|rehab\w*|relaps\w*|in recovery|recovery (?:programs?|meetings?|groups?|communit\w*|housing|centers?)|(?:aa|na) meetings?|alcoholics anonymous|narcotics anonymous|12.?step (?:programs?|meetings?|groups?)|disabilit\w*|disabled|accommodations?|osas|wheelchairs?|deaf|hard of hearing|hearing aids?|service animals?|emotional support animals?|stutter\w*|sick|illness|ill|fever|flu|covid|symptoms?|injur\w*|pain|sprain\w*|fractur\w*|broken (?:arm|leg|wrist|ankle|foot|hand|finger|toe|nose|rib|bone)s?|x.?rays?|blood pressure|blood tests?|concussions?|migraines?|asthma|diabet\w*|insulin|seizures?|infections?|rash\w*|cough\w*|sore throat|dentists?|doctor|nurse|vaccin\w*|allerg\w*|my health|health (?:issue|problem|condition)s?|immigra\w*|undocumented|daca|visas?|deport\w*|green card|citizenship|asylum|refugee|f-?1|j-?1|h-?1b|opt(?![- ]?(?:out|in|into)\b)|cpt|i-?20|ds-?2019|sevis|lgbt\w*|gay|lesbian|bisexual|queer|transgender|trans|nonbinary|non-binary|gender identity|sexual orientation|coming out|pronouns?|preferred name|chosen name|name change|religio\w*|pray\w*|worship\w*|mosques?|church\w*|synagogues?|temples?|muslims?|islam\w*|christian\w*|catholic\w*|jewish|jews?|judaism|hindu\w*|sikh\w*|buddhis\w*|atheis\w*|bible|quran|koran|torah|rabbi\w*|imam\w*|chaplain\w*|ramadan|shabbat|hillel|ssn|social security)\b/;
+  // PrEP / PEP (HIV prevention), but not "test prep", "meal prep", "pep rally"
+  TS.PREP = /\b(?:prep|pep)\b(?!\s*(?:rally|rallies|band|talk|squad|course|courses|class|classes|book|books|session|sessions|program|programs|school|time|work|tips?|materials?|guide|cook\w*))/;
+  TS.PREP_NOT = /\b(?:test|sat|act|gre|gmat|lsat|mcat|dat|exam|exams|final|finals|interview|interviews|meal|food|case|career|college|class|course|study)\s+(?:prep|pep)\b/;
+  // distress and asking for someone to talk to: Tommy's own support answer (USC's 24/7 line, 988, Crisis Text Line)
+  var I_FEEL = "(?:i'?m|i am|im|i feel|i felt|i'?ve been|ive been|i have been|feeling|i'?m just|im just|i'?m really|im really|i am really|i'?m so|im so|i am so)";
+  TS.DISTRESS = new RegExp('\\b(?:' + [
+    I_FEEL + ' (?:really |so |just |kind of |kinda )?struggl\\w*(?! to (?:find|get|figure|decide|choose|understand|register|park|book|pick|log|sign))',
+    I_FEEL + ' not (?:okay|ok|alright|fine|doing (?:well|good|okay|ok))', 'hopeless\\w*', 'worthless', 'lonely', 'loneliness', 'so alone', 'all alone',
+    "(?:feel|feeling|felt) (?:so |really |very |completely |kind of |kinda )?(?:alone|empty|numb|lost|hopeless|worthless|broken|trapped|helpless|useless|invisible|like a burden|like nobody cares)",
+    '(?:need|want|wanna|have|got|is there) (?:someone|somebody|anyone|anybody) to talk to',
+    '(?:need|want|wanna|can i|could i) (?:to )?talk to (?:someone|somebody|anyone|anybody)(?! (?:at|in|from|about|for|with|in charge|who works))',
+    '(?:feel|feeling|felt) like (?:dying|dieing|giving up|disappearing)', '(?:give|giving) up on (?:everything|life|myself)',
+    "(?:can'?t|cannot|can not) (?:cope|handle (?:it|this|anything) anymore|take (?:it|this) anymore|go on|do this anymore)",
+    I_FEEL + ' (?:breaking down|falling apart)', '(?:mentally|emotionally) (?:exhausted|drained)', I_FEEL + ' (?:totally |completely |so )?burn(?:ed|t)? out',
+    I_FEEL + ' (?:super |very |completely |totally )?overwhelmed', 'sad all the time', 'crying (?:a lot|every day|all the time|every night)',
+    '(?:nobody|no one) cares', '(?:hate|hating) (?:myself|my life)', 'grief', 'grieving', 'heartbroken'
+  ].join('|') + ')\\b');
   TS.PII = /[\w.+-]+@[\w-]+\.[a-z]{2,}|\b\d{3}-\d{2}-\d{4}\b|\(?\b\d{3}\)?[-. ]\d{3}[-. ]\d{4}\b|\b\d{4}-\d{4}-\d{2}\b|\b\d{9,10}\b|\b(?:\d[ -]?){13,19}\b/i;
+  function personalWords(t) { return TS.PERSONAL.test(t) || TS.DISTRESS.test(t) || (TS.PREP.test(t) && !TS.PREP_NOT.test(t)) || (typeof helpCue === 'function' && helpCue(t)); }
   TS.personal = function (text, n) {
     var raw = String(text == null ? '' : text);
     try {
@@ -19453,8 +19850,26 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       if (n.crisis || n.emergency || n.distress || n.disclose || n.threat || n.threatMe || n.violence || n.hazing || n.medical || n.overdose) return true;
       if (B.sensitive && B.sensitive(n)) return true;
     } catch (e) { return true; }
-    if (TS.PERSONAL.test(TS.norm(raw)) || TS.PII.test(raw)) return true; // normalized: "I'll" is "i will", never "ill"
-    return typeof helpCue === 'function' && helpCue(TS.norm(raw));
+    if (TS.PII.test(raw)) return true;
+    var t = TS.norm(TS.fold(raw));   // normalized: "I'll" is "i will", never "ill"
+    return personalWords(t) || personalWords(TS.squash(t));
+  };
+  // what the server checks again (scripts/build-netlify.cjs copies these into tommy-prompt.mjs)
+  TS.PRIVATE_WORDS = { personal: TS.PERSONAL.source, prep: TS.PREP.source, prepNot: TS.PREP_NOT.source, distress: TS.DISTRESS.source, help: PLAN_HELP.source, pii: TS.PII.source };
+  // distress wording Trojan Assist's own check didn't catch ("im really struggling lately", "i need someone to talk to"):
+  // USC's support lines on this device. School stress alone gets the academic help, without the crisis card.
+  TS.support = function (text, n) {
+    var t = TS.norm(TS.fold(text));
+    if (!(TS.DISTRESS.test(t) || TS.DISTRESS.test(TS.squash(t))) || !B.crisis || !B.distressHelp) return null;
+    try {
+      n = n || TA.NLU.parse(String(text));
+      var school = /\b(?:class|classes|course|courses|exam|exams|midterms?|finals?|homework|hw|problem sets?|psets?|labs?|professor|semester|quiz(?:zes)?|readings?|workload|grades?|gpa|essay|paper|project)\b/.test(t) || !!(n.courses && n.courses.length);
+      var heavy = /\b(?:hopeless|worthless|alone|lonely|empty|numb|dying|die|giving up|give up|go on|hate (?:myself|my life)|talk to|not okay|not ok|broken|trapped|helpless|burden|crying|grief|grieving)\b/.test(t);
+      var out = (school && !heavy ? [B.distressHelp(n)] : [B.crisis('distress'), B.distressHelp(n)]).filter(Boolean);
+      if (!out.length) return null;
+      tag(out, { cmd: 'ask', args: { q: String(text).slice(0, 200) } }, 'script');
+      return out;
+    } catch (e) { return null; }
   };
   // account and task wording ("check my grades", "how'd i do in math", "book me a room"): Part B. The AI may turn the
   // words into a script, but the result is never composed, sent or searched
@@ -19730,7 +20145,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     return '<section class="ta-verified" aria-label="Verified data from Tommy’s campus tools">' +
       '<div class="ta-verified-h">' + ICON.check + '<strong>Verified data</strong><span>Tommy’s campus tools, unchanged</span></div>' +
       items.map(function (v, i) {
-        return '<details class="ta-verified-item"' + (i === 0 ? ' open' : '') + '><summary><code>' + esc(v.line || 'campus tool') + '</code></summary><div class="ta-md">' + TA.md(v.md) + '</div></details>';
+        // a USC page Tommy's brain marked as possibly out of date keeps its warning here too
+        var stale = v.stale && UI.renderStale ? UI.renderStale({ stale: String(v.stale) }) : '';
+        return '<details class="ta-verified-item"' + (i === 0 ? ' open' : '') + '><summary><code>' + esc(v.line || 'campus tool') + '</code></summary><div class="ta-md">' + TA.md(v.md) + '</div>' + stale + '</details>';
       }).join('') + '</section>';
   }
   function insertAfter(ref, html, parent) {
@@ -21338,7 +21755,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   F('landmark.facts', 'Facts about a USC landmark (Tommy Trojan, Traveler statue, Bovard, Coliseum, Galen Center, Hecuba…). "tell me about tommy trojan", "what is the hecuba statue". place',
     ['place'], function (a) {
       var p = findPlaces(a.place).filter(function (x) { return x.cat === 'landmark'; })[0];
-      if (!p) return [bot('Landmarks I know: ' + (TH.PLACES || []).filter(function (x) { return x.cat === 'landmark'; }).map(function (x) { return x.name; }).join(', ') + '.')];
+      if (!p) { var lm = bot('Landmarks I know: ' + (TH.PLACES || []).filter(function (x) { return x.cat === 'landmark'; }).map(function (x) { return x.name; }).join(', ') + '.'); lm.kind = 'none'; return [lm]; } // unknown place: weak, so AI-first searches USC's sites
       return [bot('**' + p.name + '**\n' + (p.desc || '') + ((p.facts || []).length ? '\n\n' + list(p.facts) : ''), pSrc(p), [go('Show on the map', 'map', p.id)])];
     }, function (t, raw) { if (!/\b(tell me about|history of|what is|who is|facts about)\b/.test(t)) return null; var p = findPlaces(raw).filter(function (x) { return x.cat === 'landmark'; })[0]; return p && p.id !== 'mccarthyquad' ? { place: p.id } : null; });
 

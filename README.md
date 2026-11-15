@@ -21,10 +21,12 @@ Trojan Hub is a student-made USC campus app. This folder holds the built app plu
    | `TOMMY_ADMIN_KEY` | a long random password you make up (for example 32 letters and digits) | Yes, to see the "scripts needed" list |
    | `GITHUB_TOKEN` | a fine-grained GitHub token with **Issues: read and write** on one repo | Optional |
    | `GITHUB_REPO` | that repo as `owner/name` | Optional, with `GITHUB_TOKEN` |
+   | `TOMMY_GITHUB_ISSUES` | `on` | Optional: GitHub issues are off unless this is set (see the list below) |
+   | `TOMMY_FLAG_SECRET` | another long random string | Optional: signs flags and hashes visitors; without it a key derived from `ANTHROPIC_API_KEY` is used |
 
    Everything else has a safe default (see **Costs and limits** for the optional settings).
 4. Go to **Deploys → Trigger deploy → Deploy site** so the function picks up the variables.
-5. Check it: open `https://<your-site>.netlify.app/api/tommy`. It should show `{"ok":true,...,"features":{"translate":true,"judge":true,"search":true,"answer":true,"propose":true,"flags":true}}`.
+5. Check it: open `https://<your-site>.netlify.app/api/tommy`. It should show `{"ok":true,...,"features":{"translate":true,"judge":false,"search":true,"answer":true,"propose":true,"flags":true}}` (the old answer checker, `judge`, is off unless `TOMMY_JUDGE=on`; the AI-first routing doesn't use it).
 6. In the Claude Console, set a monthly **spend limit** for the key. It is the only hard cap on cost.
 
 Keys and tokens only ever go in step 3. Don't put them in the HTML, in this repo, or in a chat message.
@@ -44,14 +46,17 @@ Tommy has two kinds of work, and Claude does different things in each.
 
 **Acting for the student or reading their data** (grades, bookings, guest passes, orders, emails, dues…). Unchanged: Claude only turns the student's words into a Tommy command. The command runs on the phone and Claude never sees the result. Replies inside an action (amounts, confirmations) never go to Claude. If no command or action can do it, Tommy says *"This isn't a feature yet. We've flagged it for the Trojan Hub team so it can be added."* and sends the team a short description of the feature only, never the student's message. Actions never trigger a web search.
 
-**Safety first.** Crisis, emergency and safety messages are handled on the phone with the real numbers (DPS 213-740-4321, 911, 988, 213-740-9355, text TROJAN to 741741) and are never sent anywhere. Personal topics (health, mental and sexual health, immigration, identity, social security numbers) and help/need wording never reach Claude either; the function also refuses them if they ever arrive, and never stores them.
+**Safety first.** Crisis, emergency and safety messages are handled on the phone with the real numbers (DPS 213-740-4321, 911, 988, 213-740-9355, text TROJAN to 741741) and are never sent anywhere. Every message is folded before the safety check sees it, so a soft hyphen, a zero-width space, full-width or look-alike (Cyrillic, Greek) letters, or s p a c e d - o u t letters can't hide crisis words. Personal topics (health, mental and sexual health, recovery, disability, immigration, identity, religion, social security numbers), help/need wording and distress wording ("I'm really struggling", "I need someone to talk to") never reach Claude either: distress gets USC's support lines on the phone. The function refuses all of these if they ever arrive (its word lists include the app's own, read from the built app), and never stores them. Safety numbers are never rewritten by the AI: an answer with DPS, 911, 988 or the 24/7 counseling line shows Tommy's own data exactly.
 
 ### Privacy and integrity guards
 
 - **Only public output can reach Claude.** A command counts as public only if the app marks it so (`TA.Script.isPublic`, plus the older public commands such as `hours.check`, `course.who`, `building.find`, `events.find`, `gates.status`, `breaks.next` and `faq`). Everything else is private by default: grades, homework, exams, plans, wallet and account commands, anything measured from where the student is, and every action. The phone enforces this, and the function refuses an answer request that names any private command (422). One private command has a public twin: the place finder (`place.find`, "a quiet library open late", "a beautiful old library with greenery") adds walking times from where the student is, so Tommy runs `place.find.public` instead, the same finder with no position at all (no walking times, nothing "nearest"), whenever the question isn't about distance from the student.
 - **The data can't give Claude orders.** Tool text and USC page text go to Haiku inside `<data>` tags that can't be broken out of, with a rule that the data may contain instructions and that they must be ignored. Web addresses and outside e-mail addresses in the data are removed before Claude sees it, unless they are the answer's own sources.
 - **The reply is checked before it leaves the server.** The function accepts only `{status, answer_md, cites}`, at most 120 words, with HTML removed. A sentence that links anywhere other than the given sources is dropped. A reply that repeats an instruction from the data or asks the student to send a password or card number is thrown away. The function never echoes the data back.
-- **Logs stay clean.** Question text appears in the function log only on `SCRIPT NEEDED` lines (never personal ones). Answers, data and errors are logged without the student's words.
+- **Club and event text is untrusted.** Club descriptions and event listings are written by club officers and organizers, so their phone numbers, e-mails, handles, payment apps (Venmo, Zelle…) and outside or spelled-out web addresses ("…dot com", full-width letters) are masked before Claude sees them, on the phone and again on the server. Hours and closures in an AI answer must come from Tommy's own data, never from an event title. A reply that asks for a password, an ID number or money next to a phone number, a handle or an outside address is thrown away; so is any sentence pointing at an outside address, e-mail, handle or payment app. USC search answers get the same checks, and an unsafe one is never shown or cached.
+- **The fact check binds values to their things.** Besides "every time, date, number and name must be in the data", a course code, phone number or price must share a line of the data with the names the answer pairs it with ("CE 106 is taught by Roxana Javid" fails when Roxana Javid teaches CE 107), and a weekday next to a date must be that date's weekday.
+- **Only public data, never personalized.** `events.find` ranks events by the student's thumbs, interests and clubs, so the AI only ever gets its public twin `events.find.public` (date order). Messages Tommy handled on the phone (a guest's name, a payment, a grade question) are never sent later as "earlier" context, and the student's own NetID, e-mail, USC ID, phone and name are masked in everything sent.
+- **Logs stay clean.** The `SCRIPT NEEDED` log line carries the question only when there is no flag store to keep it (local runs). Answers, data and errors are logged without the student's words.
 
 ## Try it
 
@@ -68,36 +73,41 @@ Under each answer, a small tag says where it came from: **Tommy · on your phone
 
 ## The "scripts needed" list
 
-Open `https://<your-site>.netlify.app/api/tommy-requests?key=<TOMMY_ADMIN_KEY>`. It's a table of what Tommy couldn't do well, most asked first:
+Open `https://<your-site>.netlify.app/api/tommy-requests`. The browser asks for a user name and password: type anything as the user name and `TOMMY_ADMIN_KEY` as the password (scripts send `Authorization: Bearer <TOMMY_ADMIN_KEY>`). The key is never accepted in the address, so it stays out of browser history and logs. It's a table of what Tommy couldn't do well, most **visitors** first (one script asking the same thing a hundred times counts once):
 
 - **no script**: no script could answer the question, so Claude searched USC's websites. These rows also show a **proposed script**: Claude's draft of the command the team could write (name and arguments, example questions, the public USC source it would read, and why). It's a draft: check it before building. "exists" means a script with that name exists but didn't match the question.
 - **inaccurate**: a script answered, but the answer checker found it missed part of the question.
 - **fact check**: an AI answer was thrown away on the phone because it stated something the tool's data didn't.
 - **missing feature**: a student asked Tommy to do something no action can do yet (the AI's short description, never the student's message).
 
-The page also shows today's AI use against the daily limits. Add `&format=json` for JSON. Without the right key it answers 401, and after 10 wrong keys from one visitor it stops answering for 10 minutes.
+The page also shows today's AI use against the daily limits. Add `?format=json` for JSON. Without the right key it answers 401, and after 10 wrong keys from one visitor it stops answering for 10 minutes.
+
+**"Tommy is learning".** The app's public list of tools Tommy is learning (`/api/tommy-learning`) shows an AI proposal only after the team approves it here: each row with a proposal has a **Show on "Tommy is learning"** button (or `POST /api/tommy-requests {"approve": "<key>", "on": true}` with the Authorization header). The public list shows the proposed tool's name and why, the number of students who asked, never a question or an example question.
+
+Only questions that really went through Tommy get on the list: a flag the browser sends must carry the signature the server gave that question's answer or translation, and at most 300 new questions are added a day (`TOMMY_CAP_FLAGS`). The list keeps the search focus (Claude's rewrite of the question when it rewrote it), not the student's own message.
 
 Where the alerts go:
 
 - **Netlify Blobs**, in the site-wide store `tommy-script-requests` (one entry per question, keyed by a hash of the question, with its proposal). Counts are approximate: one visitor asking the same thing again within 3 minutes counts once.
 - **The function log**, as one `SCRIPT NEEDED {...}` line per alert: **Logs → Functions → tommy** in Netlify. This works even if Blobs isn't available.
-- **A GitHub issue** the first time a question is seen, if `GITHUB_TOKEN` and `GITHUB_REPO` are set, including the proposed script. Issues get the label `tommy-script-needed`. Keep that repo private: issues contain the questions students asked (never personal ones).
+- **A GitHub issue**, only if `TOMMY_GITHUB_ISSUES=on` (with `GITHUB_TOKEN` and `GITHUB_REPO`), once a question has been asked by at least 3 different visitors on at least 2 days, at most 5 issues a day (`TOMMY_CAP_ISSUES`). The issue carries the AI's proposed script (name, data source, why) and the list key, never the question or a student's words. Issues get the label `tommy-script-needed`.
 
 Once a script answers a question well, Tommy stops sending it to the USC search, so it stops showing up.
 
 ## What the function accepts
 
-Developers only. All requests are JSON from this site's own pages; other websites get 403. Bodies over 20 KB get 413.
+Developers only. All requests are JSON from this site's own pages: a POST from another website, or without an `Origin` header at all (a script), gets 403. Bodies over 20 KB get 413. Translations and answers carry `ft`, a signature for that question (and `ft_feature` for an unsupported feature) that a flag must send back.
 
 | Request | Answer |
 |---|---|
 | `GET /api/tommy` | `{ok, model, features: {translate, judge, search, answer, propose, flags}}` |
 | `POST {text, now, earlier[, hint]}` or `{mode: "translate", …}` | `{cmd, args}`; `{cmd: "none", args: {}}` when it isn't about USC; `{cmd: "unsupported", args: {feature}}` when no action exists; `{cmd: null}` when nothing usable came back. `hint` is Tommy's own guess (a public command line or `ask q="…"`), sent when its answer doesn't cover every word of the question; any other hint is ignored |
 | `POST {mode: "answer", question, context, sources[, now, original, tools]}` | `{status: "ok", answer_md, cites}` (cites: 0-based positions in `sources`) or `{status: "insufficient", answer_md: "", cites: []}`; `"refused": true` if Claude declines, `"capped": true` when today's limit is reached. `context` is text or a list of texts (cut to 10,000 characters at a line end; a "Campus tool: <name>" label naming a private command is refused like `tools`); `sources` is `[{url, title}]` (10 at most); `tools` lists the commands the text came from |
-| `POST {mode: "search", question[, original, now, reason, line, missing]}` | `{found: true, answer, sources: [{url, title}], searches[, cached: true]}` or `{found: false, answer: null, sources: [], searches, reason[, capped: true]}`. Also records the alert (`reason` defaults to `"no-script"`; `"inaccurate"` when the checker sent it here) |
-| `POST {mode: "judge", question, answer, line, now[, uncovered]}` | `{verdict: "good" \| "better" \| "search", missing, next, q}`; `{verdict: null, refused \| capped: true}` |
-| `POST {mode: "flag", question, line, missing, reason: "inaccurate" \| "no-script" \| "missing-feature" \| "factcheck"}` | `{ok: true, stored}` |
-| `GET /api/tommy-requests?key=…[&format=json]` | the list above |
+| `POST {mode: "search", question[, original, now, reason, line, missing]}` | `{found: true, answer, sources: [{url, title}], searches}` or `{found: false, answer: null, sources: [], searches, reason[, capped: true]}` (`reason: "unsafe"` when the answer asked for a password or money). Whether it came from the cache is never said. The prompt's date is always the server's campus date. Also records the alert (`reason` defaults to `"no-script"`; `"inaccurate"` when the checker sent it here), never when today's search limit stopped it |
+| `POST {mode: "judge", question, answer, line, now[, uncovered]}` | only with `TOMMY_JUDGE=on` (501 otherwise): `{verdict: "good" \| "better" \| "search", missing, next, q}`; `{verdict: null, refused \| capped: true}` |
+| `POST {mode: "flag", question, line, missing, reason: "inaccurate" \| "no-script" \| "missing-feature" \| "factcheck", ft}` | `{ok: true, stored}`; `{ok: true, stored: false, skipped: "unverified"}` without a valid `ft` for that question |
+| `GET /api/tommy-requests[?format=json]` (Authorization header) | the list above |
+| `POST /api/tommy-requests {approve: key, on}` (Authorization header) | `{ok, key, approved}`: shows the item's proposal on "Tommy is learning" |
 
 Errors: 400 bad request, 403 other website, 413 too big, 422 personal or crisis wording, or a private command's output (never sent to Claude), 429 too many requests from one visitor, 501 that feature is turned off, 502 Claude's reply couldn't be used (Tommy shows its verified answer), 504 Claude was slow, 503 no API key.
 
@@ -112,12 +122,15 @@ Errors: 400 bad request, 403 other website, 413 too big, 422 personal or crisis 
   | USC searches | 100 a day | `TOMMY_CAP_SEARCH` |
   | Answer checks | 300 a day | `TOMMY_CAP_JUDGE` |
   | Script proposals | 100 a day | `TOMMY_CAP_PROPOSE` |
-  | Translations | no daily limit | `TOMMY_CAP_TRANSLATE` |
+  | Translations | 3,000 a day | `TOMMY_CAP_TRANSLATE` |
+  | New questions on the team's list | 300 a day | `TOMMY_CAP_FLAGS` |
+  | GitHub issues (when on) | 5 a day | `TOMMY_CAP_ISSUES` |
+  | One visitor's AI calls (all kinds, every server instance) | 300 a day | `TOMMY_CAP_VISITOR` |
 
-  Set a number to change a limit, `0` to stop that kind for the day, or `off` for no limit. Past a limit Tommy keeps working: it shows its own verified answers, and the reply says `"capped": true`. With all defaults the worst day costs roughly $4 plus translations.
-- **Search cache.** USC search answers are kept for 7 days in the Blobs store `tommy-search-cache`, by the question with case, punctuation and spacing ignored (and the student's own wording when the search was rephrased). "USC's pages don't say" is kept for 1 day. Questions about now, today, tonight, tomorrow or this week are never cached. A cached answer costs nothing and doesn't count against the search limit.
-- **Per visitor** (best effort, per server instance): 120 AI calls per 10 minutes (translations, answers, checks and searches together), of which at most 30 searches, and 60 alerts.
-- **Turning parts off.** `TOMMY_ANSWER=off` (no AI-written answers: Tommy shows its own), `TOMMY_SEARCH=off`, `TOMMY_JUDGE=off`, `TOMMY_PROPOSE=off`. Deleting `ANTHROPIC_API_KEY` turns off all AI; Tommy keeps working on its scripts.
+  Set a number to change a limit, `0` to stop that kind for the day, or `off` for no limit. Past a limit Tommy keeps working: it shows its own verified answers (never a "searched USC websites" note when no search ran, and nothing is flagged), and the reply says `"capped": true`. With all defaults the worst day costs roughly $15 (translations included: at most about half a cent each, 1,000 output tokens at most).
+- **Search cache.** USC search answers are kept for 7 days in the Blobs store `tommy-search-cache`, by the question with case, punctuation and spacing ignored (and the student's own wording when the search was rephrased). "USC's pages don't say" is kept for 1 day. Questions about now, today, tonight, tomorrow or this week are never cached, and neither are answers with a phone number or an e-mail address, or unsafe ones. A cached answer costs nothing and doesn't count against the search limit.
+- **Per visitor**: the daily `TOMMY_CAP_VISITOR` above (site-wide, a salted hash of the address, never the address), plus, per server instance, 120 AI calls per 10 minutes (translations, answers, checks and searches together), of which at most 30 searches, and 60 alerts.
+- **Turning parts off.** `TOMMY_ANSWER=off` (no AI-written answers: Tommy shows its own), `TOMMY_SEARCH=off`, `TOMMY_PROPOSE=off`. The old answer checker is off unless `TOMMY_JUDGE=on`. Deleting `ANTHROPIC_API_KEY` turns off all AI; Tommy keeps working on its scripts. Also set Netlify rate-limit rules for `/api/tommy*` if your plan has them, and keep the Console's monthly spend limit.
 - **Changing the model.** Set `TOMMY_MODEL` (for example `claude-sonnet-5-5`) and redeploy. AI answers and proposals use structured outputs (a JSON schema); if the API ever refuses that, the function falls back to plain JSON by itself. `TOMMY_STRUCTURED=off` skips it from the start.
 - **Netlify AI Gateway.** If you use Netlify's AI Gateway instead of your own key, translation, answers and the answer check should work, but Netlify doesn't document web search through the gateway. If searches come back as "USC search is unavailable", use your own `ANTHROPIC_API_KEY`.
 - **Stores.** All three Blobs stores (`tommy-script-requests`, `tommy-usage`, `tommy-search-cache`) are site-wide: deploy previews share them with the live site. If Blobs isn't available, alerts go to the function log only, and the limits and the cache count on each server instance.

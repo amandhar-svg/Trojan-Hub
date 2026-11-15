@@ -12,13 +12,16 @@
 //        checks them again and removes emails and phone numbers). Every time, date, weekday, price and number in
 //        the AI's text must appear in those facts, or it gets one retry and then the template.
 //   GET  /api/tommy-draft     -> {"ok": bool, "model": "..."}
-//   GET  /api/tommy-learning  -> {"items": [{name, why, examples, count, last}]}
+//   GET  /api/tommy-learning  -> {"items": [{name, why, count, last}]}
 //        The tools Claude proposed when Ask Tommy couldn't answer a public question (read from the "script needed"
-//        list that tommy.mjs keeps in Netlify Blobs). Only the AI's proposal is shown: never the student's own
-//        message, the line Tommy showed, or anything account-related.
+//        list that tommy.mjs keeps in Netlify Blobs), ONLY the ones the team approved in that list (approved: true;
+//        POST /api/tommy-requests {approve}). Only the proposal's name and why are shown: never a student's question,
+//        an example question, the line Tommy showed, or anything account-related. count = distinct visitors.
 //
 // Cost: Haiku with low effort, ≤ ~250 output words per draft, 12 drafts per visitor per 10 minutes, 300 a day.
 import Anthropic from "@anthropic-ai/sdk";
+// the same privacy check as Ask Tommy's own (the browser's lists + the server's, Unicode-folded)
+import { privateText } from "./tommy.mjs";
 
 export const MODEL_DEFAULT = "claude-haiku-5-5";
 export const STORE_NAME = "tommy-script-requests";   // written by tommy.mjs (flags + AI tool proposals)
@@ -175,7 +178,7 @@ const PERSONAL = /\b(pregnan\w*|abortion|contracepti\w*|plan b|birth control|std
 const CRUDE = /\b(fuck\w*|shit\w*|bitch\w*|cunt\w*|nigg\w*|fag\w*|retard\w*|porn\w*|nude\w*|kill\w*|bomb\w*|weapon\w*|gun\w*)\b/i;
 const IDS = /\b\d{3}-\d{2}-\d{4}\b|\b\d{7,}\b|\(?\b\d{3}\)?[ .-]\d{3}[ .-]\d{4}\b|[\w.+-]+@[\w-]+(\.[\w-]+)+/;
 const norm = (q) => String(q ?? "").normalize("NFKC").toLowerCase().replace(/[‘’ʼ`´]/g, "'").replace(/[^\p{L}\p{N}' ]+/gu, " ").replace(/\s+/g, " ").trim();
-const unsafe = (s) => PERSONAL.test(s) || CRUDE.test(s) || IDS.test(s);
+const unsafe = (s) => PERSONAL.test(s) || CRUDE.test(s) || IDS.test(s) || privateText(s);
 
 function proposalOf(rec) {
   if (!rec || typeof rec !== "object") return null;
@@ -184,6 +187,7 @@ function proposalOf(rec) {
 }
 
 export function learningItem(rec) {
+  if (!rec || typeof rec !== "object" || rec.approved !== true) return null;   // only what the team approved in its list
   const pr = proposalOf(rec);
   if (!pr || pr.none || pr.exists === true) return null;   // tommy.mjs marks a proposal that names an existing script
   const reasons = rec.reasons && typeof rec.reasons === "object" ? rec.reasons : {};
@@ -191,12 +195,10 @@ export function learningItem(rec) {
   const name = String(pr.name ?? "").replace(/[^\w.-]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 60);
   const why = one(pr.why ?? pr.reason ?? pr.description ?? "", 240);
   if (!name || unsafe(name) || unsafe(why)) return null;
-  const q = norm(rec.question);
-  const examples = (Array.isArray(pr.examples) ? pr.examples : []).map((e) => one(typeof e === "string" ? e : e && (e.text || e.q), 120))
-    .filter((e) => e && !unsafe(e) && norm(e) !== q && !(q && q.length > 12 && (norm(e).includes(q) || q.includes(norm(e)))))
-    .slice(0, 3);
+  // no example questions: they paraphrase what students asked
   const last = typeof rec.last === "string" && !Number.isNaN(Date.parse(rec.last)) ? new Date(rec.last).toISOString() : "";
-  return { name, why, examples, count: Math.max(1, Math.min(1e6, parseInt(rec.count, 10) || 1)), last };
+  const visitors = Array.isArray(rec.visitors) ? rec.visitors.length : 0;
+  return { name, why, examples: [], count: Math.max(1, Math.min(1e6, visitors || 1)), last };
 }
 
 export function memoryStore() {
@@ -255,7 +257,7 @@ export function createHandler(deps = {}) {
   }
   function sameOrigin(req, url) {
     const origin = req.headers.get("origin");
-    if (!origin) return true;
+    if (!origin) return false;   // browsers send Origin on every POST: a request without one is a script
     let host = "";
     try { host = new URL(origin).host; } catch { host = ""; }
     return Boolean(host) && [req.headers.get("x-forwarded-host"), req.headers.get("host"), url.host].includes(host);
@@ -286,7 +288,7 @@ export function createHandler(deps = {}) {
     let items = [];
     if (st) {
       const { blobs: list = [] } = (await st.list()) || {};
-      const keys = list.map((b) => b && b.key).filter((k) => typeof k === "string" && /^[\w.-]{1,80}$/.test(k)).slice(0, 400);
+      const keys = list.map((b) => b && b.key).filter((k) => typeof k === "string" && /^[\w.-]{1,80}$/.test(k)).slice(0, 3000);
       for (let i = 0; i < keys.length; i += 25) {
         const recs = await Promise.all(keys.slice(i, i + 25).map((k) => st.get(k, { type: "json" }).catch(() => null)));
         for (const r of recs) { const it = learningItem(r); if (it) items.push(it); }
@@ -297,11 +299,10 @@ export function createHandler(deps = {}) {
       const o = byName.get(it.name);
       if (!o) { byName.set(it.name, { ...it }); continue; }
       o.count += it.count; if (it.last > o.last) o.last = it.last;
-      for (const e of it.examples) if (o.examples.length < 3 && !o.examples.includes(e)) o.examples.push(e);
       if (!o.why && it.why) o.why = it.why;
     }
     items = [...byName.values()].sort((a, b) => b.count - a.count || (b.last > a.last ? 1 : -1)).slice(0, 20);
-    const body = { items, note: "Tools Claude proposed when Ask Tommy couldn't answer a public USC question. Examples are AI-written." };
+    const body = { items, note: "Tools Claude proposed when Ask Tommy couldn't answer a public USC question, shown after the Trojan Hub team approved them. Count = students who asked." };
     learnCache = { at: clock(), body };
     return body;
   }
