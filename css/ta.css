@@ -1,0 +1,248 @@
+/* css/ta.css */
+/* css/ta.css — Trojan Assist ("Ask Tommy") styles for Trojan Hub. Owner: ta.
+ * Built from research/tacode/ref/ta.css (= /home/user/ta-src/head.html widget rules 129-311). TA's host-page rules
+ * (:root tokens, body, .btn, .pill, .tag, .hero, .brand, .mark, .dot, .muted ...) are NOT copied: they collide
+ * with css/app.css. TA's token names are mapped onto Trojan Hub's tokens on .ta-root, so light/dark mode follows
+ * app.css automatically. Fonts (Archivo, Instrument Sans, IBM Plex Mono) come from index.html's Google Fonts link. */
+/* ---- token bridge (TA name -> Trojan Hub token) ---- */
+.ta-root {
+  --cardinal-600: color-mix(in srgb, var(--cardinal) 80%, #000);
+  --cardinal-50: color-mix(in srgb, var(--cardinal) 9%, var(--surface));
+  --cardinal-text: var(--cardinal-ink);
+  --gold-50: color-mix(in srgb, var(--gold) 16%, var(--surface));
+  --ink-2: color-mix(in srgb, var(--ink) 60%, var(--muted));
+  --line-2: color-mix(in srgb, var(--line) 55%, var(--surface));
+  --bubble: var(--surface-2);
+  --good: var(--ok); --good-50: var(--ok-bg);
+  --warn-50: var(--warn-bg); --bad-50: var(--bad-bg);
+  --font: var(--f-body); --mono: var(--f-mono);
+  /* --cardinal, --gold, --ink, --muted, --line, --bg, --surface, --surface-2, --warn, --bad, --shadow: same names in app.css */
+}
+.ta-root a { color: var(--cardinal-text); }
+.ta-root .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.ta-root [hidden] { display: none !important; }
+
+.ta-root { position: fixed; right: 20px; bottom: 20px; z-index: 2147483000; font: 15px/1.5 var(--font); color: var(--ink); }
+.ta-launcher { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 20px 0 16px; border-radius: 99px; border: 0; background: var(--cardinal); color: #fff; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; position: relative; }
+.ta-launcher:hover { transform: translateY(-2px); }
+.ta-launcher svg { width: 24px; height: 24px; }
+.ta-launcher::after { content: ""; position: absolute; inset: auto 22px 6px 22px; height: 3px; border-radius: 3px; background: var(--gold); opacity: .9; }
+.ta-root[data-state="open"] .ta-launcher { transform: scale(.92); opacity: 0; pointer-events: none; }
+.ta-badge { position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--gold); color: #3a2a00; font-size: 12px; font-weight: 800; display: grid; place-items: center; border: 2px solid var(--surface); }
+.ta-panel { position: fixed; right: 20px; bottom: 20px; width: 410px; height: min(720px, calc(100vh - 40px)); height: min(720px, calc(100dvh - 40px)); background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; transform-origin: bottom right; animation: ta-pop .18s ease-out; }
+.ta-panel[hidden] { display: none; }
+@keyframes ta-pop { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+.ta-head { display: flex; align-items: center; gap: 10px; padding: 12px 10px 12px 14px; background: var(--cardinal); color: #fff; position: relative; }
+.ta-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--gold); }
+.ta-avatar { width: 36px; height: 36px; border-radius: 11px; background: #fff; color: var(--cardinal); display: grid; place-items: center; font-weight: 850; font-size: 14px; flex: none; box-shadow: inset 0 -3px 0 var(--gold); }
+.ta-root.ai .ta-avatar { background: var(--gold); color: #3a2a00; box-shadow: none; }
+.ta-title { flex: 1; min-width: 0; line-height: 1.2; }
+.ta-title strong { display: block; font-size: 15.5px; }
+.ta-sub { font-size: 12px; opacity: .88; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.ta-acct { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px; border-radius: 99px; border: 1px solid rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .12); color: #fff; font-size: 13px; font-weight: 650; cursor: pointer; max-width: 120px; white-space: nowrap; overflow: hidden; }
+.ta-acct svg { width: 15px; height: 15px; flex: none; }
+.ta-acct:hover { background: rgba(255, 255, 255, .22); }
+.ta-acct.on { background: #fff; color: var(--cardinal); border-color: #fff; }
+.ta-dot { width: 8px; height: 8px; border-radius: 50%; background: #22b35e; box-shadow: 0 0 0 2px rgba(34, 179, 94, .25); flex: none; }
+.ta-icon { width: 34px; height: 34px; border-radius: 10px; border: 0; background: transparent; color: inherit; display: grid; place-items: center; cursor: pointer; flex: none; }
+.ta-icon svg { width: 20px; height: 20px; }
+.ta-head .ta-icon:hover { background: rgba(255, 255, 255, .16); }
+.ta-menu { position: absolute; top: 58px; right: 10px; z-index: 5; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 6px; min-width: 230px; display: grid; }
+.ta-menu[hidden] { display: none; }
+.ta-menu button { text-align: left; border: 0; background: transparent; padding: 10px 12px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.ta-menu button:hover, .ta-menu button:focus-visible { background: var(--surface-2); }
+.ta-status { background: var(--warn-50); color: var(--warn); font-size: 13px; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+.ta-status[hidden] { display: none; }
+.ta-log { flex: 1; overflow-y: auto; padding: 16px 14px 8px; display: flex; flex-direction: column; gap: 12px; overscroll-behavior: contain; scroll-behavior: smooth; background: var(--surface); }
+.ta-msg { display: flex; flex-direction: column; gap: 8px; max-width: 100%; animation: ta-in .2s ease-out; }
+@keyframes ta-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.ta-msg.user { align-items: flex-end; }
+.ta-msg.user .ta-bubble { background: var(--cardinal); color: #fff; border-radius: 16px 16px 4px 16px; padding: 9px 13px; max-width: 86%; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: anywhere; }
+.ta-msg.bot .ta-bubble { background: var(--bubble); border-radius: 4px 16px 16px 16px; padding: 10px 13px; max-width: 94%; align-self: flex-start; overflow-wrap: anywhere; }
+.ta-msg.bot.priority .ta-bubble { background: var(--bad-50); border: 1px solid color-mix(in srgb, var(--bad) 30%, transparent); }
+.ta-msg.error .ta-bubble { border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent); }
+.ta-md p { margin: 0 0 8px; } .ta-md p:last-child { margin-bottom: 0; }
+.ta-md ul, .ta-md ol { margin: 4px 0 8px; padding-left: 20px; } .ta-md li { margin: 2px 0; }
+.ta-md .ta-h { font-weight: 750; margin-top: 6px; }
+.ta-md code, .ta-conf code, .ta-activity code { font-family: var(--mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; }
+.ta-md blockquote { margin: 6px 0; padding-left: 10px; border-left: 3px solid var(--line); color: var(--ink-2); }
+.ta-md a { word-break: break-word; }
+.ta-table-wrap { overflow-x: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
+.ta-md table, .ta-card table { border-collapse: collapse; font-size: 13px; width: 100%; }
+.ta-md th, .ta-md td, .ta-card th, .ta-card td { border-bottom: 1px solid var(--line); padding: 5px 6px; text-align: left; vertical-align: top; }
+.ta-sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; align-items: center; }
+.ta-src-label { font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-right: 2px; }
+.ta-src { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; font-size: 12px; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 3px 9px 3px 7px; }
+.ta-src svg { width: 12px; height: 12px; color: var(--cardinal-text); flex: none; }
+.ta-src-host { font-weight: 700; white-space: nowrap; }
+.ta-src-title { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+.ta-src:hover { border-color: var(--cardinal); }
+.ta-stale { display: flex; gap: 7px; align-items: flex-start; margin-top: 8px; font-size: 12.5px; color: var(--warn); background: var(--warn-50); border-radius: 10px; padding: 6px 9px; }
+.ta-stale svg { width: 15px; height: 15px; flex: none; margin-top: 2px; }
+.ta-tools { display: flex; gap: 2px; margin-top: 6px; justify-content: flex-end; opacity: .55; transition: opacity .15s; }
+.ta-msg:hover .ta-tools, .ta-tools:focus-within { opacity: 1; }
+.ta-tool { width: 28px; height: 26px; border: 0; background: transparent; border-radius: 7px; cursor: pointer; display: grid; place-items: center; color: var(--muted); }
+.ta-tool svg { width: 15px; height: 15px; }
+.ta-tool:hover, .ta-tool.on { background: var(--surface); color: var(--cardinal-text); }
+.ta-chips { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 2px; }
+.ta-chip { border: 1px solid color-mix(in srgb, var(--cardinal) 40%, var(--line)); background: var(--surface); color: var(--cardinal-text); border-radius: 99px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; line-height: 1.3; }
+.ta-chip:hover { background: var(--cardinal-50); }
+.ta-chip.action { border-color: color-mix(in srgb, var(--gold) 70%, var(--line)); background: var(--gold-50); color: var(--ink); }
+.ta-chip.primary { background: var(--cardinal); color: #fff; border-color: var(--cardinal); }
+.ta-chip.ghost { border-color: var(--line); color: var(--muted); }
+.ta-chip-ic { margin-right: 4px; }
+.ta-msg.typing .ta-bubble { display: flex; align-items: center; gap: 10px; }
+.ta-dots { display: inline-flex; gap: 4px; padding: 3px 0; }
+.ta-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: .5; animation: ta-b 1.2s infinite ease-in-out; }
+.ta-dots i:nth-child(2) { animation-delay: .15s; } .ta-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes ta-b { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
+.ta-loading-note { font-size: 12.5px; color: var(--muted); }
+/* cards */
+.ta-card { border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 12px 13px; box-shadow: 0 2px 10px rgba(0, 0, 0, .04); max-width: 100%; }
+.ta-card-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.ta-card-ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--cardinal-50); font-size: 17px; flex: none; color: var(--cardinal-text); }
+.ta-card-ic svg { width: 18px; height: 18px; }
+.ta-card-kicker { font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.ta-card-title { font-weight: 750; font-size: 15px; line-height: 1.25; }
+.ta-card-head > div { flex: 1; min-width: 0; }
+.ta-card-status { font-size: 12px; font-weight: 750; color: var(--muted); white-space: nowrap; }
+.ta-card[data-status="confirmed"] .ta-card-status { color: var(--good); }
+.ta-card[data-status="cancelled"] .ta-card-status, .ta-card[data-status="expired"] .ta-card-status { color: var(--muted); }
+.ta-card[data-status="cancelled"], .ta-card[data-status="expired"] { border-style: dashed; box-shadow: none; background: var(--surface-2); }
+.ta-card[data-status="cancelled"] .ta-card-ic, .ta-card[data-status="expired"] .ta-card-ic { filter: grayscale(1); }
+.ta-card.confirm { border-color: color-mix(in srgb, var(--gold) 65%, var(--line)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 18%, transparent); }
+.ta-card.confirm.danger { border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bad) 10%, transparent); }
+.ta-card.confirm[data-status="confirmed"] { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); box-shadow: none; }
+.ta-rows { margin: 0 0 8px; display: grid; gap: 0; }
+.ta-row { display: grid; grid-template-columns: 118px 1fr; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line-2); font-size: 13.5px; }
+.ta-row.cont { border-top: 0; padding-top: 0; }
+.ta-row dt { color: var(--muted); font-weight: 600; }
+.ta-row dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.ta-warn, .ta-notes { list-style: none; margin: 6px 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
+.ta-warn li { display: flex; gap: 7px; background: var(--warn-50); color: var(--warn); border-radius: 10px; padding: 7px 9px; }
+.ta-warn svg { width: 15px; height: 15px; flex: none; margin-top: 2px; }
+.ta-notes li { position: relative; padding-left: 14px; color: var(--ink-2); }
+.ta-notes li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--cardinal); }
+.ta-fine { font-size: 12px; color: var(--muted); margin: 6px 0; }
+.ta-steps { margin: 8px 0 4px; font-size: 13px; color: var(--ink-2); }
+.ta-steps-h { font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 4px; }
+.ta-steps ol { margin: 0; padding-left: 20px; }
+.ta-steps li { margin: 3px 0; }
+.ta-sys { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+.ta-card-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.ta-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 11px; padding: 8px 14px; font-weight: 700; font-size: 14px; cursor: pointer; }
+.ta-btn svg { width: 16px; height: 16px; }
+.ta-btn:hover { background: var(--bubble); }
+.ta-btn.primary { background: var(--cardinal); border-color: var(--cardinal); color: #fff; }
+.ta-btn.primary:hover { background: var(--cardinal-600); }
+.ta-btn.sm { padding: 6px 11px; font-size: 13px; }
+.ta-btn:disabled { opacity: .5; cursor: default; }
+.ta-card.receipt { border-color: color-mix(in srgb, var(--good) 40%, var(--line)); background: color-mix(in srgb, var(--good-50) 55%, var(--surface)); }
+.ta-ok { width: 34px; height: 34px; border-radius: 50%; background: var(--good); color: #fff; display: grid; place-items: center; flex: none; }
+.ta-ok svg { width: 18px; height: 18px; }
+.ta-conf { font-size: 13px; margin: 6px 0 0; }
+.ta-optlist { display: grid; gap: 6px; }
+.ta-opt { text-align: left; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 9px 11px; cursor: pointer; display: grid; gap: 2px; }
+.ta-opt:hover { border-color: var(--cardinal); }
+.ta-opt-l { font-weight: 700; font-size: 14px; }
+.ta-opt-s { font-size: 12.5px; color: var(--muted); }
+.ta-card.signin { background: var(--surface-2); }
+.ta-card.resources ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ta-card.resources li { border-left: 3px solid var(--cardinal); padding-left: 10px; }
+.ta-res-l { font-weight: 700; font-size: 14px; }
+.ta-res-v { font-size: 17px; font-weight: 800; text-decoration: none; }
+.ta-res-n { font-size: 12.5px; color: var(--muted); }
+.ta-term + .ta-term { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.ta-term-h { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.ta-term-h span { color: var(--muted); font-size: 13px; }
+.ta-course { padding: 6px 0; }
+.ta-course + .ta-course { border-top: 1px solid var(--line-2); }
+.ta-course-h { font-size: 14px; }
+.ta-course ul { list-style: none; margin: 3px 0 0; padding: 0; font-size: 12.5px; color: var(--ink-2); }
+.ta-course li { display: flex; justify-content: space-between; gap: 8px; }
+.ta-pill { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--bubble); color: var(--ink-2); vertical-align: 1px; }
+.ta-pill.gold { background: var(--gold-50); color: var(--warn); }
+details.ta-course summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
+.ta-desc { font-size: 13px; color: var(--ink-2); margin: 4px 0; }
+.ta-sec td { font-size: 12.5px; }
+.ta-sec tr.cx td { color: var(--muted); text-decoration: line-through; }
+.ta-dr { display: inline-block; margin-left: 4px; font-size: 10px; font-weight: 800; padding: 0 5px; border-radius: 5px; }
+.ta-dr.d { background: var(--warn-50); color: var(--warn); }
+.ta-dr.r { background: var(--good-50); color: var(--good); }
+.ta-card.bill td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ta-card.bill tr.tot td { font-weight: 800; border-bottom: 0; }
+/* composer */
+.ta-compose { display: flex; gap: 8px; align-items: flex-end; padding: 10px 12px 6px; border-top: 1px solid var(--line); background: var(--surface); }
+.ta-compose textarea { flex: 1; resize: none; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 14px; padding: 10px 12px; font: inherit; line-height: 1.4; max-height: 132px; min-height: 42px; outline: none; }
+.ta-compose textarea:focus { border-color: var(--cardinal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cardinal) 15%, transparent); }
+.ta-send { width: 42px; height: 42px; flex: none; border-radius: 13px; border: 0; background: var(--cardinal); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.ta-send svg { width: 20px; height: 20px; }
+.ta-send:disabled { background: var(--line); color: var(--muted); cursor: default; }
+.ta-foot { font-size: 11px; color: var(--muted); text-align: center; padding: 0 12px 9px; background: var(--surface); }
+/* sheets */
+.ta-sheet { position: absolute; inset: 0; z-index: 8; background: color-mix(in srgb, #000 35%, transparent); display: flex; align-items: flex-end; }
+.ta-sheet[hidden] { display: none; }
+.ta-sheet-inner { background: var(--surface); width: 100%; max-height: 88%; overflow-y: auto; border-radius: 18px 18px 0 0; padding: 16px; animation: ta-up .18s ease-out; }
+@keyframes ta-up { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+.ta-sheet-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.ta-sheet-h h2 { margin: 0; font-size: 18px; display: flex; gap: 8px; align-items: center; }
+.ta-sheet .ta-icon { color: var(--ink-2); }
+.ta-sheet .ta-icon:hover { background: var(--surface-2); }
+.ta-tag { font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; background: var(--gold-50); color: var(--warn); border-radius: 99px; padding: 2px 8px; }
+.ta-demo-user { display: flex; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--surface-2); margin-bottom: 8px; }
+.ta-demo-user svg { width: 30px; height: 30px; color: var(--cardinal-text); flex: none; }
+.ta-scopes { border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px 10px; margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+.ta-scopes legend { font-size: 13px; font-weight: 700; padding: 0 4px; }
+.ta-scopes label { font-size: 13.5px; display: flex; gap: 7px; align-items: center; }
+.ta-scopes input, .ta-check input { accent-color: var(--cardinal); width: 16px; height: 16px; }
+.ta-set { border-top: 1px solid var(--line); padding: 10px 0; }
+.ta-set:first-of-type { border-top: 0; }
+.ta-set h3 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 6px; align-items: center; }
+.ta-set h3 svg { width: 16px; height: 16px; color: var(--gold); }
+.ta-field { display: grid; gap: 4px; margin: 8px 0; font-size: 13px; font-weight: 650; }
+.ta-field input, .ta-field select { font: inherit; font-weight: 400; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 10px; padding: 9px 10px; }
+.ta-check { display: flex; gap: 8px; align-items: center; font-size: 13.5px; margin: 6px 0; }
+.ta-activity { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 14px; }
+.ta-toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--ink); color: var(--surface); font-size: 13px; font-weight: 650; padding: 7px 13px; border-radius: 99px; z-index: 9; box-shadow: var(--shadow); }
+.ta-toast[hidden] { display: none; }
+
+/* ---- embedded, full-screen inside a Trojan Hub screen (TA.Embed.mount) ---- */
+/* mount into Trojan Hub's .screen (already inset above the tab bar): <div class="screen ta-screen"></div> */
+.screen.ta-screen { overflow: hidden; }
+.ta-root.embed { position: absolute; inset: 0; z-index: auto; font: 15px/1.5 var(--f-body); color: var(--ink); container-type: inline-size; }
+.ta-root.embed .ta-panel { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; animation: none; background: var(--bg); }
+.ta-root.embed .ta-log { background: var(--bg); }
+.ta-root.embed .ta-head { padding-top: max(12px, env(safe-area-inset-top, 0px)); background: linear-gradient(170deg, #a1080d 0%, #7a0a0e 55%, #4a070a 100%); }
+.ta-root.embed .ta-title strong, .ta-root.embed .ta-card-title, .ta-root.embed .ta-sheet-h h2 { font-family: var(--f-display); font-stretch: 112%; letter-spacing: 0; }
+.ta-root.embed .ta-avatar { background: var(--gold); color: var(--cardinal-deep); box-shadow: none; font-family: var(--f-display); font-stretch: 125%; }
+.ta-root.embed .ta-msg.bot .ta-bubble, .ta-root.embed .ta-card { background: var(--surface); box-shadow: var(--shadow); border-color: transparent; }
+.ta-root.embed .ta-card.confirm { border: 1px solid color-mix(in srgb, var(--gold) 65%, var(--line)); }
+.ta-root.embed .ta-conf code, .ta-root.embed .ta-activity code, .ta-root.embed .ta-md code { font-family: var(--f-mono); }
+.ta-root.embed .ta-compose { background: var(--bg); }
+.ta-root.embed .ta-compose textarea { background: var(--surface); font-size: 16px; } /* iOS zooms inputs under 16px */
+.ta-root.embed .ta-foot { background: var(--bg); }
+.ta-root.embed .ta-toast { bottom: 76px; }
+/* the 640px rules from head.html 312-325, keyed to the phone-sized container instead of the viewport */
+@container (max-width: 520px) {
+  .ta-row { grid-template-columns: 100px 1fr; }
+  .ta-scopes { grid-template-columns: 1fr; }
+  .ta-src-title { max-width: 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .ta-root *, .ta-root *::before, .ta-root *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* ---- Trojan Hub additions ---- */
+.ta-root.embed .ta-head { gap: 8px; }
+.ta-root.embed .ta-acct.on { color: var(--cardinal-deep); }
+.ta-root.embed .ta-stop { background: var(--ink); color: var(--surface); }
+.ta-root.embed .ta-stop[hidden], .ta-root.embed .ta-send[hidden] { display: none; }
+.ta-root.embed .ta-card.signin { border: 1px solid color-mix(in srgb, var(--gold) 55%, var(--line)); }
+.ta-root.embed .ta-card.signin .ta-btn svg { width: 15px; height: 15px; }
+.ta-root.embed .ta-chip { min-height: 32px; }
+.ta-root.ta-mounting .ta-msg { animation: none; }
+.ta-root.embed .ta-opt { background: var(--surface-2); }
+.ta-root.embed .ta-status { background: var(--warn-bg); color: var(--ink); }
+.ta-root.embed .ta-head .ta-icon:focus-visible, .ta-root.embed .ta-acct:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.ta-root.embed .ta-chip:focus-visible, .ta-root.embed .ta-btn:focus-visible, .ta-root.embed .ta-opt:focus-visible { outline: 2px solid var(--cardinal); outline-offset: 2px; }
+@container (max-width: 380px) { .ta-root.embed .ta-acct { max-width: 92px; padding: 0 9px; } .ta-root.embed .ta-sub { display: none; } }
+.ta-chip.ghost.done { opacity: .65; cursor: default; }
+

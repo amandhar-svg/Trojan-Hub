@@ -1,0 +1,22 @@
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch(); const page = await browser.newPage();
+  const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+  await page.goto('http://127.0.0.1:8765/test2.html'); await page.waitForFunction(() => window.__kb, null, { timeout: 120000 });
+  await page.evaluate(() => { TA.Embed.mount(document.getElementById('screen')); TA.State.signIn(); });
+  const ask = async (t, mode) => { await page.evaluate(m => window.__mock.mode = m, mode); await page.evaluate(t => TA.Embed.ask(t), t); await page.waitForFunction(() => !TA.UI.busy, null, { timeout: 60000 });
+    return page.evaluate(() => TA.UI.msgs.slice(-3).map(m => m.role + ': ' + (m.md || '').slice(0, 100) + (m.card ? ' [' + m.card.type + ']' : '') + (m.sources && m.sources.length ? ' src=' + m.sources.length : '') + (m.chips ? ' chips=' + m.chips.map(c => c.value).join('|') : '')).join(' / ')); };
+  console.log('enabled', await page.evaluate(() => TA.AI.enabled()));
+  console.log('Q1', await ask('what is engage and how do clubs work?', 'ok'));
+  console.log('Q2', await ask('can you find me something fun to do tonight and sign me up', 'act'));
+  console.log('pending', await page.evaluate(() => JSON.stringify(TA.Brain.pending && { aid: TA.Brain.pending.aid, stage: TA.Brain.pending.stage })));
+  console.log('Q3 yes', await ask('yes', 'ok'));
+  console.log('Q4 crisis', await ask('i want to end my life', 'ok'));
+  console.log('Q5 fail after action', await ask('sign me up for some event please', 'fail-after-action'));
+  await ask('cancel', 'ok');
+  console.log('Q6 deny', await ask('when is the last day to drop a class?', 'deny'));
+  console.log('enabled after deny', await page.evaluate(() => TA.AI.enabled()));
+  console.log('calls', JSON.stringify(await page.evaluate(() => window.__mock.calls.map(c => ({ b: c.inputBytes, n: c.nTurns, first: c.first, last: c.last, cache: c.cache, maxDesc: Math.max(...c.tools.map(t => t[1])), maxSchema: Math.max(...c.tools.map(t => t[2])), nTools: c.tools.length, results: c.results.map(r => [r[0], typeof r[1] === 'number' ? r[1] : String(r[1]).slice(0, 90)]) }))), null, 1));
+  console.log('errors', errs);
+  await browser.close();
+})();

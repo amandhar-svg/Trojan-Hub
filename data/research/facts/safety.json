@@ -1,0 +1,347 @@
+{
+ "_meta": {
+  "generated": "2026-11-09"
+ },
+ "phones": [
+  {
+   "label": "DPS emergency (UPC and USC Village)",
+   "number": "(213) 740-4321",
+   "hours": "24/7/365"
+  },
+  {
+   "label": "DPS non-emergency (UPC and USC Village)",
+   "number": "(213) 740-6000",
+   "hours": "24/7"
+  },
+  {
+   "label": "DPS emergency (HSC)",
+   "number": "(323) 442-1000",
+   "hours": "24/7"
+  },
+  {
+   "label": "DPS non-emergency (HSC)",
+   "number": "(323) 442-1200",
+   "hours": "24/7"
+  },
+  {
+   "label": "DPS USC Village sub-station",
+   "number": "(213) 821-6677"
+  },
+  {
+   "label": "DPS Lost and Found (UPC)",
+   "number": "(213) 740-9759",
+   "email": "lostandfound@dps.usc.edu"
+  },
+  {
+   "label": "DPS bike registration questions",
+   "number": "(213) 740-5519"
+  },
+  {
+   "label": "DPS Watch Commanders' Office",
+   "number": "(213) 740-5523"
+  },
+  {
+   "label": "Off-campus emergency",
+   "number": "911"
+  },
+  {
+   "label": "USC Student Health 24/7 (nurse, counselor, confidential advocate)",
+   "number": "(213) 740-9355 (WELL)"
+  },
+  {
+   "label": "Crisis Text Line",
+   "number": "Text TROJAN to 741741"
+  },
+  {
+   "label": "988 Suicide & Crisis Lifeline",
+   "number": "988"
+  },
+  {
+   "label": "USC emergency info line (campus-wide emergencies)",
+   "number": "(213) 740-9233"
+  },
+  {
+   "label": "Housing Maintenance (24/7)",
+   "number": "(213) 740-4646"
+  },
+  {
+   "label": "USC Report & Response",
+   "number": "(213) 740-2500"
+  },
+  {
+   "label": "Office of Civil Rights Compliance (OCRC)",
+   "number": "(213) 740-5086"
+  }
+ ],
+ "phones_sources": [
+  {
+   "url": "https://dps.usc.edu/contact/",
+   "type": "kb"
+  },
+  {
+   "url": "https://dps.usc.edu/services/lost-and-found/",
+   "type": "kb"
+  },
+  {
+   "url": "https://dps.usc.edu/services/bikes/",
+   "type": "kb"
+  },
+  {
+   "url": "https://dps.usc.edu/about-dps/frequently-asked-questions/",
+   "type": "kb"
+  },
+  {
+   "url": "https://studenthealth.usc.edu/emergencies/",
+   "type": "kb"
+  },
+  {
+   "url": "https://studenthealth.usc.edu/mental-health-and-well-being/",
+   "type": "kb"
+  },
+  {
+   "url": "https://safety.usc.edu/resources/emergency-preparedness/",
+   "type": "kb"
+  },
+  {
+   "url": "https://housing.usc.edu/index.php/csc/",
+   "type": "kb"
+  }
+ ],
+ "dps": {
+  "operates": "24 hours a day, 365 days a year; patrols ~2.5 sq mi around UPC and ~1 sq mi around HSC, including off-campus neighborhoods.",
+  "stations": [
+   {
+    "name": "UPC station",
+    "address": "3667 McClintock Ave, Los Angeles, CA 90089 (Parking Structure A, PSA)"
+   },
+   {
+    "name": "USC Village sub-station",
+    "address": "3131 South Hoover Street, Suite 1300"
+   },
+   {
+    "name": "HSC station",
+    "address": "2001 Soto Street, Los Angeles, CA 90032"
+   }
+  ],
+  "community_service_officers": "Patrol USC Housing facilities from 8 PM until dawn (24 h during semester and spring breaks).",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/contact/",
+    "type": "kb"
+   },
+   {
+    "url": "https://ask.usc.edu/s/article/000002171",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "campus_access": {
+  "rule": "From 9 PM to 6 AM UPC operates with controlled access: only McCarthy (Figueroa at McCarthy Way) and McClintock (Jefferson at McClintock) gates are open and the campus is closed to unregistered guests. Guests must be pre-registered and show photo ID; event guests bring ID and ticket. During the day campus is open to the public, but officials may ask for USCard/photo ID at any time.",
+  "id_check_hours": {
+   "start": "21:00",
+   "end": "06:00"
+  },
+  "guest_registration": "DPS After Hours Visitor Registration form (visitor.usc.edu)",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/services/visitor-registration/",
+    "type": "live (fetched 2026-11-09)"
+   },
+   {
+    "url": "https://www.usc.edu/how-to-access-campus/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/about-us/entrance-hours/",
+    "type": "live (fetched 2026-11-09)"
+   }
+  ],
+  "verified": true
+ },
+ "night_rides_and_escorts": {
+  "lyft": "Free USC Lyft Shared rides 7 PM-2 AM daily inside the UPC geofence (HSC 5 PM-2 AM Mon-Fri). See transport.json lyft.",
+  "after_lyft_hours": "From 2 AM to 6 AM DPS may be able to provide an escort within the designated boundaries (call (213) 740-6000).",
+  "blue_light_escort": "Blue light phones can be used to request an escort; USC Safety says \"an escort will meet you within minutes.\"",
+  "livesafe_safewalk": "LiveSafe SafeWalk lets friends or family virtually escort you.",
+  "campus_cruiser": "Suspended.",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/",
+    "type": "kb"
+   },
+   {
+    "url": "https://safety.usc.edu/services/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/services/blue-light-phones/",
+    "type": "live (fetched 2026-11-09)"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/how-to-use-lyft/",
+    "type": "live (fetched 2026-11-09)"
+   }
+  ],
+  "verified": true
+ },
+ "security_ambassadors": {
+  "name": "Security Ambassadors (\"Yellow Jackets\")",
+  "who": "Unarmed security officers from Allied Universal Security, contracted by USC; bright yellow jackets.",
+  "what": "Posted on street corners in neighborhoods around campus, especially near USC-owned housing; eyes and ears of DPS with a direct line to DPS.",
+  "posts_and_hours": null,
+  "posts_note": "DPS does not publish post locations or shift hours (\"routinely evaluates where Yellow Jackets are posted\"). The current Trojan Hub posts and \"6 PM-3 AM\" hours are unverified.",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/safety-tips/getting-around/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/contact/report/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "blue_light_phones": {
+  "count": "nearly 300",
+  "where": "Around UPC and HSC, in many buildings, and on each level of every parking structure",
+  "how_it_works": "Connects directly to DPS 24-hour communications center and identifies the phone location even if you cannot speak. Use to request help or an escort, report suspicious activity or a crime. Emergencies only.",
+  "locations": null,
+  "official_maps": [
+   "https://web-app.usc.edu/maps/emergency-phones.pdf",
+   "https://maps.usc.edu/?id=1928 (Concept3D category linked from the DPS page)"
+  ],
+  "locations_note": "Exact coordinates not obtained: the PDF host is not on the allowlist and the OSM Overpass mirror timed out. The map research task may supply them from Concept3D.",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/services/blue-light-phones/",
+    "type": "live (fetched 2026-11-09)"
+   }
+  ],
+  "verified": true
+ },
+ "trojans_alert": {
+  "name": "TrojansAlert",
+  "what": "USC emergency notification system: real-time texts and emails from authorized officials with instructions.",
+  "students": "Automatically enrolled; keep contact info current in Experience USC. usc.edu addresses cannot opt out of legally required alerts.",
+  "others": "Parents, alumni, community: text \"TrojansAlert\" to 888777 (Nixle). List resets every Aug 15; re-subscribe yearly.",
+  "other_official_channels": [
+   "emergency.usc.edu",
+   "Emergency infoline (213) 740-9233",
+   "twitter.com/USC"
+  ],
+  "related_alerts": "Campus safety alerts include TrojansAlerts, Timely Warnings/crime alerts and Community Safety Advisories.",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/services/trojans-alerts/",
+    "type": "kb"
+   },
+   {
+    "url": "https://safety.usc.edu/resources/emergency-preparedness/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/alerts/clery-faqs/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "livesafe": {
+  "name": "LiveSafe",
+  "what": "Free USC safety app managed by DPS and USC Emergency Planning.",
+  "features": [
+   "One-touch calls to DPS or 911",
+   "Anonymous messaging (suspicious activity, crimes in progress)",
+   "SafeWalk virtual escort by friends/family"
+  ],
+  "setup": [
+   "Download \"LiveSafe\" from the App Store or Google Play",
+   "Create a profile",
+   "Select \"University of Southern California\""
+  ],
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/services/safety-app/",
+    "type": "kb"
+   },
+   {
+    "url": "https://safety.usc.edu/resources/livesafe/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "reporting": {
+  "ways": [
+   "Call DPS 24/7",
+   "LiveSafe app (incl. anonymous)",
+   "Blue light phones",
+   "Campus Security Authorities",
+   "Crime Stoppers (completely anonymous)"
+  ],
+  "noise_complaints": "DPS non-emergency (213) 740-6000",
+  "sources": [
+   {
+    "url": "https://dps.usc.edu/contact/report/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/loud-or-unruly-gathering-ordinance/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "crime_data_for_safety_map": {
+  "status": "not obtained",
+  "note": "The DPS Daily Crime & Fire Log was not collected here. The Trojan Hub safety map uses synthetic incidents and must keep saying so until a real feed is connected.",
+  "verified": false
+ },
+ "game_day": {
+  "clear_bag": "Coliseum and Galen Center: one clear plastic/vinyl/PVC bag up to 12\" x 6\" x 12\" or a one-gallon clear storage bag, plus one small clutch; medically necessary items after inspection. (Stated on the USC Commencement clear-bag page as \"similar to the one used at USC Athletics events\"; the Athletics page itself is not on the allowlist.)",
+  "student_gates_and_tailgate_rules": null,
+  "student_gates_note": "Student gate locations, gate-opening times and tailgate zones/times are published by USC Athletics (usctrojans.com), which is not on the allowlist. Current Trojan Hub claims (\"student gates open 2 hours before kickoff\", \"enter from Exposition Park\", \"tailgates on Exposition Park lawns and McCarthy Quad at 9 AM\") are unverified.",
+  "next_home_game": "2026-11-21 (vs. Maryland per USC Hospitality \"Beat the Terrapins\"); kickoff time not found",
+  "game_day_changes": [
+   "Lyft starts 5 h after kickoff",
+   "Weekend ICS does not run",
+   "Cashless parking, $50; Evening and Off-campus Housing permits not valid",
+   "Free shuttle Grand Ave Structure -> Pardee Way from 3 h before kickoff",
+   "Lyon Center 9am-2pm and Village Fitness 1-11pm on Nov 21"
+  ],
+  "ticket_scams": "DPS warns of football ticket scams on GroupMe; buy from trusted sources and never share a photo of your USCard.",
+  "sources": [
+   {
+    "url": "https://commencement.usc.edu/clear-bag-policy/",
+    "type": "kb"
+   },
+   {
+    "url": "https://commencement.usc.edu/faq/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/gameday/",
+    "type": "kb"
+   },
+   {
+    "url": "https://hospitality.usc.edu/game-day/",
+    "type": "kb"
+   },
+   {
+    "url": "https://recsports.usc.edu/rec-facilities/operating-hours/",
+    "type": "kb"
+   },
+   {
+    "url": "https://mycard.usc.edu/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/2024/09/27/community-safety-advisory-11/",
+    "type": "kb"
+   }
+  ],
+  "verified": "partial"
+ }
+}

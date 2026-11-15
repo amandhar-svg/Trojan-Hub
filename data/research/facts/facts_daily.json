@@ -1,0 +1,436 @@
+{
+ "_meta": {
+  "generated": "2026-11-09",
+  "rule": "Only facts confirmed on an official USC page are in \"facts\". Original Trojan Hub facts are reviewed in \"review\"."
+ },
+ "review": [
+  {
+   "original": "USC was founded in 1880, which makes it the oldest private research university in California.",
+   "verdict": "partly verified",
+   "finding": "Founding year 1880 is confirmed. \"Oldest private research university in California\" is not stated on any page in the KB; USC Housing only says \"one of the oldest private universities in the west\".",
+   "action": "rewrite",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/",
+     "type": "kb"
+    },
+    {
+     "url": "https://housing.usc.edu/index.php/conference-video/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "The first USC class had 53 students and 10 teachers.",
+   "verdict": "verified",
+   "finding": "USC opened its doors to 53 students and 10 teachers in 1880.",
+   "action": "keep (reword slightly)",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "Tommy Trojan was dedicated in 1930. Students wrap him in duct tape during rivalry week to protect him from paint.",
+   "verdict": "partly verified",
+   "finding": "Unveiled in 1930 at USC's 50th jubilee: confirmed. The duct-tape rivalry-week tradition is not on any official page in the KB.",
+   "action": "keep year, drop duct-tape clause",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "Traveler, the white horse that gallops around the Coliseum after Trojan touchdowns, has been part of game days since 1961.",
+   "verdict": "verified (small fix)",
+   "finding": "First appeared in 1961 (home opener vs. Georgia Tech). Official wording: \"whenever USC scores\", not only touchdowns.",
+   "action": "keep, say \"whenever USC scores\"",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "The Trojan Marching Band played on Fleetwood Mac’s 1979 single “Tusk,” recorded at Dodger Stadium.",
+   "verdict": "partly verified",
+   "finding": "USC says the band recorded the title track of the 1979 album Tusk with Fleetwood Mac and it went platinum. \"Recorded at Dodger Stadium\" is not on any official page in the KB.",
+   "action": "drop Dodger Stadium",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "The fanfare “Conquest” comes from the 1947 film Captain from Castile.",
+   "verdict": "unverified",
+   "finding": "USC pages confirm the band plays \"Conquest\" when USC scores, but none in the KB give its origin.",
+   "action": "drop (or replace with the verified Conquest/Traveler fact)",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "Doheny Memorial Library opened in 1932 and was built as a memorial to Edward L. Doheny Jr.",
+   "verdict": "verified",
+   "finding": "Doors opened Sept 12, 1932 (timeline). The building is formally the \"Edward L. Doheny Jr. Memorial Library\" (USC Libraries).",
+   "action": "keep",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    },
+    {
+     "url": "https://libraries.usc.edu/supporting-usc-libraries",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "The LA Memorial Coliseum hosted the Olympic Games in 1932 and 1984, and is scheduled to host again in 2028.",
+   "verdict": "verified",
+   "finding": "Confirmed by the Olympic Heritage page and the timeline.",
+   "action": "keep",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/olympic-heritage/",
+     "type": "kb"
+    },
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "USC Village opened in 2017. The bronze statue at its center is Hecuba, queen of Troy.",
+   "verdict": "verified",
+   "finding": "Opened 2017 (Aug 17); Hecuba unveiled at the grand opening.",
+   "action": "keep",
+   "sources": [
+    {
+     "url": "https://village.usc.edu/",
+     "type": "kb"
+    },
+    {
+     "url": "https://village.usc.edu/about-hecuba/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "Leavey Library opened in 1994 and is open around the clock during the semester.",
+   "verdict": "wrong / unverified",
+   "finding": "Opening year is not on any page in the KB. Hours are wrong: Leavey is 24 hours Mon-Thu (continuous Sun 9am - Fri midnight), Sat 9am-9pm, and 24/7 only during finals.",
+   "action": "replace",
+   "sources": [
+    {
+     "url": "https://libraries.usc.edu/hours",
+     "type": "live (fetched 2026-11-09)"
+    },
+    {
+     "url": "https://libraries.usc.edu/locations/leavey-library",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "The Bovard Administration Building is named for Marion Bovard, USC’s first president.",
+   "verdict": "unverified",
+   "finding": "Marion McKinley Bovard was USC's first president (1880): confirmed. Which Bovard the building is named for is not stated in the KB (George F. Bovard was the fourth president).",
+   "action": "replace with the verified first-president fact",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ]
+  },
+  {
+   "original": "Trojans have won more Olympic medals than athletes from any other American university.",
+   "verdict": "verified (reworded)",
+   "finding": "USC says it \"has produced more Olympians and overall medalists than any other university in the United States.\"",
+   "action": "keep with official wording",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/olympic-heritage/",
+     "type": "kb"
+    }
+   ]
+  }
+ ],
+ "facts": [
+  {
+   "text": "USC opened in 1880 with 53 students and 10 teachers, when Los Angeles still had no paved streets or electric lights.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Marion McKinley Bovard became USC’s first president in 1880.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Tommy Trojan was unveiled in 1930, at USC’s 50th jubilee.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Tommy Trojan was sculpted by Roger Noble Burnham, who modeled him on several USC football players.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Tommy Trojan’s pedestal lists the ideal Trojan’s qualities: faithful, scholarly, skillful, courageous, ambitious.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Traveler first appeared at USC’s 1961 home opener against Georgia Tech. Whenever USC scores, the band plays “Conquest” and Traveler gallops around the Coliseum.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Traveler, not Tommy Trojan, is USC’s official mascot.",
+   "sources": [
+    {
+     "url": "https://admission.usc.edu/prospective-students/live-learn-belong/find-your-people/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "The Traveler statue facing Tommy Trojan in Hahn Plaza was unveiled on May 4, 2010.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "In 1979 the Trojan Marching Band recorded the title track of Fleetwood Mac’s album Tusk, which went platinum.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "USC’s motto, Palmam Qui Meruit Ferat (“let whoever earns the palm bear it”), was adopted in 1908.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "The alma mater “All Hail” was written by Alfred F. Wesson ’24 for a 1923 student show called Campus Frolics.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "The California poppy, USC’s official flower, joined the university seal in 1908.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/usc-traditions/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "USC’s teams were called the Cardinals and the Methodists before becoming the Trojans in 1912.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Doheny Memorial Library opened on September 12, 1932. Its full name is the Edward L. Doheny Jr. Memorial Library.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    },
+    {
+     "url": "https://libraries.usc.edu/supporting-usc-libraries",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "In 1960 John F. Kennedy spoke from the steps of Doheny Library to a first-time voter convocation.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "The Fisher Gallery, opened in 1939, was the first museum in Los Angeles devoted only to fine art.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "The LA Memorial Coliseum, across the street from campus, was the center of the 1932 and 1984 Olympics, and the Games return in 2028.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/olympic-heritage/",
+     "type": "kb"
+    },
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "During the 1984 Olympics, the University Park Campus became Los Angeles’ largest Olympic Village.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "USC has produced more Olympians and overall medalists than any other university in the United States.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/olympic-heritage/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "In 1904 Emil Breitkreutz became the first USC student to compete in the Olympics, winning bronze in the 800 meters.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/olympic-heritage/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Forty-four Trojans competed at the 2016 Rio Olympics, more than from any other American university.",
+   "sources": [
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "USC Village opened in 2017 on 15 acres. It is the largest development in the history of South Los Angeles.",
+   "sources": [
+    {
+     "url": "https://village.usc.edu/",
+     "type": "kb"
+    },
+    {
+     "url": "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Hecuba, queen of Troy, was unveiled in the USC Village piazza at the Village’s grand opening in fall 2017.",
+   "sources": [
+    {
+     "url": "https://village.usc.edu/about-hecuba/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "Leavey Library stays open 24 hours from Sunday morning to Friday night during the semester, and around the clock during finals.",
+   "sources": [
+    {
+     "url": "https://libraries.usc.edu/hours",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "text": "USC has nearly 300 blue light emergency phones, including one on every level of every parking structure.",
+   "sources": [
+    {
+     "url": "https://dps.usc.edu/services/blue-light-phones/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  }
+ ]
+}

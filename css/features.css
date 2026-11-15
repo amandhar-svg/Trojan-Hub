@@ -1,0 +1,167 @@
+/* css/features.css */
+/* Trojan Hub — feature screens (js/screens.js) and Explore Clubs (js/clubs.js).
+ * Reuses the tokens and components from css/app.css; light and dark themes come from those tokens. */
+
+/* ---------- shared bits ---------- */
+.simbadge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 6px; font: 700 10px/1.5 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--c-service); background: var(--mute-bg); vertical-align: middle; white-space: nowrap; }
+.wsim { justify-self: start; font: 700 10px/1.5 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; background: rgba(255,255,255,.18); color: inherit; }
+.wsim.dark { background: rgba(0,0,0,.12); }
+.simtag { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 650; color: var(--ink); background: var(--mute-bg); padding: 8px 12px; border-radius: 12px; }
+.simtag .ic { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.flabel { font-size: 13px; font-weight: 650; color: var(--muted); }
+.fs-check { display: grid; gap: 8px; }
+.fs-check:empty { display: none; }
+ul.plain, ol.plain { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; }
+.row .rsub.wrap, .row .rtitle.wrap { white-space: normal; overflow: visible; text-overflow: clip; }
+.row .rsub .ic { width: 12px; height: 12px; vertical-align: -1px; margin-right: 3px; }
+details.more summary, .sumh { cursor: pointer; font-weight: 700; font-size: 14px; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+details.more summary::-webkit-details-marker, .sumh::-webkit-details-marker { display: none; }
+details.more summary::after, .sumh::after { content: "+"; font: 700 18px/1 var(--f-mono); color: var(--muted); }
+details[open] > summary.sumh::after, details.more[open] summary::after { content: "–"; }
+details.more { border-top: 1px solid var(--line); padding-top: 10px; font-size: 13.5px; }
+.banner.ok { background: var(--ok-bg); } .banner.ok .ic { color: var(--ok); }
+.btn.onwhite { background: rgba(255,255,255,.16); color: #fff; }
+.qty { display: flex; gap: 8px; align-items: center; }
+.qty .iconbtn { width: 34px; height: 34px; }
+.qty b { min-width: 18px; text-align: center; }
+.kindline { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.wbtn { display: block; width: 100%; padding: 0; text-align: left; border-radius: 20px; }
+.conf { font-size: 11px; padding: 2px 6px; border-radius: 6px; background: var(--surface-2); }
+
+/* ---------- step lists (U-Pass) ---------- */
+.steplist { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 8px; }
+.steplist li { counter-increment: st; position: relative; padding: 10px 12px 10px 44px; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); font-size: 14px; }
+.steplist li::before { content: counter(st); position: absolute; left: 12px; top: 10px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--cardinal); color: #fff; font: 700 12px/1 var(--f-mono); }
+.steplist li.done { color: var(--muted); }
+.steplist li.done::before { content: ""; background: var(--ok); }
+.steplist li.done .ic { position: absolute; left: 15px; top: 13px; width: 16px; height: 16px; color: #fff; z-index: 1; }
+.wcard.metro.pending { filter: saturate(.55); }
+
+/* ---------- rides ---------- */
+.park-row .rico, .park-row .rmain { background: none; border: 0; padding: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.park-row .rico { background: color-mix(in srgb, var(--rc) 14%, transparent); color: var(--rc); }
+.park-row .meter { margin-top: 5px; }
+.park-row .btn { flex: none; }
+
+/* ---------- dining ---------- */
+.hall-card .hall-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; text-align: left; width: 100%; }
+.hall-line { display: grid; justify-items: end; gap: 2px; flex: none; }
+.hall-line b { font: 850 26px/1 var(--f-display); font-variant-numeric: tabular-nums; color: var(--ok); }
+.hall-line.warn b { color: var(--warn); } .hall-line.bad b { color: var(--bad); }
+.hall-line small { font-size: 11px; color: var(--muted); font-weight: 600; }
+.order-card { border: 2px solid color-mix(in srgb, var(--gold) 60%, transparent); }
+
+/* ---------- Trojan Pass ---------- */
+.pass-card { min-height: 0; }
+.pass-days { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.pass-days button { flex: 0 0 52px; }
+
+/* ---------- safety ---------- */
+.sos .sos-main { background: var(--bad-bg); box-shadow: none; }
+.sos .num { font-size: 15.5px; white-space: nowrap; }
+.sos-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; line-height: 1.25; }
+.sos .sos-main .sos-label { color: var(--bad); }
+.sos .btn-row > .btn { flex: 1 1 auto; }
+.sos .btn-row > .btn:last-child:not(:first-child) { flex: 0 0 40px; padding: 0; }
+.access-card { display: grid; gap: 6px; border-left: 4px solid var(--ok); }
+.access-card.on { border-left-color: var(--risk-med); }
+.access-card .ic { width: 16px; height: 16px; vertical-align: -3px; }
+.smap { padding: 0; overflow: hidden; height: 300px; position: relative; }
+.alert-card { display: grid; gap: 5px; border-left: 4px solid var(--al, var(--risk-high)); }
+.alert-meta { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.alert-where { font-size: 12.5px; color: var(--muted); display: flex; gap: 4px; align-items: center; }
+.alert-where .ic { width: 13px; height: 13px; flex: none; }
+
+/* ---------- events ---------- */
+.ev-days { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.ev-days::-webkit-scrollbar { display: none; }
+.ev-days button { flex: 0 0 50px; scroll-snap-align: start; }
+.week .evdot.none { background: transparent; }
+.ev-row .ev-time { width: 54px; height: auto; min-height: 42px; padding: 4px 0; font: 700 11px/1.15 var(--f-mono); text-align: center; flex-direction: column; display: flex; justify-content: center; }
+.ev-row .ev-time small { font: 600 9.5px var(--f-mono); opacity: .8; }
+.ev-art { height: 96px; border-radius: 16px; display: flex; align-items: flex-end; justify-content: space-between; padding: 12px; color: #fff; font: 800 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+.ev-art .iconbtn { align-self: flex-start; background: rgba(0,0,0,.25); color: #fff; }
+
+/* ---------- wallet ---------- */
+.wcard.frozen { filter: grayscale(1) brightness(.85); }
+.wcard.frozen .shine { display: none; }
+.frozen-tag { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; font-weight: 700; background: rgba(0,0,0,.35); padding: 6px 10px; border-radius: 10px; justify-self: start; }
+.frozen-tag .ic { width: 14px; height: 14px; }
+.park-saved { display: grid; gap: 10px; font-size: 13.5px; }
+.park-saved .ic { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ---------- alerts ---------- */
+.note-row.unread .rtitle::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--cardinal); margin-right: 6px; vertical-align: 1px; }
+
+/* ---------- game day ---------- */
+.gd-count { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.gd-count .big-num { font-size: 44px; }
+.gd-count span { font-size: 12px; font-weight: 600; }
+.gd-kick { text-align: right; font-size: 12px; }
+.gd-list { font-size: 14px; }
+
+/* =====================================================================
+   EXPLORE CLUBS
+   ===================================================================== */
+.club-search { flex: none; }
+.ccount { font: 600 11px var(--f-mono); opacity: .65; }
+.club-logo { --lh: 0; position: relative; flex: none; display: grid; place-items: center; overflow: hidden; border-radius: 12px; background: hsl(var(--lh) 45% 42%); color: #fff; font: 800 14px/1 var(--f-display); letter-spacing: .02em; }
+.club-logo.sm { width: 32px; height: 32px; border-radius: 9px; font-size: 12px; }
+.club-logo.md { width: 44px; height: 44px; }
+.club-logo.lg { width: 56px; height: 56px; border-radius: 16px; font-size: 18px; }
+.club-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #fff; opacity: 0; transition: opacity .2s; }
+.club-logo img.ok { opacity: 1; }
+.cbadges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+.cbadge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 650; padding: 1px 7px; border-radius: 999px; background: var(--mute-bg); color: var(--muted); white-space: nowrap; }
+.cbadge .ic { width: 11px; height: 11px; }
+.cbadge.reg { background: color-mix(in srgb, var(--cardinal) 12%, var(--surface)); color: var(--cardinal-ink); }
+.cbadge.open { background: var(--ok-bg); color: var(--ok); }
+.club-row .rtitle { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.club-count { margin: 0 0 2px; }
+
+.club-feat { width: 236px; display: grid; gap: 7px; align-content: start; text-align: left; padding: 14px; border-top: 4px solid var(--c-fitness); }
+.club-feat.food { border-top-color: var(--gold); background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 12%, var(--surface)), var(--surface) 60%); }
+.cf-top { display: flex; gap: 9px; align-items: center; min-width: 0; }
+.cf-name { font-weight: 700; font-size: 13.5px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.club-feat .pill { justify-self: start; }
+.cf-ev { font-size: 15px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cf-when { font: 600 12px var(--f-mono); }
+
+.myclubs { gap: 14px; }
+.myclub { width: 78px; display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 11.5px; font-weight: 650; line-height: 1.2; }
+.myclub span:last-child { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.myclub .club-logo { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--c-fitness); }
+
+.club-sheet .sheet-head h2 { font-size: 20px; line-height: 1.15; }
+.club-meet { display: grid; gap: 6px; font-size: 13.5px; }
+.club-meet .ic { width: 15px; height: 15px; vertical-align: -2px; }
+.club-meet blockquote { margin: 0; padding: 6px 10px; border-left: 3px solid var(--line); color: var(--muted); font-style: italic; font-size: 13px; }
+.club-evs { display: grid; gap: 8px; }
+.club-ev { background: var(--surface); border-radius: var(--r-md); box-shadow: var(--shadow); overflow: hidden; }
+.ce-main { display: flex; gap: 12px; width: 100%; text-align: left; padding: 12px 14px 8px; }
+.ce-date { width: 44px; flex: none; display: grid; justify-items: center; align-content: start; padding: 6px 0; border-radius: 12px; background: color-mix(in srgb, var(--c-fitness) 14%, transparent); color: var(--c-fitness); }
+.ce-date b { font: 850 20px/1 var(--f-display); }
+.ce-date span { font: 700 10.5px var(--f-mono); text-transform: uppercase; }
+.ce-body { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.ce-title { font-weight: 700; font-size: 14.5px; line-height: 1.25; }
+.ce-when { font-size: 12.5px; }
+.ce-where { font-size: 12.5px; color: var(--muted); display: flex; gap: 4px; align-items: flex-start; }
+.ce-where .ic { width: 13px; height: 13px; flex: none; margin-top: 2px; }
+.ce-ics { display: flex; gap: 6px; align-items: center; padding: 8px 14px 10px 70px; font-size: 12.5px; font-weight: 650; color: var(--cardinal-ink); text-decoration: none; border-top: 1px solid var(--line); }
+.ce-ics .ic { width: 14px; height: 14px; }
+.join-list { display: grid; gap: 8px; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface-2); }
+.join-list > b { display: flex; gap: 8px; align-items: center; font-size: 14.5px; }
+.join-list > b .ic { width: 18px; height: 18px; color: var(--c-fitness); }
+.join-list ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; max-height: 220px; overflow: auto; }
+.join-list li { display: grid; gap: 1px; padding-left: 12px; border-left: 3px solid var(--c-fitness); font-size: 13.5px; font-weight: 600; }
+.join-list li small { font-weight: 500; font-size: 12px; }
+
+@media (max-width: 360px) {
+  .sos { grid-template-columns: 1fr; }
+  .route-cmp { grid-template-columns: 1fr; }
+}
+.checkline { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+.checkline input { width: 18px; height: 18px; flex: none; margin-top: 1px; accent-color: var(--cardinal); }
+.grid2.sw-pair { grid-template-columns: 1fr; }
+.sw-pair select { text-overflow: ellipsis; }
+

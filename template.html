@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Trojan Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="One app for USC: real campus map and hours, clubs and events on your calendar, rides, safety, grades, homework, guests, passes, and Ask Tommy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@500;600;700&family=Instrument+Sans:wght@400..700&display=swap">
+<style>@@FILE:css/app.css@@</style>
+<style>@@FILE:css/map.css@@</style>
+<style>@@FILE:css/features.css@@</style>
+<style>@@FILE:css/ta.css@@</style>
+<style>@@FILE:css/new.css@@</style>
+
+<div class="stage">
+  <aside class="pitch" aria-label="About this prototype">
+    <span class="eyebrow">USC student app · Prototype</span>
+    <h1>One app for<br><span>all of USC.</span></h1>
+    <p>Students juggle a dozen apps for rides, food, safety, clubs and events. Trojan Hub runs campus from one screen, the way the Disneyland app runs a park.</p>
+    <ul>
+      <li><b>Accurate campus map</b><span>OpenStreetMap buildings, real hours</span></li>
+      <li><b>Clubs on your calendar</b><span>2,000 EngageSC groups, real events</span></li>
+      <li><b>Tommy acts for you</b><span>Trojan Assist, confirm + Undo</span></li>
+      <li><b>Safety map + safe walk</b><span>real USC DPS reports by hour</span></li>
+      <li><b>USC Lyft, buses, Metro</b><span>real hours and schedules</span></li>
+      <li><b>Mobile order &amp; Trojan Pass</b><span>virtual lines, return times</span></li>
+      <li><b>Grades &amp; homework calendar</b><span>due dates, midterms, breaks</span></li>
+      <li><b>AI converts words to scripts</b><span>Runs on verified public data, not modeled</span></li>
+      <li><b>Netflix-style recommendations</b><span>Thumbs up/down, hashtags, multi-day calendar</span></li>
+      <li><b>Club hashtag AI generator</b><span>Clubs tag events; matching students get recommended</span></li>
+      <li><b>Gates, zones, bike racks</b><span>fence, DPS and free Lyft zones</span></li>
+      <li><b>Student and organizer sides</b><span>requests, dues, budgets, newsletters</span></li>
+      <li><b>Report a problem</b><span>photos, location, the right office</span></li>
+      <li><b>Call Tommy</b><span>talk, and hear the answer</span></li>
+    </ul>
+    <p class="hint muted">Demo date: Mon, Nov 9, 2026. Account actions are simulated on a demo student; wait times are estimates. Try More → Demo controls → 9 PM.</p>
+  </aside>
+  <main class="device" aria-label="Trojan Hub app">
+    <div id="screen-host"></div>
+  </main>
+</div>
+
+<script>window.TA_MANUAL_BOOT = true;</script>
+<script>@@FILE:js/data.js@@</script><script>@@FILE:js/geo-data.js@@</script><script>@@FILE:js/clubs-data.js@@</script>
+<script>@@FILE:js/club-photos.js@@</script><script>@@FILE:js/safety-data.js@@</script>
+<script>@@FILE:js/core.js@@</script><script>@@FILE:js/geo.js@@</script><script>@@FILE:js/map.js@@</script>
+<script>@@FILE:js/actions.js@@</script><script>@@FILE:js/app.js@@</script><script>@@FILE:js/screens.js@@</script><script>@@FILE:js/clubs.js@@</script><script>@@FILE:js/assistant.js@@</script><script>@@FILE:js/academics.js@@</script><script>@@FILE:js/map-layers.js@@</script><script>@@FILE:js/feed.js@@</script>
+<script>@@FILE:js/ta/blob-meta.js@@</script><script>@@FILE:js/ta/blob-acts.js@@</script><script>@@FILE:js/ta/blob-soc.js@@</script>
+<script>@@FILE:js/ta/app.js@@</script><script>@@FILE:js/ta/hub-tools.js@@</script><script>@@FILE:js/ta/hub-actions.js@@</script><script>@@FILE:js/ta/embed.js@@</script><script>@@FILE:js/ta/ai-sample.js@@</script><script>@@FILE:js/ta/ai-api.js@@</script><script>@@FILE:js/ta/script.js@@</script><script>@@FILE:js/ta/course-info.js@@</script><script>@@FILE:js/ta/act-anything.js@@</script><script>@@FILE:js/ta/bridge.js@@</script>
+<style>@@FILE:css/hub2.css@@</style>
+<style>@@FILE:css/p6-clubs.css@@</style>
+<style>@@FILE:css/p6-profile.css@@</style>
+<style>@@FILE:css/p6-plan.css@@</style>
+<style>@@FILE:css/p6-order.css@@</style>
+<script>@@FILE:js/hub2a.js@@</script>
+<script>@@FILE:js/hub2b.js@@</script>
+<script>@@FILE:js/hub2c.js@@</script>
+<script>@@FILE:js/p6-profile.js@@</script>
+<script>@@FILE:js/p6-clubs.js@@</script>
+<script>@@FILE:js/planner.js@@</script>
+<script>@@FILE:js/p6-order.js@@</script>
+<script>
+  (function () {
+    try { TA.boot({ kbLater: true }); } catch (e) { console.error('Trojan Assist failed to boot', e); }
+    TH.boot();
+    // The 9 MB USC knowledge base loads after first paint (Tommy shows "Loading…" until it is ready).
+    function loadKB() {
+      if (TH.loadTommyKB) return TH.loadTommyKB('js/ta/blob-kb.js');
+      if (window.TA_BLOBS && TA_BLOBS['ta-kb']) { TA.Search.init(TA_BLOBS['ta-kb']); delete TA_BLOBS['ta-kb']; return; }
+      var s = document.createElement('script'); s.src = 'js/ta/blob-kb.js'; s.async = true;
+      s.onload = function () { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) { TA.Search.init(TA_BLOBS['ta-kb']); delete TA_BLOBS['ta-kb']; } };
+      document.head.appendChild(s);
+    }
+    if ('requestIdleCallback' in window) requestIdleCallback(loadKB, { timeout: 4000 }); else setTimeout(loadKB, 1500);
+  })();
+</script>
+
+<script>@@FILE:js/ta/blob-kb.js@@</script>
+
+</body>
+</html>

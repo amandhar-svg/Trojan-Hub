@@ -1,0 +1,902 @@
+{
+ "_meta": {
+  "generated": "2026-11-09",
+  "timezone": "America/Los_Angeles",
+  "note": "USC bus schedules below are the Fall 2026 schedule (began Mon Aug 24, 2026). All USC bus services are closed on university holidays (Nov 11, Nov 26-27, 2026). Live positions: ETA SPOT app or uscbuses.etaspot.net (not on allowlist; not integrated)."
+ },
+ "funding": {
+  "text": "Mandatory Student Transportation Fee: $151 per semester (Fall 2026, Spring 2027; $146 Summer 2026). Funds the Lyft program, USC buses (including LAX shuttles in some breaks) and the Metro U-Pass. Only waiver: active USC employees by primary Workday classification.",
+  "sources": [
+   {
+    "url": "https://arr.usc.edu/tuition-and-fees/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/student-transportation-fee/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "lyft": {
+  "name": "USC Lyft Rides Program",
+  "cost_to_student": "Free if the ride qualifies (fare quote shows FREE; $0.00 receipt)",
+  "eligibility": "Current USC students, faculty and staff",
+  "hours": {
+   "UPC": {
+    "days": "daily",
+    "start": "19:00",
+    "end": "02:00"
+   },
+   "HSC": {
+    "days": "Mon-Fri only",
+    "start": "17:00",
+    "end": "02:00",
+    "note": "includes service to/from Union Station"
+   },
+   "game_day_UPC": "Fall home football game days: starts 5 hours after scheduled kickoff or at normal hours, whichever is later (e.g. Sept 26, 4:30 PM kickoff -> 9:30 PM).",
+   "other_changes": "Hours can change for holidays and periods such as finals week (specific Nov-Dec 2026 changes not posted)."
+  },
+  "boundary_UPC": {
+   "east_of": "Normandie Ave",
+   "south_of": "Washington Blvd",
+   "west_of": "Main St",
+   "north_of": "Martin Luther King Jr. Blvd",
+   "rule": "Ride must START and END inside the geofence; rides between UPC and HSC are not covered. Geofence polygon itself is not published as data."
+  },
+  "ride_limits": {
+   "per_ride_or_per_month_count": "NONE PUBLISHED. The program \"runs on limited credits that automatically renew every month\"; footnote: \"Maximum monthly benefit is $1,000.\" No per-student ride count is stated.",
+   "ride_type": "Must choose Shared. Not covered: LUX, priority pickups, scheduled rides, added stops, tips, PrimeTime, cancellation fees. Lyft Business users must ride in PERSONAL mode.",
+   "unsafe_cancel": "Lyft charges $5 to cancel but waives it if you request through in-app support saying you canceled because you felt unsafe."
+  },
+  "how_to_enroll": [
+   "Open the Lyft app Payment section and look for \"USC Lyft Rides\" (\"HSC USC Rides\" at HSC)",
+   "If missing, submit the Lyft Invite form on the USC Transportation Lyft page (invites go out the week before each semester)",
+   "Do not share the invite; it is single-use",
+   "Changed phone number: update it in your existing Lyft account, do not create a new one"
+  ],
+  "pickup_zones_UPC": {
+   "06:00-20:00": [
+    "Parkside Apartments",
+    "Uytengsu Aquatics Center",
+    "Kennedy Field",
+    "Lot L",
+    "Lot V",
+    "Lot M",
+    "TRF Research",
+    "EVK",
+    "USC Hotel",
+    "Watt Way"
+   ],
+   "20:00-06:00 (McCarthy/Figueroa)": [
+    "EVK (inside McCarthy Way Entrance)",
+    "USC Hotel"
+   ],
+   "University Village area": [
+    "Cardinal Gardens Apartments (near the Metro stop at McClintock)",
+    "Hebrew Union College on 32nd Street"
+   ]
+  },
+  "accessibility": "Lyft's WAV Rides program for non-collapsible or motorized wheelchairs.",
+  "contact": "auxtrans@usc.edu",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/how-to-use-lyft/",
+    "type": "live (fetched 2026-11-09)"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/gameday/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/2025/11/06/community-safety-advisory-21/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "campus_cruiser": {
+  "status": "Suspended (listed by USC Transportation as suspended). The free Lyft program replaces it.",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "usc_buses": [
+  {
+   "id": "ics",
+   "name": "Intercampus Shuttle (ICS) UPC - Union Station - HSC",
+   "days": "Mon-Fri",
+   "stops": [
+    "Jefferson bus turnout (Jefferson Blvd just east of Hoover St)",
+    "Union Station, Patsaouras Plaza Berth #6",
+    "HSC: Eastlake Ave just south of Biggy St (does not serve Soto)"
+   ],
+   "departures_from_UPC": [
+    "07:00",
+    "07:40",
+    "08:20",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:20",
+    "14:30",
+    "14:50",
+    "15:05",
+    "15:20",
+    "15:45",
+    "16:20",
+    "16:45",
+    "17:10",
+    "18:05",
+    "18:55",
+    "19:35",
+    "20:00",
+    "20:40",
+    "21:20"
+   ],
+   "departures_from_HSC": [
+    "07:00",
+    "07:40",
+    "08:20",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:45",
+    "15:00",
+    "16:05",
+    "16:15",
+    "16:30",
+    "17:05",
+    "17:30",
+    "18:05",
+    "18:15",
+    "18:55",
+    "19:30",
+    "20:00",
+    "20:40",
+    "21:20",
+    "22:05"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    },
+    {
+     "url": "https://transnet.usc.edu/index.php/tramroutes/intercampus-ics-upc-to-hsc/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "upc-us",
+   "name": "UPC to Union Station",
+   "days": "Mon-Fri",
+   "span": [
+    "07:00",
+    "22:05"
+   ],
+   "stops": [
+    "Jefferson bus turnout (just east of Hoover)",
+    "Union Station Berth #6"
+   ],
+   "departures": [
+    "07:00",
+    "07:40",
+    "08:20",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:20",
+    "14:30",
+    "14:50",
+    "15:05",
+    "15:20",
+    "15:45",
+    "15:55",
+    "16:10",
+    "16:20",
+    "16:30",
+    "16:45",
+    "17:00",
+    "17:10",
+    "17:20",
+    "17:30",
+    "17:40",
+    "18:05",
+    "18:55",
+    "19:35",
+    "20:00",
+    "20:40",
+    "21:20",
+    "22:05"
+   ],
+   "note": "Before 3:55 PM and 6:05-9:25 PM all service is the ICS. Useful for Amtrak/Metrolink and the LAX FlyAway ($9.75, not covered by U-Pass).",
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "us-upc",
+   "name": "Union Station to UPC",
+   "days": "Mon-Fri",
+   "span": [
+    "06:33",
+    "22:15"
+   ],
+   "stops": [
+    "Union Station Berth #6",
+    "Jefferson bus turnout (Jefferson at Hoover); all UPC stops discharge only"
+   ],
+   "departures": [
+    "06:33",
+    "06:48",
+    "07:03",
+    "07:12",
+    "07:24",
+    "07:34",
+    "07:41",
+    "07:58",
+    "08:15",
+    "08:26",
+    "08:31",
+    "08:35",
+    "08:42",
+    "08:54",
+    "09:12",
+    "09:26",
+    "09:33",
+    "09:40",
+    "09:48",
+    "10:10",
+    "10:40",
+    "11:10",
+    "11:40",
+    "12:10",
+    "12:40",
+    "13:10",
+    "13:40",
+    "14:10",
+    "19:40",
+    "20:10",
+    "20:50",
+    "21:30",
+    "22:15"
+   ],
+   "afternoon_estimated_windows": [
+    "15:06-15:12",
+    "16:14-16:20",
+    "16:36-16:42",
+    "17:26-17:32",
+    "18:11-18:17",
+    "18:21-18:27",
+    "19:01-19:07"
+   ],
+   "note": "Page lists \"933 AM\" which is read here as 9:33 AM.",
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "weekend-ics",
+   "name": "Weekend Intercampus Shuttle",
+   "days": "Sat-Sun",
+   "span": [
+    "08:30",
+    "16:40"
+   ],
+   "not_running": [
+    "USC home football game days (next: 2026-11-21)",
+    "2026-11-28",
+    "2026-11-29",
+    "Winter break",
+    "Summer"
+   ],
+   "trips": [
+    "08:30 UPC-US",
+    "08:45 US-HSC",
+    "09:05 HSC-US",
+    "09:15 US-UPC",
+    "09:55 UPC-US",
+    "10:10 US-HSC",
+    "10:30 HSC-US",
+    "10:40 US-UPC",
+    "12:20 UPC-US",
+    "12:35 US-HSC",
+    "12:55 HSC-US",
+    "13:05 US-UPC",
+    "13:25 UPC-US",
+    "13:40 US-HSC",
+    "14:00 HSC-US",
+    "14:10 US-UPC",
+    "14:50 UPC-US",
+    "15:05 US-HSC",
+    "15:25 HSC-US",
+    "15:35 US-UPC",
+    "15:55 UPC-US",
+    "16:10 US-HSC",
+    "16:30 HSC-US",
+    "16:40 US-UPC"
+   ],
+   "stops": {
+    "UPC": "Jefferson bus turnout on Jefferson at Hoover",
+    "US": "Union Station",
+    "HSC": "Eastlake at Biggy"
+   },
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "c-route",
+   "name": "C Route (north neighborhood loop)",
+   "days": "Mon-Fri",
+   "headway_min": 20,
+   "span": [
+    "06:30",
+    "19:00"
+   ],
+   "departures_from_leavey": [
+    "06:30",
+    "07:00",
+    "07:20",
+    "07:40",
+    "08:00",
+    "08:20",
+    "08:40",
+    "09:00",
+    "09:20",
+    "09:40",
+    "10:00",
+    "10:20",
+    "10:40",
+    "11:00",
+    "11:20",
+    "11:40",
+    "12:00",
+    "12:20",
+    "12:40",
+    "13:00",
+    "13:20",
+    "13:40",
+    "14:00",
+    "14:20",
+    "14:30",
+    "15:00",
+    "15:20",
+    "15:40",
+    "16:00",
+    "16:20",
+    "16:40",
+    "17:00",
+    "17:20",
+    "17:40",
+    "18:00",
+    "18:30",
+    "19:00"
+   ],
+   "stops": [
+    "Leavey Library",
+    "JEP House",
+    "Ostrow Dental School",
+    "34th & McClintock",
+    "University Village",
+    "University Regents Apts",
+    "28th & Orchard",
+    "29th & Orchard",
+    "2726 Menlo",
+    "2658 Menlo",
+    "Adams & Menlo",
+    "2632 Ellendale",
+    "2700 Ellendale",
+    "1358 W. 24th",
+    "24th and Ellendale",
+    "24th & Magnolia",
+    "24th Street Theater",
+    "23rd & Portland",
+    "2341 Portland",
+    "Centennial Apts",
+    "Sierra Apts",
+    "Founders Apts",
+    "Hillview Apts",
+    "Pacific Apts",
+    "28th & University",
+    "Troy East"
+   ],
+   "note": "Daytime weekday only. There is NO USC evening/overnight neighborhood loop; evening rides are the free Lyft program.",
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "parking-center",
+   "name": "Parking Center route",
+   "days": "Mon-Fri",
+   "headway_min": 30,
+   "span": [
+    "09:00",
+    "15:00"
+   ],
+   "departures": [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00"
+   ],
+   "stops": [
+    "Grand Structure",
+    "Carol Little Building (CAL) - North",
+    "Leavey Library",
+    "JEP House",
+    "Ostrow Dental School",
+    "34th & McClintock",
+    "Michelson (MCB)",
+    "Vivian Hall",
+    "Pardee Way Entrance",
+    "Transit Center",
+    "Carol Little Building (CAL) - South (drop-only)"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "cal-us",
+   "name": "CAL to Union Station",
+   "days": "Mon-Fri",
+   "departures": [
+    "13:50",
+    "14:10",
+    "14:20",
+    "14:40",
+    "14:55",
+    "16:00"
+   ],
+   "stops": [
+    "CAL",
+    "Jefferson bus turnout",
+    "Union Station"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "sct",
+   "name": "UPC <-> SC Tower (SCT, Olive St between 11th and 12th, downtown)",
+   "days": "Mon-Fri",
+   "headway_min": 30,
+   "from_UPC": {
+    "stop": "DASH stop on Jefferson (just east of Royal Entrance)",
+    "span": [
+     "08:00",
+     "17:30"
+    ]
+   },
+   "from_SCT": {
+    "span": [
+     "08:15",
+     "17:45"
+    ]
+   },
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "mdr",
+   "name": "Marina del Rey shuttle (UPC - ICT Playa Vista - ISI)",
+   "days": "Mon-Fri",
+   "departures_from_UPC_vivian_hall": [
+    "08:05",
+    "10:00",
+    "12:00",
+    "15:40",
+    "17:45"
+   ],
+   "stops": [
+    "Vivian Hall",
+    "ICT, 12015 Waterfront Dr, Playa Vista",
+    "ISI, Mindanao Way just west of Admiralty Way"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "hsc-circuit",
+   "name": "Circuit Tram (HSC)",
+   "days": "Mon-Fri",
+   "span": [
+    "07:00",
+    "16:40"
+   ],
+   "headway": "every 30 min 7:00-9:00 AM, every 20 min 9:00 AM-4:40 PM",
+   "stops": [
+    "Biggy & Eastlake",
+    "Keck Hospital",
+    "Outpatient (OPD)",
+    "Busway",
+    "HRA",
+    "New County Hospital (State Street)"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "hsc-soto",
+   "name": "Soto Route (HSC, serves Valley Lot)",
+   "days": "Mon-Fri",
+   "span": [
+    "06:40",
+    "18:00"
+   ],
+   "headway_min": 20,
+   "stops": [
+    "Soto 1",
+    "Valley Lot",
+    "Keck bus turnout (San Pablo)",
+    "CSC (Alcazar)",
+    "Soto 2"
+   ],
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+     "type": "live (fetched 2026-11-09)"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "gameday-shuttle",
+   "name": "Game day shuttle (Grand Ave Structure -> Pardee Way)",
+   "days": "Home football game days",
+   "span": "Starts 3 hours before kickoff; return trips begin at the start of the 4th quarter",
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/gameday/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": "lax-break",
+   "name": "LAX shuttles before academic breaks",
+   "text": "Limited, reservation-based shuttles from Widney Alumni House (Fall Break 2026: Oct 7-8, hourly 8 AM-5 PM). Thanksgiving/winter 2026 dates had not been posted as of Nov 9.",
+   "sources": [
+    {
+     "url": "https://transnet.usc.edu/index.php/news-announcements/",
+     "type": "kb"
+    }
+   ],
+   "verified": true
+  }
+ ],
+ "usc_buses_rules": {
+  "id": "Carry your USC ID; drivers may ask to see it.",
+  "tracking": "ETA SPOT app",
+  "holidays": "No service on university holidays",
+  "sources": [
+   {
+    "url": "https://orientation.usc.edu/undergraduate/resources/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/bus-map-schedules/",
+    "type": "live (fetched 2026-11-09)"
+   }
+  ],
+  "verified": true
+ },
+ "metro": {
+  "stations_near_UPC": [
+   {
+    "name": "Jefferson/USC",
+    "line": "E Line"
+   },
+   {
+    "name": "Expo Park/USC",
+    "line": "E Line"
+   },
+   {
+    "name": "Expo/Vermont",
+    "line": "E Line"
+   },
+   {
+    "name": "37th Street/USC",
+    "line": "J Line (bus rapid transit)"
+   }
+  ],
+  "to_LAX": "E Line westbound to Expo/Crenshaw, K Line southbound to LAX/Metro Transit Center, then free LAX Metro Connector shuttle (every 10-15 min, 4 AM-1 AM). Or J Line south to Harbor Fwy, then C Line west.",
+  "directions_and_headways": {
+   "verified": false,
+   "note": "E Line terminals, train frequency and first/last train times are NOT on any allowed USC page (metro.net is not on the allowlist). The current Trojan Hub labels (\"Downtown LA (7th St/Metro)\" / \"Downtown Santa Monica\", every 8/12/20 min) are unverified; since the 2023 Regional Connector the eastbound E Line is generally understood to continue through downtown to East LA (Atlantic) - unverified here, check metro.net."
+  },
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/student-u-pass/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/getting-to-lax/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "u_pass": {
+  "name": "Metro U-Pass",
+  "eligibility": "ALL current USC students (graduate and undergraduate)",
+  "cost": "No additional cost (paid by the Transportation Fee)",
+  "term": "Fall 2026 program began Aug 17, 2026 and runs through the beginning of January. Must re-register every semester; keep the same card (\"RENEWAL\").",
+  "valid_on": [
+   "All LA Metro buses and trains (incl. Metro Rapid)",
+   "LADOT DASH (not Commuter Express)",
+   "Santa Monica Big Blue Bus",
+   "Culver City Bus",
+   "Norwalk Transit",
+   "Torrance Transit",
+   "Gardena Transit",
+   "Long Beach Transit",
+   "Foothill Transit (except commuter express 490, 493, 495, 498, 499, 699)"
+  ],
+  "not_valid_on": [
+   "Metrolink",
+   "Amtrak",
+   "LAX FlyAway"
+  ],
+  "card": "A PHYSICAL card issued by USC is required to begin. Pick up at USC Transportation, McCarthy Structure (Mon-Fri 8:30-3:00) at UPC, or KAM-120 (Mon-Fri 7:30-4:00) at HSC. No phone/mobile wallet version is mentioned.",
+  "steps": [
+   "Have a physical USC-issued U-Pass card (pick one up if you do not)",
+   "Complete the online U-Pass form on USC Transportation's U-Pass page",
+   "Open the LA Metro link in the automatic confirmation email",
+   "Enter your 20-digit card number and the activation code shown on the page/email, check the acknowledgement box, click Submit",
+   "Wait 24 hours",
+   "Tap the card at any Metro station or on a bus within 14 days to lock in the activation (hold until the kiosk beeps)"
+  ],
+  "common_failure": "Almost every U-Pass issue comes from not tapping within 14 days to lock in activation.",
+  "contact": "tsubsidy@usc.edu (Rideshare Coordinator)",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/student-u-pass/",
+    "type": "live (fetched 2026-11-09)"
+   },
+   {
+    "url": "https://orientation.usc.edu/undergraduate/resources/",
+    "type": "kb"
+   }
+  ],
+  "verified": true,
+  "note": "The per-semester activation code is printed on the public page; it is intentionally not copied here. Show users the official page instead."
+ },
+ "metrolink": {
+  "text": "Active students get 50% off Metrolink: download the Metrolink app, register with your school email, choose \"Student/Youth\" rider type, carry a valid student ID. U-Pass is not valid on Metrolink.",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/metrolink-student-pass/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "zipcar": {
+  "program": "USC partners with Zipcar for self-service car sharing. Students join FREE for the first year, then $35/year ($55 off standard). 24/7 access; discounted hourly rates for USC faculty, staff and students 18+; gas, insurance and maintenance included. Reserve online/by phone, unlock with the phone (Bluetooth), return to the same spot.",
+  "locations": null,
+  "locations_note": "USC does not list Zipcar pick-up locations on its pages; zipcar.com is not on the allowlist. Current Trojan Hub locations (\"Village Structure\", \"Structure X\") and named cars/rates are unverified. USC parking rules confirm marked Zipcar spaces exist ($80 fine for parking in one).",
+  "vehicles_and_rates": null,
+  "enterprise": "Enterprise is USC's preferred rental provider, with a dedicated link for USC students 21+.",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/zipcar/",
+    "type": "live (fetched 2026-11-09)"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/parking-violations/",
+    "type": "kb"
+   }
+  ],
+  "verified": true,
+  "locations_verified": false
+ },
+ "bikes": {
+  "metro_bike_share": {
+   "stations_near_UPC": [
+    "Expo & Vermont",
+    "Figueroa & McCarthy",
+    "Jefferson & Figueroa",
+    "University & Hoover"
+   ],
+   "note": "At least four stations; discounted student pass available; return to any station (listen for three beeps)."
+  },
+  "registration": "Free DPS registration is required by USC policy if you ride or park a bike on campus (also scooters/skateboards): submit the online form, then pick up the decal at DPS in Parking Structure A (PSA). Questions: (213) 740-5519.",
+  "parking": "Use racks (two locks or a U-lock through frame and rear wheel). USC Village has secure indoor bike parking (built for 1,500+ bikes). USC Transportation publishes an interactive map of racks, repair stations and bike share.",
+  "housing_rule": "E-scooters and hoverboards may not be used or kept in university-owned housing.",
+  "nearby_shops": [
+   "3 Brother's Bike Shop, 3008 Vermont Ave",
+   "Lux's Bicycle Shop, 1305 W Jefferson Blvd"
+  ],
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/usc-bike-program/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/services/bikes/",
+    "type": "kb"
+   },
+   {
+    "url": "https://safety.usc.edu/tips/mobility-speed/",
+    "type": "kb"
+   },
+   {
+    "url": "https://dps.usc.edu/safety-tips/bicycle-scooter-and-skateboard-safety-guide/",
+    "type": "kb"
+   },
+   {
+    "url": "https://village.usc.edu/newsroom/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ },
+ "parking": {
+  "visitor_rates": {
+   "daily": "$20/day (Text2Park +$0.50 one-time fee; Pay-by-Plate no fee), e.g. McCarthy Way Structure",
+   "hourly": "$4/hour at Figueroa and USC Shrine structures and Jefferson Structure (after 12 PM); Text2Park up to 4 h, 5+ h charged $20",
+   "cheapest": "Grand Ave Structure $2/hour or $14/day",
+   "game_day": "$50 per home football game (all entrances), plus Text2Park fees; cashless",
+   "free_parking": "None; USC Transportation FAQ says there is no free parking at USC. Pay-by-Plate/Text2Park areas are enforced 24 h."
+  },
+  "student_permits_per_semester_FY27": [
+   {
+    "name": "UPC Gold",
+    "price": 612,
+    "where": "Downey, Jefferson, Royal, McCarthy, Flower, Figueroa or USC Shrine structures; Lots C, Z, 21, 27, 28, 33, RAN"
+   },
+   {
+    "name": "UPC Cardinal",
+    "price": 477,
+    "where": "Grand Ave. Structure; Lots 29A and 29B"
+   },
+   {
+    "name": "Student Evening",
+    "price": 306,
+    "where": "Valid 5:00 PM - 7:00 AM only; not valid on game days"
+   },
+   {
+    "name": "Motorcycle",
+    "price": 108
+   },
+   {
+    "name": "UPC Off-Campus Student Housing",
+    "price": 432,
+    "note": "not valid on game days"
+   },
+   {
+    "name": "HSC Gold",
+    "price": 612,
+    "where": "San Pablo, Biggy structures; Lots 70, 71, Eastlake, CSPL, O'Neal, Soto, Consolidated"
+   },
+   {
+    "name": "HSC Cardinal",
+    "price": 477,
+    "where": "Valley Lot, HRA"
+   },
+   {
+    "name": "HSC Carpool Gold",
+    "price": 477,
+    "where": "Gold locations; separate application"
+   }
+  ],
+  "permit_notes": "Rates effective July 1, 2026; include the 10% City of LA Parking Occupancy Tax. Online orders add a $5 transaction fee. Carpool permits: every member has their own registered vehicle and lives 2+ miles away; passengers get 3 free passes a month.",
+  "fines": {
+   "no_permit_or_unpaid_T2P": 65,
+   "unpaid_T2P_game_day": 80,
+   "zipcar_space": 80,
+   "village_garage_unpaid": 80,
+   "red_zone_fire_lane_hydrant": 100,
+   "improper_display": 25,
+   "boot": "100 + outstanding"
+  },
+  "structures": "See places.json parking[] for each structure with address and hours.",
+  "sources": [
+   {
+    "url": "https://transnet.usc.edu/index.php/parking-rates/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/daily-and-hourly-parking/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/parking-violations/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/gameday/",
+    "type": "kb"
+   },
+   {
+    "url": "https://transnet.usc.edu/index.php/student-u-pass/",
+    "type": "kb"
+   }
+  ],
+  "verified": true
+ }
+}

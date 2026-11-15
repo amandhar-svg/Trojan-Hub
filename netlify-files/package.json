@@ -1,0 +1,12 @@
+{
+  "name": "trojan-hub-netlify",
+  "private": true,
+  "type": "module",
+  "description": "Trojan Hub with Ask Tommy's AI translator on the Claude API (Netlify Function)",
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
