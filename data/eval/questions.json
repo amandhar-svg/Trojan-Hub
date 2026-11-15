@@ -1,0 +1,3310 @@
+{
+ "built": "2026-11-15",
+ "note": "No crisis/self-harm messages; that suite is tested elsewhere.",
+ "items": [
+  {
+   "id": "A001",
+   "text": "when does leavey close tonight",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Leavey Library hours today (open 24h Mon-Thu per libraries.usc.edu)"
+  },
+  {
+   "id": "A002",
+   "text": "is doheny open rn",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Doheny Memorial Library open/closed status now and today's hours"
+  },
+  {
+   "id": "A003",
+   "text": "find me a library that's beautiful with a lot of greenery and an old library",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "An old, beautiful library with greenery: Doheny (1932, courtyard) and/or Hoose Library of Philosophy; not just a list of hours"
+  },
+  {
+   "id": "A004",
+   "text": "what libraries are open 24 hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Leavey (24h most weekdays) named as the 24-hour library, with days"
+  },
+  {
+   "id": "A005",
+   "text": "which library is open latest on saturday",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Compare Saturday closing times; Leavey 9 PM etc."
+  },
+  {
+   "id": "A006",
+   "text": "science library hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Science and Engineering Library (SEL) hours"
+  },
+  {
+   "id": "A007",
+   "text": "where is the engineering library",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "SEL location (Seaver Science Library building) with map link"
+  },
+  {
+   "id": "A008",
+   "text": "hoose library of philosophy hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Hoose Library of Philosophy hours/open status"
+  },
+  {
+   "id": "A009",
+   "text": "is the music library open on sunday",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Music Library Sunday hours"
+  },
+  {
+   "id": "A010",
+   "text": "cinema library hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Cinematic Arts Library hours"
+  },
+  {
+   "id": "A011",
+   "text": "can i print at leavey",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Printing at Leavey (ITS/Library printing, cost or how to print)"
+  },
+  {
+   "id": "A012",
+   "text": "how do i reserve a study room in leavey",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "How to book a Leavey group study room (libcal/booking) or offer to book"
+  },
+  {
+   "id": "A013",
+   "text": "what library has the most outlets lol",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "A library suggestion with outlets/charging (e.g. Leavey Information Commons); honest if unknown"
+  },
+  {
+   "id": "A014",
+   "text": "library w/ no talking zone",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Quiet/silent floor in a library (e.g. Doheny reading rooms / quiet floors)"
+  },
+  {
+   "id": "A015",
+   "text": "does doheny have a cafe",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Literatea cafe in Doheny"
+  },
+  {
+   "id": "A016",
+   "text": "can non usc ppl get into leavey",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Library access policy for visitors/guests (USC ID required at certain hours)"
+  },
+  {
+   "id": "A017",
+   "text": "how many books can i check out",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Borrowing limits / loan policy from USC Libraries"
+  },
+  {
+   "id": "A018",
+   "text": "grand ave library where",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Grand Avenue Library location (formerly Business/Architecture? at Grand Ave)"
+  },
+  {
+   "id": "A019",
+   "text": "is norris medical library at hsc",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Yes, Norris Medical Library is on the Health Sciences Campus; hours/location"
+  },
+  {
+   "id": "A020",
+   "text": "east asian library hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "East Asian Library hours (in Doheny)"
+  },
+  {
+   "id": "A021",
+   "text": "what time does the business library close",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Gaughan and Tiberti Business Library hours"
+  },
+  {
+   "id": "A022",
+   "text": "libary hours today",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "General library hours today (typo tolerated): list of libraries open now"
+  },
+  {
+   "id": "A023",
+   "text": "does leavey have computers",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Yes, Leavey Ahmanson Information Commons computers"
+  },
+  {
+   "id": "A024",
+   "text": "can i bring food into doheny",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Food policy in Doheny library"
+  },
+  {
+   "id": "A025",
+   "text": "how to get a library card as a usc student",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "USC ID card is the library card"
+  },
+  {
+   "id": "A026",
+   "text": "quiet place to study open late near the village",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "A quiet study spot open late near USC Village (e.g. Leavey is closest 24h; Village options) with hours"
+  },
+  {
+   "id": "A027",
+   "text": "best place to study for finals",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Recommended study spots (Leavey, Doheny, SEL, etc.) with hours"
+  },
+  {
+   "id": "A028",
+   "text": "where can i study at 2am",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "24-hour spot: Leavey (Mon-Thu) with ID access note"
+  },
+  {
+   "id": "A029",
+   "text": "study spot with natural light and outlets",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "A study spot meeting both constraints, or honest about outlet data"
+  },
+  {
+   "id": "A030",
+   "text": "group study rooms on campus",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Where to book group study rooms (libraries, Leavey) and how"
+  },
+  {
+   "id": "A031",
+   "text": "outdoor study spots usc",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Outdoor study places (e.g. Doheny courtyard, Village, Alumni Park)"
+  },
+  {
+   "id": "A032",
+   "text": "somewhere to take a zoom call on campus",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Bookable room or quiet space for calls"
+  },
+  {
+   "id": "A033",
+   "text": "study spot near viterbi",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Study spots near engineering buildings (SEL, Tutor Hall Caf\u00e9, etc.)"
+  },
+  {
+   "id": "A034",
+   "text": "where can i nap on campus",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Nap spots / quiet lounges (honest)"
+  },
+  {
+   "id": "A035",
+   "text": "is the tcc 3rd floor good for studying",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "TCC 3rd Floor Lounge info"
+  },
+  {
+   "id": "A036",
+   "text": "quiet place to study near ronald tutor campus center thats open after midnight",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "A spot near TCC open past midnight (Leavey) \u2014 must satisfy both constraints"
+  },
+  {
+   "id": "A037",
+   "text": "where do people study on weekends",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Weekend-open study spaces with weekend hours"
+  },
+  {
+   "id": "A038",
+   "text": "computer labs open now",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "ITS computing centers (KOH 206, WPH B34, Leavey Info Commons) open status"
+  },
+  {
+   "id": "A039",
+   "text": "study cafe with good coffee on campus",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Caf\u00e9 to study at (Literatea, Trojan Grounds, etc.) with hours"
+  },
+  {
+   "id": "A040",
+   "text": "quiet study spot with whiteboards",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Rooms with whiteboards (group study rooms) \u2014 constraint addressed"
+  },
+  {
+   "id": "A041",
+   "text": "is evk open",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "EVK open/closed now and today's hours"
+  },
+  {
+   "id": "A042",
+   "text": "parkside hours",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Parkside dining hall hours"
+  },
+  {
+   "id": "A043",
+   "text": "what's for lunch at village dining",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Village Dining Hall lunch menu or honest pointer to menu"
+  },
+  {
+   "id": "A044",
+   "text": "which dining hall is open right now",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "List of dining halls open now with hours"
+  },
+  {
+   "id": "A045",
+   "text": "vegan food on campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Vegan options (dining halls, Seeds, etc.)"
+  },
+  {
+   "id": "A046",
+   "text": "where can i get halal food",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Halal options on/near campus"
+  },
+  {
+   "id": "A047",
+   "text": "gluten free dining options",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Gluten-free options (dining halls allergen stations)"
+  },
+  {
+   "id": "A048",
+   "text": "late night food near campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Food open late (e.g. late-night spots, Seeds, Village)"
+  },
+  {
+   "id": "A049",
+   "text": "where can i get boba near usc",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Boba places near USC Village/Figueroa"
+  },
+  {
+   "id": "A050",
+   "text": "cheapest place to eat on campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Affordable dining options"
+  },
+  {
+   "id": "A051",
+   "text": "does evk have breakfast on weekends",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "EVK weekend brunch/breakfast hours"
+  },
+  {
+   "id": "A052",
+   "text": "how many meal swipes do i have",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Meal plan balance / honest pointer (personal)"
+  },
+  {
+   "id": "A053",
+   "text": "can i use dining dollars at trader joes",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Dining Dollars usage policy (Trader Joe's at Village accepts? honest)"
+  },
+  {
+   "id": "A054",
+   "text": "panda express hours",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Panda Express (UPC) hours"
+  },
+  {
+   "id": "A055",
+   "text": "coffee open past 9pm",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Coffee open late on campus"
+  },
+  {
+   "id": "A056",
+   "text": "where's the closest starbucks",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Starbucks near campus (Village) or honest"
+  },
+  {
+   "id": "A057",
+   "text": "trojan grounds hours",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Trojan Grounds hours"
+  },
+  {
+   "id": "A058",
+   "text": "what's the best dining hall",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Comparison/opinion of EVK, Parkside, Village with honest framing"
+  },
+  {
+   "id": "A059",
+   "text": "can my friend eat at the dining hall with me",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Guest meal / visitor pricing at dining halls"
+  },
+  {
+   "id": "A060",
+   "text": "dining hall that has sushi",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Which dining venue has sushi"
+  },
+  {
+   "id": "A061",
+   "text": "pizza on campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Slice Shop / Rosso Oro's pizza with hours"
+  },
+  {
+   "id": "A062",
+   "text": "is mckays open for dinner",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "McKay's dinner hours"
+  },
+  {
+   "id": "A063",
+   "text": "food at the law school",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Law School Cafe hours"
+  },
+  {
+   "id": "A064",
+   "text": "what dining halls are open on saturday",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Saturday dining hall hours"
+  },
+  {
+   "id": "A065",
+   "text": "is there kosher food",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Kosher options (Hillel / dining)"
+  },
+  {
+   "id": "A066",
+   "text": "whats open to eat at 11pm on a friday",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Venues open at 11pm Friday \u2014 must respect time constraint"
+  },
+  {
+   "id": "A067",
+   "text": "healthy lunch near annenberg",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Healthy option near Annenberg (Caf\u00e9 Annenberg) \u2014 location constraint"
+  },
+  {
+   "id": "A068",
+   "text": "game day dining hours nov 21",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Game-day (Nov 21) dining hours from data"
+  },
+  {
+   "id": "A069",
+   "text": "seeds marketplace hours",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Seeds Marketplace hours"
+  },
+  {
+   "id": "A070",
+   "text": "where can i buy groceries near campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Trader Joe's at USC Village / Target"
+  },
+  {
+   "id": "A071",
+   "text": "is the lyon center open",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Lyon Center open status and hours"
+  },
+  {
+   "id": "A072",
+   "text": "village gym hours",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "USC Village Fitness Center hours"
+  },
+  {
+   "id": "A073",
+   "text": "can i swim at usc",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Uytengsu Aquatics Center rec swim hours"
+  },
+  {
+   "id": "A074",
+   "text": "gym open latest tonight",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Compare gym closing times tonight"
+  },
+  {
+   "id": "A075",
+   "text": "does lyon center have a climbing wall",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Lyon Center climbing wall info"
+  },
+  {
+   "id": "A076",
+   "text": "how busy is the gym rn",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Gym occupancy / honest about live crowd data"
+  },
+  {
+   "id": "A077",
+   "text": "group fitness classes usc",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Rec Sports group fitness classes info"
+  },
+  {
+   "id": "A078",
+   "text": "can i bring a guest to the gym",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Rec center guest policy"
+  },
+  {
+   "id": "A079",
+   "text": "basketball courts on campus",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Where to play pickup basketball (Lyon Center)"
+  },
+  {
+   "id": "A080",
+   "text": "intramural sports how to join",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "IM sports signup (IMLeagues / Rec Sports)"
+  },
+  {
+   "id": "A081",
+   "text": "is there a gym at hsc",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "HSC Fitness Center"
+  },
+  {
+   "id": "A082",
+   "text": "yoga on campus",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Yoga classes / spaces"
+  },
+  {
+   "id": "A083",
+   "text": "tennis courts usc open to students",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Tennis court access"
+  },
+  {
+   "id": "A084",
+   "text": "gym hours on sunday",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Sunday hours for rec centers"
+  },
+  {
+   "id": "A085",
+   "text": "where can i run on campus",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Running routes/track access"
+  },
+  {
+   "id": "A086",
+   "text": "which gates are open right now",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Current open/closed campus gates and hours"
+  },
+  {
+   "id": "A087",
+   "text": "is the gate by the village open at night",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Gate status for Village-side entrance at night"
+  },
+  {
+   "id": "A088",
+   "text": "how do i get my friend onto campus at night",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Evening access policy (Trojan Check/ID, guest process) \u2014 info answer"
+  },
+  {
+   "id": "A089",
+   "text": "what time does campus close to the public",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Campus access hours for non-USC visitors"
+  },
+  {
+   "id": "A090",
+   "text": "can visitors walk around campus",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Visitor access policy"
+  },
+  {
+   "id": "A091",
+   "text": "is campus open on weekends",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Weekend access policy"
+  },
+  {
+   "id": "A092",
+   "text": "what is trojan check",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Trojan Check explanation"
+  },
+  {
+   "id": "A093",
+   "text": "which entrance can cars use",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Vehicle entrances (e.g. Gate 1 Exposition, Gate 3 Jefferson...)"
+  },
+  {
+   "id": "A094",
+   "text": "do i need my id to get on campus",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "ID requirement policy"
+  },
+  {
+   "id": "A095",
+   "text": "how do i get on campus as a guest speaker",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Guest/visitor access procedure"
+  },
+  {
+   "id": "A096",
+   "text": "gate 1 hours",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Gate 1 hours/status"
+  },
+  {
+   "id": "A097",
+   "text": "which gate is closest to the coliseum",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Gate nearest Coliseum (Exposition side)"
+  },
+  {
+   "id": "A098",
+   "text": "is hoover gate open",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Hoover-side entrance status"
+  },
+  {
+   "id": "A099",
+   "text": "where do uber drop offs happen",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Rideshare drop-off points"
+  },
+  {
+   "id": "A100",
+   "text": "how do i get to downtown la from usc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Metro E Line from Expo Park/USC or Jefferson/USC stations"
+  },
+  {
+   "id": "A101",
+   "text": "free ride home at night usc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "USC free ride service (Lyft program / Campus Cruiser successor) with hours/eligibility"
+  },
+  {
+   "id": "A102",
+   "text": "where's the nearest metro station",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Expo Park/USC or Jefferson/USC (E Line)"
+  },
+  {
+   "id": "A103",
+   "text": "parking for visitors",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Visitor parking structures (PSX, Figueroa, etc.) and rates"
+  },
+  {
+   "id": "A104",
+   "text": "how much is a parking permit",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Student parking permit pricing / Transportation office"
+  },
+  {
+   "id": "A105",
+   "text": "campus shuttle schedule",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "USC tram/shuttle routes and schedule"
+  },
+  {
+   "id": "A106",
+   "text": "how do i get to hsc from upc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Intercampus shuttle to Health Sciences Campus"
+  },
+  {
+   "id": "A107",
+   "text": "bike share near campus",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Metro Bike Share stations"
+  },
+  {
+   "id": "A108",
+   "text": "where can i park my bike",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Bike racks / bike registration"
+  },
+  {
+   "id": "A109",
+   "text": "lax to usc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Directions LAX to USC (FlyAway/Metro/rideshare)"
+  },
+  {
+   "id": "A110",
+   "text": "how to get to union station",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "E Line + transfer / directions"
+  },
+  {
+   "id": "A111",
+   "text": "is there a shuttle to the airport",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Airport shuttle availability (honest)"
+  },
+  {
+   "id": "A112",
+   "text": "nearest bike rack to leavey",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Bike parking near Leavey"
+  },
+  {
+   "id": "A113",
+   "text": "can i scooter on campus",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Scooter/e-scooter policy on campus"
+  },
+  {
+   "id": "A114",
+   "text": "where is the usc village parking",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "USC Village underground garage"
+  },
+  {
+   "id": "A115",
+   "text": "tap card discount for students",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "U-Pass / student TAP discount"
+  },
+  {
+   "id": "A116",
+   "text": "fryft hours",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "USC free Lyft ride program hours/boundaries"
+  },
+  {
+   "id": "A117",
+   "text": "dps non emergency number",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "DPS 213-740-4321 (and 911 for emergency)"
+  },
+  {
+   "id": "A118",
+   "text": "where are the blue light phones",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Blue light emergency phones locations"
+  },
+  {
+   "id": "A119",
+   "text": "is it safe to walk around usc at night",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Safety tips + free ride/escort options + DPS"
+  },
+  {
+   "id": "A120",
+   "text": "how do i get a safety escort",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Campus escort / free ride service details"
+  },
+  {
+   "id": "A121",
+   "text": "i lost my wallet on campus",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "DPS Lost and Found info"
+  },
+  {
+   "id": "A122",
+   "text": "where is the dps station",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "DPS University Park station location"
+  },
+  {
+   "id": "A123",
+   "text": "trojans alert sign up",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "How to sign up for TrojansAlert"
+  },
+  {
+   "id": "A124",
+   "text": "is the area near figueroa safe",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Honest safety info and resources, no invented crime stats"
+  },
+  {
+   "id": "A125",
+   "text": "bike got stolen what do i do",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Report to DPS, bike theft reporting"
+  },
+  {
+   "id": "A126",
+   "text": "what's the livesafe app",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "LiveSafe / USC safety app info"
+  },
+  {
+   "id": "A127",
+   "text": "is there a dps substation in the village",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "DPS USC Village sub-station"
+  },
+  {
+   "id": "A128",
+   "text": "recent crime near campus",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "DPS crime log / alerts info (real data or link)"
+  },
+  {
+   "id": "A129",
+   "text": "who teaches csci 104",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Instructor(s) for CSCI 104 from Schedule of Classes"
+  },
+  {
+   "id": "A130",
+   "text": "what are the prereqs for csci 201",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "CSCI 201 prerequisites"
+  },
+  {
+   "id": "A131",
+   "text": "is there a section of math 226 on tuesday thursday",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "MATH 226 sections with TTh times"
+  },
+  {
+   "id": "A132",
+   "text": "easy GE classes",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "GE suggestions \u2014 honest, not invented ratings"
+  },
+  {
+   "id": "A133",
+   "text": "when does writ 150 meet",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "WRIT 150 section times"
+  },
+  {
+   "id": "A134",
+   "text": "how many units is csci 270",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "CSCI 270 units"
+  },
+  {
+   "id": "A135",
+   "text": "who teaches econ 203 in spring",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "ECON 203 Spring 2027 instructors"
+  },
+  {
+   "id": "A136",
+   "text": "classes about ai next semester",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Spring 2027 AI-related courses from SOC"
+  },
+  {
+   "id": "A137",
+   "text": "is buad 304 hard",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Honest: no difficulty data; course info"
+  },
+  {
+   "id": "A138",
+   "text": "what's csci 310 about",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "CSCI 310 description"
+  },
+  {
+   "id": "A139",
+   "text": "find me a 2 unit class on fridays",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "2-unit courses meeting Friday \u2014 both constraints"
+  },
+  {
+   "id": "A140",
+   "text": "open seats in psyc 100",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "PSYC 100 seat availability (or honest if not live)"
+  },
+  {
+   "id": "A141",
+   "text": "where is my csci 104 lecture",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Location of the student's CSCI 104 lecture (personal)"
+  },
+  {
+   "id": "A142",
+   "text": "what time is my next class",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Student's next class time (personal)"
+  },
+  {
+   "id": "A143",
+   "text": "phys 151 final exam date",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "PHYS 151 final exam date/time (finals schedule)"
+  },
+  {
+   "id": "A144",
+   "text": "courses taught by mark redekopp",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Courses by that instructor (SOC)"
+  },
+  {
+   "id": "A145",
+   "text": "does ee 109 have a lab",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "EE 109 lab sections"
+  },
+  {
+   "id": "A146",
+   "text": "art classes for non majors",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Non-major art courses"
+  },
+  {
+   "id": "A147",
+   "text": "online classes spring 2027",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Online sections in Spring 2027"
+  },
+  {
+   "id": "A148",
+   "text": "whats a good class to take w csci 104",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Honest suggestion based on SOC/curriculum"
+  },
+  {
+   "id": "A149",
+   "text": "math 225 vs math 226",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Explain difference (Linear Algebra vs Calc III)"
+  },
+  {
+   "id": "A150",
+   "text": "csci 103 syllabus",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Syllabus pointer / honest"
+  },
+  {
+   "id": "A151",
+   "text": "who teaches the 9am section of math 125",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "MATH 125 9am section instructor \u2014 time constraint"
+  },
+  {
+   "id": "A152",
+   "text": "comm 200 sections spring",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "COMM 200 Spring 2027 sections"
+  },
+  {
+   "id": "A153",
+   "text": "cs classes taught by a woman professor",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Honest handling; can't infer gender \u2014 explain"
+  },
+  {
+   "id": "A154",
+   "text": "when is spring registration",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Spring 2027 registration dates/appointment info"
+  },
+  {
+   "id": "A155",
+   "text": "how do i check my registration time",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Where to find registration appointment (OASIS/Web Registration)"
+  },
+  {
+   "id": "A156",
+   "text": "how do i add a class off the waitlist",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Waitlist / d-clearance process"
+  },
+  {
+   "id": "A157",
+   "text": "what is d clearance",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "D-clearance explanation"
+  },
+  {
+   "id": "A158",
+   "text": "how do i get a d clearance",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Request d-clearance from department"
+  },
+  {
+   "id": "A159",
+   "text": "can i take more than 18 units",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Overload policy/approval and fees"
+  },
+  {
+   "id": "A160",
+   "text": "last day to drop a class without a w",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Drop deadline without W (with date)"
+  },
+  {
+   "id": "A161",
+   "text": "how do i declare a minor",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Minor declaration process"
+  },
+  {
+   "id": "A162",
+   "text": "pass no pass deadline",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "P/NP deadline"
+  },
+  {
+   "id": "A163",
+   "text": "can i audit a class",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Auditing policy"
+  },
+  {
+   "id": "A164",
+   "text": "how do i change my major",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Change of major process"
+  },
+  {
+   "id": "A165",
+   "text": "what is a registration hold",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Holds explanation and how to clear"
+  },
+  {
+   "id": "A166",
+   "text": "do i have any holds",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Student's holds (personal) or pointer"
+  },
+  {
+   "id": "A167",
+   "text": "how do i see my degree progress",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "STARS/degree progress report"
+  },
+  {
+   "id": "A168",
+   "text": "when is thanksgiving break",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Thanksgiving break dates 2026 (Nov 25-29)"
+  },
+  {
+   "id": "A169",
+   "text": "when do finals start",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Fall 2026 final exam dates"
+  },
+  {
+   "id": "A170",
+   "text": "last day of classes fall 2026",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Last day of classes date"
+  },
+  {
+   "id": "A171",
+   "text": "when does spring semester start",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Spring 2027 start date"
+  },
+  {
+   "id": "A172",
+   "text": "whats the next deadline",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Next academic deadline"
+  },
+  {
+   "id": "A173",
+   "text": "when is the withdraw deadline",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Withdrawal deadline (with W) date"
+  },
+  {
+   "id": "A174",
+   "text": "next break",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Next break (Thanksgiving) date"
+  },
+  {
+   "id": "A175",
+   "text": "when is spring break 2027",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Spring break dates 2027"
+  },
+  {
+   "id": "A176",
+   "text": "when is commencement",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Commencement date"
+  },
+  {
+   "id": "A177",
+   "text": "when are grades due",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Grades posting date / honest"
+  },
+  {
+   "id": "A178",
+   "text": "when is the tuition due date",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Spring tuition due date"
+  },
+  {
+   "id": "A179",
+   "text": "winter break dates",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Winter recess dates"
+  },
+  {
+   "id": "A180",
+   "text": "when is fafsa due for usc",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "USC FAFSA/CSS priority deadlines"
+  },
+  {
+   "id": "A181",
+   "text": "where is the financial aid office",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Financial Aid Office location and hours"
+  },
+  {
+   "id": "A182",
+   "text": "how do i apply for scholarships at usc",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Scholarship info / USC scholarship pages"
+  },
+  {
+   "id": "A183",
+   "text": "can i get work study",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Federal work-study info"
+  },
+  {
+   "id": "A184",
+   "text": "my aid hasnt come in yet who do i talk to",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Financial Aid contact info"
+  },
+  {
+   "id": "A185",
+   "text": "what is the css profile",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "CSS Profile explanation and USC requirement"
+  },
+  {
+   "id": "A186",
+   "text": "how much is usc tuition",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Tuition amount 2026-27 (real figure or link)"
+  },
+  {
+   "id": "A187",
+   "text": "emergency funding for students",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Emergency/basic needs fund (Trojan Food Pantry, emergency aid)"
+  },
+  {
+   "id": "A188",
+   "text": "can i get a refund if i drop a class",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Tuition refund policy"
+  },
+  {
+   "id": "A189",
+   "text": "how do i appeal my financial aid",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Aid appeal / special circumstances"
+  },
+  {
+   "id": "A190",
+   "text": "financial aid office phone number",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Financial aid phone/email"
+  },
+  {
+   "id": "A191",
+   "text": "is there a food pantry",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Trojan Food Pantry info"
+  },
+  {
+   "id": "A192",
+   "text": "how do i apply for housing next year",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Housing application process/dates for 2027-28"
+  },
+  {
+   "id": "A193",
+   "text": "where's the housing office",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "USC Housing Services Office location/hours"
+  },
+  {
+   "id": "A194",
+   "text": "my dorm ac is broken",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "How to submit a housing maintenance request"
+  },
+  {
+   "id": "A195",
+   "text": "can i switch rooms",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Room change process"
+  },
+  {
+   "id": "A196",
+   "text": "where do i pick up packages",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Package pickup for housing residents"
+  },
+  {
+   "id": "A197",
+   "text": "best freshman dorms",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Freshman housing options (honest)"
+  },
+  {
+   "id": "A198",
+   "text": "how much is housing at usc",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Housing rates"
+  },
+  {
+   "id": "A199",
+   "text": "can i have a guest stay overnight in my dorm",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Overnight guest policy"
+  },
+  {
+   "id": "A200",
+   "text": "summer housing usc",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Summer housing info"
+  },
+  {
+   "id": "A201",
+   "text": "lock out of my dorm what do i do",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Lockout procedure (front desk/RA)"
+  },
+  {
+   "id": "A202",
+   "text": "off campus housing near usc",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Off-campus housing resources"
+  },
+  {
+   "id": "A203",
+   "text": "is there laundry in the village dorms",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Laundry info for Village residence halls"
+  },
+  {
+   "id": "A204",
+   "text": "where's the student health center",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Engemann Student Health Center location/hours"
+  },
+  {
+   "id": "A205",
+   "text": "how do i make a doctor appointment",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "MySHR / appointment booking"
+  },
+  {
+   "id": "A206",
+   "text": "is engemann open on weekends",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Weekend hours for Engemann"
+  },
+  {
+   "id": "A207",
+   "text": "where can i get a flu shot",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Flu shot at Student Health / pharmacy"
+  },
+  {
+   "id": "A208",
+   "text": "pharmacy on campus hours",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "USC Pharmacy (UPC) hours"
+  },
+  {
+   "id": "A209",
+   "text": "how do i see a therapist at usc",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Counseling and Mental Health (CMH) appointments, 213-740-9355"
+  },
+  {
+   "id": "A210",
+   "text": "does usc insurance cover dental",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Student health insurance dental coverage"
+  },
+  {
+   "id": "A211",
+   "text": "can i waive the usc health insurance",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Insurance waiver process/deadline"
+  },
+  {
+   "id": "A212",
+   "text": "covid testing on campus",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "COVID testing availability"
+  },
+  {
+   "id": "A213",
+   "text": "i need a doctor's note for missing class",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Student Health policy on notes"
+  },
+  {
+   "id": "A214",
+   "text": "free condoms on campus",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Where to get free sexual health supplies"
+  },
+  {
+   "id": "A215",
+   "text": "after hours nurse line",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "After-hours nurse advice line"
+  },
+  {
+   "id": "A216",
+   "text": "how do i register with osas",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "OSAS registration process"
+  },
+  {
+   "id": "A217",
+   "text": "accommodations for exams",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "OSAS exam accommodations"
+  },
+  {
+   "id": "A218",
+   "text": "what clubs are there for cs",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "CS clubs from EngageSC list"
+  },
+  {
+   "id": "A219",
+   "text": "how do i join a club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "How to join via EngageSC"
+  },
+  {
+   "id": "A220",
+   "text": "clubs for people who like hiking",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Hiking/outdoor clubs"
+  },
+  {
+   "id": "A221",
+   "text": "is there a chess club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Chess club(s) from data"
+  },
+  {
+   "id": "A222",
+   "text": "best clubs for premed",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Pre-med clubs"
+  },
+  {
+   "id": "A223",
+   "text": "dance clubs at usc",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Dance clubs"
+  },
+  {
+   "id": "A224",
+   "text": "clubs that meet on fridays",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Clubs/events Friday \u2014 constraint"
+  },
+  {
+   "id": "A225",
+   "text": "entrepreneurship club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Entrepreneurship clubs (Lavin, etc.)"
+  },
+  {
+   "id": "A226",
+   "text": "clubs for international students",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "International student orgs"
+  },
+  {
+   "id": "A227",
+   "text": "how do i start a club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Process to register a new org"
+  },
+  {
+   "id": "A228",
+   "text": "finance clubs usc",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Finance/investment clubs"
+  },
+  {
+   "id": "A229",
+   "text": "is there a k-pop club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "K-pop club if exists"
+  },
+  {
+   "id": "A230",
+   "text": "climbing club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Climbing club"
+  },
+  {
+   "id": "A231",
+   "text": "clubs for first gen students",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "First-gen orgs"
+  },
+  {
+   "id": "A232",
+   "text": "volunteering clubs",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Service/volunteering orgs"
+  },
+  {
+   "id": "A233",
+   "text": "acapella groups",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "A cappella groups"
+  },
+  {
+   "id": "A234",
+   "text": "clubs related to my major",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Clubs for CS major (personal prefs)"
+  },
+  {
+   "id": "A235",
+   "text": "music clubs for non music majors",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Music clubs open to non-majors"
+  },
+  {
+   "id": "A236",
+   "text": "robotics club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Robotics clubs"
+  },
+  {
+   "id": "A237",
+   "text": "christian groups on campus",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Religious orgs (Christian)"
+  },
+  {
+   "id": "A238",
+   "text": "whats happening on campus tonight",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Events tonight (Mon Nov 9)"
+  },
+  {
+   "id": "A239",
+   "text": "free food events this week",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Events with free food this week"
+  },
+  {
+   "id": "A240",
+   "text": "any career fairs coming up",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Upcoming career fair events"
+  },
+  {
+   "id": "A241",
+   "text": "events this weekend",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Events this weekend (Nov 14-15)"
+  },
+  {
+   "id": "A242",
+   "text": "usc football game this weekend",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Next football game (Nov 21 home game?) info"
+  },
+  {
+   "id": "A243",
+   "text": "concerts on campus",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Music events"
+  },
+  {
+   "id": "A244",
+   "text": "hackathons at usc",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Hackathon events"
+  },
+  {
+   "id": "A245",
+   "text": "networking events for engineers",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Engineering networking events"
+  },
+  {
+   "id": "A246",
+   "text": "movie screenings this week",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Film screenings"
+  },
+  {
+   "id": "A247",
+   "text": "what events are good for meeting people",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Social events recommendation"
+  },
+  {
+   "id": "A248",
+   "text": "is there anything fun to do on friday night",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Friday night events"
+  },
+  {
+   "id": "A249",
+   "text": "cultural events this month",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Cultural events in Nov"
+  },
+  {
+   "id": "A250",
+   "text": "study break events with snacks",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Study break / free food events"
+  },
+  {
+   "id": "A251",
+   "text": "speaker events about ai",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "AI talks/speaker events"
+  },
+  {
+   "id": "A252",
+   "text": "when is the next basketball game",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Next USC basketball game"
+  },
+  {
+   "id": "A253",
+   "text": "where is the career center",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "USC Career Center location/hours"
+  },
+  {
+   "id": "A254",
+   "text": "how do i get my resume reviewed",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Resume review (Career Center drop-in/appointment)"
+  },
+  {
+   "id": "A255",
+   "text": "internship search usc",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Handshake / career resources"
+  },
+  {
+   "id": "A256",
+   "text": "what is handshake",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Handshake explanation"
+  },
+  {
+   "id": "A257",
+   "text": "mock interview usc",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Mock interview service"
+  },
+  {
+   "id": "A258",
+   "text": "on campus jobs for students",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Student employment search"
+  },
+  {
+   "id": "A259",
+   "text": "career fair dates",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Career fair dates"
+  },
+  {
+   "id": "A260",
+   "text": "how do i find research opportunities",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Undergraduate research (CURVE, SURF, faculty)"
+  },
+  {
+   "id": "A261",
+   "text": "career center drop in hours",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Drop-in advising hours"
+  },
+  {
+   "id": "A262",
+   "text": "linkedin headshots free",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Free headshot events (honest)"
+  },
+  {
+   "id": "A263",
+   "text": "cpt for internships international students",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "OIS CPT process"
+  },
+  {
+   "id": "A264",
+   "text": "how do i get a job in tech as a cs major",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Career advice + Viterbi career services"
+  },
+  {
+   "id": "A265",
+   "text": "where is tommy trojan",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Tommy Trojan location with map link"
+  },
+  {
+   "id": "A266",
+   "text": "where is the coliseum",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "LA Memorial Coliseum location"
+  },
+  {
+   "id": "A267",
+   "text": "where's sgm",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "SGM (Seeley G. Mudd Building) location"
+  },
+  {
+   "id": "A268",
+   "text": "how do i get to thh",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Taper Hall (THH) location/directions"
+  },
+  {
+   "id": "A269",
+   "text": "where is the bookstore",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "USC Bookstore location"
+  },
+  {
+   "id": "A270",
+   "text": "what building is kap",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Kaprielian Hall"
+  },
+  {
+   "id": "A271",
+   "text": "where is bovard auditorium",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Bovard Auditorium location"
+  },
+  {
+   "id": "A272",
+   "text": "galen center directions",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Galen Center location"
+  },
+  {
+   "id": "A273",
+   "text": "where is the mail stop",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "The Mail Stop location/hours"
+  },
+  {
+   "id": "A274",
+   "text": "what is the hecuba statue",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Hecuba statue in USC Village piazza"
+  },
+  {
+   "id": "A275",
+   "text": "where's the traveler statue",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Traveler statue at Hahn Plaza"
+  },
+  {
+   "id": "A276",
+   "text": "where is ronald tutor hall",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "RTH location"
+  },
+  {
+   "id": "A277",
+   "text": "vkc where",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Von KleinSmid Center location"
+  },
+  {
+   "id": "A278",
+   "text": "closest bathroom to leavey",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Honest: nearest restroom (Leavey itself)"
+  },
+  {
+   "id": "A279",
+   "text": "where is the ITS help desk",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "ITS Service Desk location/hours"
+  },
+  {
+   "id": "A280",
+   "text": "how far is the village from leavey",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Walk time Leavey \u2194 Village"
+  },
+  {
+   "id": "A281",
+   "text": "where is salvatori computer science center",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "SAL location"
+  },
+  {
+   "id": "A282",
+   "text": "what's in the ronald tutor campus center",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "TCC contents (food, offices, lounge)"
+  },
+  {
+   "id": "A283",
+   "text": "where's the lost and found",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "DPS Lost and Found"
+  },
+  {
+   "id": "A284",
+   "text": "where is the fisher museum",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Fisher Museum of Art location/hours"
+  },
+  {
+   "id": "A285",
+   "text": "what is doheny library known for",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Doheny history/architecture"
+  },
+  {
+   "id": "A286",
+   "text": "map of campus",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Campus map"
+  },
+  {
+   "id": "A287",
+   "text": "where is annenberg",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Annenberg School buildings (ANN/ASC)"
+  },
+  {
+   "id": "A288",
+   "text": "where is the shrine",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Shrine Auditorium"
+  },
+  {
+   "id": "A289",
+   "text": "where is the usc village",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "USC Village location"
+  },
+  {
+   "id": "A290",
+   "text": "where are the bathrooms in sgm",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Honest if not available"
+  },
+  {
+   "id": "A291",
+   "text": "what does fight on mean",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Fight On explanation"
+  },
+  {
+   "id": "A292",
+   "text": "whats the conquest week",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Conquest / rivalry week explanation"
+  },
+  {
+   "id": "A293",
+   "text": "how do i get football tickets as a student",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Student season tickets / ticketing"
+  },
+  {
+   "id": "A294",
+   "text": "what are some usc traditions",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "USC traditions (Tommy Trojan, Traveler, Victory sign)"
+  },
+  {
+   "id": "A295",
+   "text": "how do i get my usc id card",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "USCard office / ID card"
+  },
+  {
+   "id": "A296",
+   "text": "how do i connect to wifi",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "USC Secure Wireless setup"
+  },
+  {
+   "id": "A297",
+   "text": "where can i get a usc hoodie",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Bookstore / merchandise"
+  },
+  {
+   "id": "A298",
+   "text": "how do i find roommates",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Roommate search resources"
+  },
+  {
+   "id": "A299",
+   "text": "whats there to do around usc",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Nearby things: Expo Park museums, Exposition Park, LA Live"
+  },
+  {
+   "id": "A300",
+   "text": "best spots for sunset photos on campus",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Photo spots (honest)"
+  },
+  {
+   "id": "A301",
+   "text": "what is greek life like",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Greek life info"
+  },
+  {
+   "id": "A302",
+   "text": "how do i get involved on campus",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Getting involved: EngageSC, clubs, events"
+  },
+  {
+   "id": "A303",
+   "text": "what's the trojan family",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Trojan Family explanation"
+  },
+  {
+   "id": "A304",
+   "text": "how do i get a usc email",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "USC email / NetID info"
+  },
+  {
+   "id": "A305",
+   "text": "free stuff for usc students",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Student perks (software, museum, transit)"
+  },
+  {
+   "id": "A306",
+   "text": "museums near usc",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Natural History Museum, California Science Center, CAAM"
+  },
+  {
+   "id": "A307",
+   "text": "what is welcome week",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Welcome week explanation"
+  },
+  {
+   "id": "A308",
+   "text": "pet friendly spots on campus",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Animal policy on campus"
+  },
+  {
+   "id": "A309",
+   "text": "is there a student discount for movies",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Discounts (honest)"
+  },
+  {
+   "id": "A310",
+   "text": "how do i reserve a table on trousdale",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Tabling / Trousdale reservation process"
+  },
+  {
+   "id": "A311",
+   "text": "where can i watch the game on campus",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Watch party / viewing locations"
+  },
+  {
+   "id": "A312",
+   "text": "does usc have a marching band",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Trojan Marching Band"
+  },
+  {
+   "id": "A313",
+   "text": "who is usc's president",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Current USC president (honest, cited)"
+  },
+  {
+   "id": "A314",
+   "text": "how big is usc",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Enrollment/campus size facts"
+  },
+  {
+   "id": "A315",
+   "text": "when was usc founded",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "1880"
+  },
+  {
+   "id": "A316",
+   "text": "what does the usg do",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Undergraduate Student Government"
+  },
+  {
+   "id": "A317",
+   "text": "i need coffee and a quiet place to study near viterbi open past 10",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "A caf\u00e9 or study spot near Viterbi open past 10pm; all constraints"
+  },
+  {
+   "id": "A318",
+   "text": "vegetarian food open now near leavey",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Vegetarian option open now close to Leavey"
+  },
+  {
+   "id": "A319",
+   "text": "gym with a pool open on sunday",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Uytengsu Aquatics Sunday hours (pool) \u2014 both constraints"
+  },
+  {
+   "id": "A320",
+   "text": "library near the village with group rooms open late",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Library near Village with group rooms and late hours"
+  },
+  {
+   "id": "A321",
+   "text": "cheap lunch near kap under $10",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Cheap lunch near KAP (honest about prices)"
+  },
+  {
+   "id": "A322",
+   "text": "outdoor place to eat lunch with shade near doheny",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Shaded outdoor spot near Doheny"
+  },
+  {
+   "id": "A323",
+   "text": "cs club that does hackathons and meets weekly",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "CS/hackathon clubs; mention meeting frequency honestly"
+  },
+  {
+   "id": "A324",
+   "text": "free food event tonight near the village",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Free food event tonight near Village \u2014 all constraints"
+  },
+  {
+   "id": "A325",
+   "text": "study room for 6 people tomorrow afternoon",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Bookable room for 6 tomorrow afternoon (or offer to book)"
+  },
+  {
+   "id": "A326",
+   "text": "quiet library open after 10pm on friday",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Library open past 10pm Friday and quiet"
+  },
+  {
+   "id": "A327",
+   "text": "place to get breakfast before 8am",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Breakfast venue open before 8am"
+  },
+  {
+   "id": "A328",
+   "text": "gym near the village open at 6am",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Village Fitness Center 6am opening \u2014 constraint"
+  },
+  {
+   "id": "A329",
+   "text": "parking structure closest to the galen center",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Closest parking to Galen (Figueroa/Galen structure)"
+  },
+  {
+   "id": "A330",
+   "text": "metro station closest to the village",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Jefferson/USC or Expo Park/USC"
+  },
+  {
+   "id": "A331",
+   "text": "study spot with food nearby open on sunday morning",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Study + food Sunday morning"
+  },
+  {
+   "id": "A332",
+   "text": "where can i print near the village",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Printing location near Village"
+  },
+  {
+   "id": "A333",
+   "text": "old library with stained glass",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Doheny Memorial Library (stained glass, 1932)"
+  },
+  {
+   "id": "A334",
+   "text": "prettiest library on campus",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Doheny (or Hoose) \u2014 opinion with facts"
+  },
+  {
+   "id": "A335",
+   "text": "quiet place near annenberg to study between classes",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Study spot near Annenberg"
+  },
+  {
+   "id": "A336",
+   "text": "late night food that's vegan and near campus",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Vegan + late + near campus"
+  },
+  {
+   "id": "A337",
+   "text": "wen dos levey clse",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Leavey hours (typo)"
+  },
+  {
+   "id": "A338",
+   "text": "evk opn?",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "EVK open status"
+  },
+  {
+   "id": "A339",
+   "text": "lyon centr hrs",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Lyon Center hours"
+  },
+  {
+   "id": "A340",
+   "text": "doheney libary",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Doheny info/hours"
+  },
+  {
+   "id": "A341",
+   "text": "parksid dinner",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Parkside dinner hours/menu"
+  },
+  {
+   "id": "A342",
+   "text": "whos teachin csci104",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "CSCI 104 instructors"
+  },
+  {
+   "id": "A343",
+   "text": "finacial aid ofice",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Financial Aid office info"
+  },
+  {
+   "id": "A344",
+   "text": "regestration date spring",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Spring registration dates"
+  },
+  {
+   "id": "A345",
+   "text": "helth center hours",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Engemann hours"
+  },
+  {
+   "id": "A346",
+   "text": "carer center",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Career Center info"
+  },
+  {
+   "id": "A347",
+   "text": "thanksgiving brake",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Thanksgiving break dates"
+  },
+  {
+   "id": "A348",
+   "text": "wat clubs r there 4 music",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Music clubs"
+  },
+  {
+   "id": "A349",
+   "text": "hw due",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Student's homework due list"
+  },
+  {
+   "id": "A350",
+   "text": "wheres tomy trojan",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Tommy Trojan location"
+  },
+  {
+   "id": "A351",
+   "text": "is the gym opn rn",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Gym open status"
+  },
+  {
+   "id": "B352",
+   "text": "book a study room in leavey tomorrow at 3",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Offer/confirm a Leavey room booking for tomorrow 3pm (simulated, confirm + undo)"
+  },
+  {
+   "id": "B353",
+   "text": "reserve a room for 4 people tonight",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Room booking flow for 4 tonight"
+  },
+  {
+   "id": "B354",
+   "text": "book a group study room for my team friday 2-4",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Booking for Friday 2-4"
+  },
+  {
+   "id": "B355",
+   "text": "can you book me a room in doheny",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Doheny room booking or explain"
+  },
+  {
+   "id": "B356",
+   "text": "cancel my study room reservation",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Cancel a booking (personal) with confirm"
+  },
+  {
+   "id": "B357",
+   "text": "show my reservations",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "List student's bookings"
+  },
+  {
+   "id": "B358",
+   "text": "book a tennis court",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Court booking or honest pointer"
+  },
+  {
+   "id": "B359",
+   "text": "reserve a table on trousdale for my club",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Trousdale tabling reservation flow"
+  },
+  {
+   "id": "B360",
+   "text": "show my grades",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Student's grades list"
+  },
+  {
+   "id": "B361",
+   "text": "what's my grade in math",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "MATH 226 grade"
+  },
+  {
+   "id": "B362",
+   "text": "what do i need on the final to get an a in csci 104",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Final score needed for A in CSCI 104"
+  },
+  {
+   "id": "B363",
+   "text": "whats my gpa",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "GPA (term/cumulative)"
+  },
+  {
+   "id": "B364",
+   "text": "am i failing anything",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Grade check; none failing"
+  },
+  {
+   "id": "B365",
+   "text": "how am i doing in physics",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "PHYS 151 grade"
+  },
+  {
+   "id": "B366",
+   "text": "what grade do i need on the phys final for a b+",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Final needed for B+ in PHYS 151"
+  },
+  {
+   "id": "B367",
+   "text": "show my transcript",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Transcript/grades (simulated)"
+  },
+  {
+   "id": "B368",
+   "text": "guest my friend in tonight",
+   "kind": "B",
+   "topic": "guest",
+   "good_answer": "Register a guest (Trojan Check guest) flow with confirm"
+  },
+  {
+   "id": "B369",
+   "text": "let my friend sam onto campus at 8pm",
+   "kind": "B",
+   "topic": "guest",
+   "good_answer": "Guest pass for Sam at 8pm"
+  },
+  {
+   "id": "B370",
+   "text": "who are my guests",
+   "kind": "B",
+   "topic": "guest",
+   "good_answer": "List guest passes"
+  },
+  {
+   "id": "B371",
+   "text": "cancel my guest pass",
+   "kind": "B",
+   "topic": "guest",
+   "good_answer": "Cancel guest pass"
+  },
+  {
+   "id": "B372",
+   "text": "add my mom as a guest this weekend",
+   "kind": "B",
+   "topic": "guest",
+   "good_answer": "Guest pass for mom this weekend"
+  },
+  {
+   "id": "B373",
+   "text": "order food from panda",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Start Panda Express order flow"
+  },
+  {
+   "id": "B374",
+   "text": "order a coffee from trojan grounds",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Coffee order flow"
+  },
+  {
+   "id": "B375",
+   "text": "order me a burrito",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Order flow (Taco-Taco) or ask where"
+  },
+  {
+   "id": "B376",
+   "text": "where's my order",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Order status"
+  },
+  {
+   "id": "B377",
+   "text": "cancel my order",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Cancel active order"
+  },
+  {
+   "id": "B378",
+   "text": "order lunch for pickup at 12:30",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Scheduled pickup order flow"
+  },
+  {
+   "id": "B379",
+   "text": "get me a smoothie",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Order from C&G Juice"
+  },
+  {
+   "id": "B380",
+   "text": "reorder my last meal",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Reorder previous order"
+  },
+  {
+   "id": "B381",
+   "text": "join the chess club",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Join club flow with confirm"
+  },
+  {
+   "id": "B382",
+   "text": "leave the robotics club",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Leave club flow"
+  },
+  {
+   "id": "B383",
+   "text": "what clubs am i in",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Student's clubs"
+  },
+  {
+   "id": "B384",
+   "text": "rsvp to the next career fair",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "RSVP/save event"
+  },
+  {
+   "id": "B385",
+   "text": "add the hackathon to my calendar",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Save event to calendar"
+  },
+  {
+   "id": "B386",
+   "text": "follow the acm club",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Follow/join ACM"
+  },
+  {
+   "id": "B387",
+   "text": "show my saved events",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Saved events list"
+  },
+  {
+   "id": "B388",
+   "text": "pay my club dues",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Dues payment flow (simulated) or honest"
+  },
+  {
+   "id": "B389",
+   "text": "message the club president",
+   "kind": "B",
+   "topic": "clubs",
+   "good_answer": "Club contact / honest"
+  },
+  {
+   "id": "B390",
+   "text": "email my csci 104 professor that i'll miss class",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Draft email to CSCI 104 instructor (show draft, not send)"
+  },
+  {
+   "id": "B391",
+   "text": "write an email to my advisor asking for a meeting",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Draft advisor email"
+  },
+  {
+   "id": "B392",
+   "text": "email my ta about the homework",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Draft TA email"
+  },
+  {
+   "id": "B393",
+   "text": "ask my professor for an extension on the essay",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Draft extension request email"
+  },
+  {
+   "id": "B394",
+   "text": "request an extension on my csci 104 homework",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Extension request draft for CSCI 104 HW"
+  },
+  {
+   "id": "B395",
+   "text": "tell my math professor i'm sick",
+   "kind": "B",
+   "topic": "email",
+   "good_answer": "Draft sick email to MATH 226 instructor"
+  },
+  {
+   "id": "B396",
+   "text": "drop math 226",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Drop class: explain process/deadline, confirm, simulated"
+  },
+  {
+   "id": "B397",
+   "text": "add csci 201 to my schedule",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Add class flow / registration"
+  },
+  {
+   "id": "B398",
+   "text": "swap my phys section",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Section change flow"
+  },
+  {
+   "id": "B399",
+   "text": "show my schedule",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Student's class schedule"
+  },
+  {
+   "id": "B400",
+   "text": "what homework is due this week",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "HW due this week"
+  },
+  {
+   "id": "B401",
+   "text": "mark my csci 104 hw as done",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Mark homework done"
+  },
+  {
+   "id": "B402",
+   "text": "when are my exams",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Student's exams list"
+  },
+  {
+   "id": "B403",
+   "text": "put me on the waitlist for csci 270",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Waitlist flow or honest"
+  },
+  {
+   "id": "B404",
+   "text": "set a reminder for my math exam",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Reminder creation"
+  },
+  {
+   "id": "B405",
+   "text": "what's on my calendar today",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Today's schedule"
+  },
+  {
+   "id": "B406",
+   "text": "plan my day",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Plan for today"
+  },
+  {
+   "id": "B407",
+   "text": "plan my week",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Week plan"
+  },
+  {
+   "id": "B408",
+   "text": "plan tomorrow",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Plan for tomorrow"
+  },
+  {
+   "id": "B409",
+   "text": "what should i do tonight",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Tonight plan/suggestions"
+  },
+  {
+   "id": "B410",
+   "text": "find me a field trip this week",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Off-campus outings this week"
+  },
+  {
+   "id": "B411",
+   "text": "pay my tuition",
+   "kind": "B",
+   "topic": "payments",
+   "good_answer": "Tuition payment pointer (simulated/real link)"
+  },
+  {
+   "id": "B412",
+   "text": "check my usc card balance",
+   "kind": "B",
+   "topic": "payments",
+   "good_answer": "USCard balance (personal)"
+  },
+  {
+   "id": "B413",
+   "text": "add money to my dining dollars",
+   "kind": "B",
+   "topic": "payments",
+   "good_answer": "Add Dining Dollars flow/pointer"
+  },
+  {
+   "id": "B414",
+   "text": "pay my parking ticket",
+   "kind": "B",
+   "topic": "payments",
+   "good_answer": "Parking citation payment pointer"
+  },
+  {
+   "id": "B415",
+   "text": "buy a parking permit",
+   "kind": "B",
+   "topic": "payments",
+   "good_answer": "Permit purchase pointer"
+  },
+  {
+   "id": "B416",
+   "text": "report a broken light near leavey",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Report problem sheet prefilled"
+  },
+  {
+   "id": "B417",
+   "text": "theres a leak in my dorm bathroom",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Housing maintenance / report"
+  },
+  {
+   "id": "B418",
+   "text": "book a doctor appointment",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Health appointment flow/pointer"
+  },
+  {
+   "id": "B419",
+   "text": "make a counseling appointment",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "CMH appointment info 213-740-9355"
+  },
+  {
+   "id": "B420",
+   "text": "book a career center appointment",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Career appointment flow/pointer"
+  },
+  {
+   "id": "B421",
+   "text": "schedule a resume review",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Resume review booking"
+  },
+  {
+   "id": "B422",
+   "text": "find a bike near me",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Nearest bikes"
+  },
+  {
+   "id": "B423",
+   "text": "where's the nearest open gate",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Nearest open gate"
+  },
+  {
+   "id": "B424",
+   "text": "am i in a safe zone",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Zone check"
+  },
+  {
+   "id": "B425",
+   "text": "navigate me to sgm",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Directions to SGM"
+  },
+  {
+   "id": "B426",
+   "text": "take me to the closest dining hall",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Directions to nearest dining hall"
+  },
+  {
+   "id": "B427",
+   "text": "show me the map",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Open map"
+  },
+  {
+   "id": "B428",
+   "text": "turn on dark mode",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Toggle theme"
+  },
+  {
+   "id": "B429",
+   "text": "set my dietary preferences to vegetarian",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Update prefs"
+  },
+  {
+   "id": "B430",
+   "text": "add an allergy peanuts",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Update allergies"
+  },
+  {
+   "id": "B431",
+   "text": "undo",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Undo last action"
+  },
+  {
+   "id": "B432",
+   "text": "reset demo account",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Reset flow with confirm"
+  },
+  {
+   "id": "B433",
+   "text": "watch list",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Watch list"
+  },
+  {
+   "id": "B434",
+   "text": "show me campus news",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "News list"
+  },
+  {
+   "id": "B435",
+   "text": "what did i ask the club for",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Requests list"
+  },
+  {
+   "id": "B436",
+   "text": "request a event for boba study break",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Create an event request"
+  },
+  {
+   "id": "B437",
+   "text": "call dps",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Show DPS number / call"
+  },
+  {
+   "id": "B438",
+   "text": "send my location to a friend",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Location share or honest"
+  },
+  {
+   "id": "B439",
+   "text": "lost my usc card",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Deactivate/replace card info"
+  },
+  {
+   "id": "B440",
+   "text": "print my essay",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Printing info/honest"
+  },
+  {
+   "id": "B441",
+   "text": "save leavey as a favorite",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Favorite place"
+  },
+  {
+   "id": "B442",
+   "text": "remind me to go to office hours at 3",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Reminder"
+  },
+  {
+   "id": "B443",
+   "text": "text my roommate",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Honest: can't text"
+  },
+  {
+   "id": "B444",
+   "text": "sign me up for intramural soccer",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "IM signup pointer"
+  },
+  {
+   "id": "B445",
+   "text": "rate the last event thumbs up",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Rate event"
+  },
+  {
+   "id": "B446",
+   "text": "recommend events for me",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Personal recommendations"
+  },
+  {
+   "id": "B447",
+   "text": "show events with hashtag #ai",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Events by hashtag"
+  },
+  {
+   "id": "B448",
+   "text": "get me a ride home",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Free ride service link"
+  },
+  {
+   "id": "B449",
+   "text": "open the order screen",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Navigate to order screen"
+  },
+  {
+   "id": "B450",
+   "text": "open my profile",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Navigate to profile"
+  },
+  {
+   "id": "B451",
+   "text": "what's my next exam",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Next exam"
+  },
+  {
+   "id": "B452",
+   "text": "check out a library book",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Honest pointer"
+  },
+  {
+   "id": "B453",
+   "text": "renew my library books",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Library renewal pointer"
+  },
+  {
+   "id": "B454",
+   "text": "submit my homework",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Honest: can't submit; Brightspace pointer"
+  },
+  {
+   "id": "B455",
+   "text": "schedule office hours with my professor",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Office hours info / draft"
+  },
+  {
+   "id": "B456",
+   "text": "buy football tickets",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Ticket purchase pointer"
+  },
+  {
+   "id": "B457",
+   "text": "register for the career fair",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Event RSVP / Handshake pointer"
+  },
+  {
+   "id": "other458",
+   "text": "hi",
+   "kind": "other",
+   "topic": "greet",
+   "good_answer": "Friendly greeting + what Tommy can do"
+  },
+  {
+   "id": "other459",
+   "text": "yo tommy whats up",
+   "kind": "other",
+   "topic": "greet",
+   "good_answer": "Greeting"
+  },
+  {
+   "id": "other460",
+   "text": "thanks!",
+   "kind": "other",
+   "topic": "greet",
+   "good_answer": "Polite acknowledgment"
+  },
+  {
+   "id": "other461",
+   "text": "who are you",
+   "kind": "other",
+   "topic": "greet",
+   "good_answer": "Explains Tommy"
+  },
+  {
+   "id": "other462",
+   "text": "what can you do",
+   "kind": "other",
+   "topic": "greet",
+   "good_answer": "Capabilities list"
+  },
+  {
+   "id": "other463",
+   "text": "what's the capital of france",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Brief answer or polite redirect to USC; no hallucination"
+  },
+  {
+   "id": "other464",
+   "text": "write me a poem about cats",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Polite redirect"
+  },
+  {
+   "id": "other465",
+   "text": "who won the super bowl",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Redirect/honest"
+  },
+  {
+   "id": "other466",
+   "text": "what's the weather today",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Weather or honest redirect"
+  },
+  {
+   "id": "other467",
+   "text": "tell me a joke",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Joke or friendly"
+  },
+  {
+   "id": "other468",
+   "text": "is ucla better than usc",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Playful USC answer"
+  },
+  {
+   "id": "other469",
+   "text": "how do i make pasta",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Redirect"
+  },
+  {
+   "id": "other470",
+   "text": "asdfghjkl",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Clarifying response"
+  },
+  {
+   "id": "other471",
+   "text": "what's 17 times 23",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "391 or redirect"
+  },
+  {
+   "id": "other472",
+   "text": "recommend a good netflix show",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Redirect"
+  }
+ ]
+}
