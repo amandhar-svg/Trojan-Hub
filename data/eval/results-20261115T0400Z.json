@@ -1,12 +1,8 @@
 {
  "site": "https://trojanhub.netlify.app",
  "note": "One full paced run (1 msg / 15 s, fresh page every 25). Pending action prompts cleared between messages. Grades by hand.",
- "count": 180,
- "ungraded": [
-  "A077",
-  "A092",
-  "A106"
- ],
+ "count": 294,
+ "ungraded": [],
  "results": [
   {
    "id": "A001",
@@ -7561,6 +7557,4879 @@
    "err": null,
    "retried": false,
    "at": "2026-11-15T03:31:33.935Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A077",
+   "text": "group fitness classes usc",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Rec Sports group fitness classes info",
+   "reply": "Group fitness at USC is **USC Workout**: instructor-led classes including Aerial Silks, Boxing, Barbell, Cycling, Dance Fusion, F45, Full Body Stretch, Kickboxing, Mat Pilates, Soul Line Dance, Yoga Flow, Yoga Sculpt and Zumba. You **must buy a USC Workout Pass** to take classes.\n\n**Student prices (Rec Sports fee table):** $140 per semester, $240 for fall and spring, $98 mid-semester, or $15 per day. Buy it in MyRecSports under Memberships & Passes.\n\n**Sign up:** MyRecSports, then **USC Workout Group Exercise Registration**, pick a class, and click **Register**. You'll get a confirmation email. Rec Sports' policies say most classes are first-come, first-served, but limited-participation classes require pre-registration.\n\n**Before class:**\n- Arrive 10\u201315 minutes early. **Late entry isn't allowed.**\n- Bring your own gloves and hand wraps for boxing and kickboxing.\n- A class under 20% enrolled 24 hours before start may be canceled.\n- Can't make it? Cancel in MyRecSports under Program Registration (three dots, then Cancel Registration) so waitlisted members can join.",
+   "script": [
+    {
+     "line": "ask q=\"group fitness classes usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://recsports.usc.edu/programs-and-classes/usc-workout/",
+    "https://recsports.usc.edu/membership-information-fees/",
+    "https://recsports.usc.edu/myrecsports/getting-started-with-myrecsports/",
+    "https://recsports.usc.edu/about-us/forms-and-policies/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "group-fitness-usc-workout",
+     "qsim": 0.8660254037844386,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1096,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:31:49.010Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A092",
+   "text": "what is trojan check",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Trojan Check explanation",
+   "reply": "**Tommy Trojan**\nUnveiled in 1930 at USC's 50th jubilee, sculpted by Roger Noble Burnham. The pedestal reads \"Faithful, Scholarly, Skillful, Courageous, Ambitious.\"\n\n- Unveiled in 1930 at USC's 50th jubilee\n- Sculpted by Roger Noble Burnham, modeled after several USC football players\n- Pedestal reads \"FAITHFUL, SCHOLARLY, SKILLFUL, COURAGEOUS, AMBITIOUS\"\n- Stands on Trousdale Parkway in Hahn Central Plaza, across from the Traveler statue",
+   "script": [
+    {
+     "line": "landmark.facts place=tommy",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/",
+    "https://www.usc.edu/usc-traditions/"
+   ],
+   "chips": [
+    "Show on the map"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1032,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:32:03.956Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"what is trojan check\" \u2192 landmark.facts Tommy Trojan statue (matched \"trojan\"); Trojan Check (campus access pass) never explained"
+  },
+  {
+   "id": "A106",
+   "text": "how do i get to hsc from upc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Intercampus shuttle to Health Sciences Campus",
+   "reply": "**UPC \u2194 HSC**\n- Intercampus Shuttle (ICS) UPC \u2013 Union Station \u2013 HSC \u00b7 Jefferson bus turnout (UPC) \u2192 Union Station, Patsaouras Plaza Berth #6 \u2192 HSC: Eastlake Ave just south of Biggy St\n- Weekend Intercampus Shuttle \u00b7 Jefferson bus turnout (UPC) \u2192 Union Station \u2192 HSC: Eastlake at Biggy\n- HSC-only routes (Circuit Tram, Soto Route) are on the USC Transportation schedule page.\n- Free USC Lyft does not cover rides between UPC and HSC.",
+   "script": [
+    {
+     "line": "transport.hsc",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/bus-map-schedules/"
+   ],
+   "chips": [
+    "Next shuttle to HSC"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1022,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:32:18.955Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A123",
+   "text": "trojans alert sign up",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "How to sign up for TrojansAlert",
+   "reply": "**TrojansAlert**\nUSC emergency notification system: real-time texts and emails from authorized officials with instructions. Automatically enrolled; keep contact info current in Experience USC. usc.edu addresses cannot opt out of legally required alerts.",
+   "script": [
+    {
+     "line": "safety.trojansalert",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/trojans-alerts/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:32:33.961Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A135",
+   "text": "who teaches econ 203 in spring",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "ECON 203 Spring 2027 instructors",
+   "reply": "**ECON 203 \u00b7 Principles of Microeconomics** (Spring 2027) is taught by **Lodovico Pizzati, Yilmaz Kocer**.\n\n- Lecture 26000 \u00b7 Tue/Thu 3:30 PM\u20134:45 PM \u00b7 **Lodovico Pizzati** \u00b7 86 of 100 seats open\n- Discussion 26012 \u00b7 Wed 6:00 PM\u20136:50 PM \u00b7 instructor not listed yet \u00b7 16 of 25 seats open\n- Discussion 26002 \u00b7 Fri 10:00 AM\u201310:50 AM \u00b7 instructor not listed yet \u00b7 24 of 25 seats open\n- Discussion 26004 \u00b7 Fri 11:00 AM\u201311:50 AM \u00b7 instructor not listed yet \u00b7 24 of 25 seats open\n- Discussion 26006 \u00b7 Fri 12:00 PM\u201312:50 PM \u00b7 instructor not listed yet \u00b7 22 of 25 seats open\n- Lecture 26001 \u00b7 Mon/Wed 8:30 AM\u20139:45 AM \u00b7 **Yilmaz Kocer** \u00b7 94 of 100 seats open\n- \u2026and 4 more sections\n\n_From USC\u2019s Schedule of Classes as collected Nov 9, 2026. Instructors can change, so check classes.usc.edu before you register._",
+   "script": [
+    {
+     "line": "course.who course=\"ECON 203\" term=spring",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:32:48.971Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A160",
+   "text": "last day to drop a class without a w",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Drop deadline without W (with date)",
+   "reply": "**Fall 2026** (session 001):\n- Last day to add / drop for a refund: **Fri, Sep 11, 2026** (59 days ago)\n- Last day to drop without a W: **Fri, Oct 9, 2026** (31 days ago)\n- Last day to withdraw (with a W): **Fri, Nov 13, 2026** (in 4 days)\n\n_Other sessions have their own dates (see the course\u2019s calendar icon in the Schedule of Classes)._",
+   "script": [
+    {
+     "line": "cal.deadlines which=drop",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.usc.edu/academic-calendar/",
+    "https://classes.usc.edu/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1019,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:33:03.986Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A174",
+   "text": "next break",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Next break (Thanksgiving) date",
+   "reply": "Coming up on the USC academic calendar:\n- **Veterans Day** \u00b7 Wed, Nov 11 \u00b7 in 2 days\n- **Thanksgiving recess** \u00b7 Nov 25 \u2013 29 \u00b7 in 16 days\n- **Study days** \u00b7 Dec 5 \u2013 8 \u00b7 in 26 days \u00b7 No classes; finals start Dec 9\n- **Final exams** \u00b7 Dec 9 \u2013 16 \u00b7 in 30 days \u00b7 Dec 9\u201316, 2026\n- **Winter recess** \u00b7 Dec 17 \u2013 Jan 10 \u00b7 in 38 days \u00b7 Spring classes begin Monday, January 11\n- **Martin Luther King Jr. Day** \u00b7 Mon, Jan 18 \u00b7 in 70 days",
+   "script": [
+    {
+     "line": "breaks.next",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://academics.usc.edu/calendar/"
+   ],
+   "chips": [
+    "Month view",
+    "When are my finals?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:33:18.994Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A186",
+   "text": "how much is usc tuition",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Tuition amount 2026-27 (real figure or link)",
+   "reply": "For 2026-27, full-time undergraduates taking **12\u201318 units** pay a **flat rate of $37,692 per semester** (same amount in Fall 2026 and Spring 2027). For two semesters that is **$75,384**, the tuition figure used in the 2026-27 cost of attendance.\n\n- **Fewer than 12 units:** you're charged for each unit at the **unit-basis rate of $2,539** (Fall 2026 / Spring 2027).\n- **Summer 2026** was charged per unit at **$2,467**.\n- Tuition is the same for in-state and out-of-state students.\n- Mandatory fees, housing, meal plans and health insurance are separate charges on top of tuition.\n\nThe official rate table is on the Registrar's Tuition and Fees page; your actual charges show up on your bill in USCe.pay.",
+   "script": [
+    {
+     "line": "ask q=\"how much is usc tuition\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://arr.usc.edu/tuition-and-fees/",
+    "https://financialaid.usc.edu/undergraduate-financial-aid/cost-of-attendance/",
+    "https://priceschool.usc.edu/admission/scholarships/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "undergrad-tuition-2026-27",
+     "qsim": 1.0000000000000002,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1082,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:33:34.071Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A198",
+   "text": "how much is housing at usc",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Housing rates",
+   "reply": "2026\u20132027 rates are **per person, per semester** (your required meal plan is billed separately):\n\n**Residence halls**\n- **Birnkrant:** single $8,500; double or triple $6,500\n- **Marks Tower:** double $6,500\n- **New North:** single $8,500; single with sink $8,750; double $6,500; double with sink $7,200\n- **Pardee Tower:** double $6,500\n\n**Suites**\n- **McCarthy Honors:** singles $8,500; doubles $5,850 (four-person loft), $6,900 (doubles in three-, four- and eight-person suites) or $7,200 (four-person double bath)\n- **Parkside Arts & Humanities:** doubles $6,600\n- **Parkside International:** singles $8,500; doubles $6,600\n\nEach building's page on housing.usc.edu lists every room type, room code and number of spaces.",
+   "script": [
+    {
+     "line": "ask q=\"how much is housing at usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/buildings/birnkrant-residential-college/",
+    "https://housing.usc.edu/index.php/buildings/new-north-residential-college/",
+    "https://housing.usc.edu/index.php/buildings/mccarthy-honors-residential-college/",
+    "https://housing.usc.edu/index.php/buildings/arts-humanities-residential-college-at-parkside/"
+   ],
+   "chips": [
+    "Will i be charged for damage in my dorm",
+    "How much is the usc housing application fee",
+    "How much does it cost to move in early at usc"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "rates-freshman-halls-and-suites",
+     "qsim": 0.710046946804693,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1038,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:33:49.038Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A210",
+   "text": "does usc insurance cover dental",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Student health insurance dental coverage",
+   "reply": "USC's student dental coverage is a **separate, optional Delta Dental PPO** plan, not part of the SHIP/Aetna health plan enrollment. USC describes it as low-cost and reimbursement-based. You enroll in it **separately from health insurance**, using the \"Submit your information to enroll in Delta Dental\" form on the SHIP dental page.\n\n- **Cost:** a 2026-27 USC program budget lists optional dental insurance at **$225**.\n- **Where to use it:** the Ostrow Dental Faculty Practice (in Engemann) and the Ostrow student clinics both accept it.\n- **Questions:** Insurance Plan office, (213) 821-1550.",
+   "script": [
+    {
+     "line": "ask q=\"does usc insurance cover dental\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://sites.usc.edu/ship/dental-insurance/",
+    "https://dramaticarts.usc.edu/programs/graduate/tuition/mfa/",
+    "https://dentistry.usc.edu/dental-urgent-care-for-usc-students/",
+    "https://sites.usc.edu/new-student-health-requirements/costs/health-insurance-requirement/"
+   ],
+   "chips": [
+    "Is there a dentist on campus"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "dental-insurance-delta",
+     "qsim": 1.0000000000000002,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1037,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:34:04.048Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A224",
+   "text": "clubs that meet on fridays",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Clubs/events Friday \u2014 constraint",
+   "reply": "I couldn\u2019t find a clear answer to that on USC\u2019s websites. These USC pages might help:\n---\n**I flagged this for the Tommy team.** A question without an answer gets fixed, and you\u2019ll get a note when I can answer it. Track it under Report a Problem.",
+   "script": [],
+   "sources": [
+    "https://ois.usc.edu/10-reasons-to-join-a-usc-student-club-or-organization/",
+    "https://orsl.usc.edu/organizations/coptic-club/",
+    "https://priceschool.usc.edu/students/associations/"
+   ],
+   "chips": [],
+   "kinds": [
+    "none",
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {},
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"clubs that meet on fridays\",\"now\":\"Monday, November 9, 2026, 7:34 PM\",\"earlier\":[{\"text\":\"who teaches econ 203 in spring\",\"line\":\"course.who course=\\\"ECON 203\\\" term=spring\"},{\"text\":\"last day to drop a class without a w\",\"line\":\"cal.deadlines which=drop\"},{\"text\":\"next break\",\"line\":\"breaks.next\"},{\"text\":\"how much is usc tuition\",\"line\":\"ask q=\\\"how much is usc tuition\\\"\"},{\"text\":\"how much is housing at usc\",\"line\":\"ask q=\\\"how much is housing at usc\\\"\"},{\"text\":\"does usc insurance cover dental\",\"line\":\"ask q=\\\"does usc insurance cover dental\\\"\"}]}",
+   "ms": 3168,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:34:21.190Z",
+   "grade": "NOT_FOUND",
+   "grade_note": "AI \u2192 web search, \"couldn't find a clear answer\u2026 flagged\"; clubs' Friday meetings/events exist in TH.CLUB_EVENTS (club.meets / events.day day=friday)"
+  },
+  {
+   "id": "A244",
+   "text": "hackathons at usc",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Hackathon events",
+   "reply": "No upcoming events found for that search. Try searching for `#ai`, `#robotics`, `#career`, or `#freefood`.",
+   "script": [
+    {
+     "line": "events.find q=\"hackathons at usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Browse Events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1015,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:34:34.047Z",
+   "grade": "NOT_FOUND",
+   "grade_note": "events.find \"hackathons at usc\" \u2192 no upcoming events; no clubs (e.g. hackathon orgs) or Viterbi pointers offered"
+  },
+  {
+   "id": "A259",
+   "text": "career fair dates",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Career fair dates",
+   "reply": "The **Spring 2027 Career Fair** is **Thursday, February 4, 2027, 11:00 am\u20133:00 pm PT**, outdoors on **Trousdale Parkway** (rain or shine), per the Career Center's employer registration page. The Career Center holds a general career fair in person each fall and spring (plus a virtual one in fall). It's open to **all majors and class years**, including transfer students, as well as recent graduates and alumni, with employers recruiting for full-time, part-time and **paid internship** roles. The Fall 2026 fair was Sept. 10.\n\n**How to prepare (from the Career Center's fair guide):**\n- **RSVP on Handshake:** Events, then \"Career fairs at your school,\" then select the fair to see participating employers. Employers register daily, so check back.\n- Wear **professional attire**. Bring copies of your resume, your elevator pitch and a list of employers you've researched (tables are grouped by industry).\n- Bring a refillable water bottle; it's a zero-waste event.\n\nThe Engineering Expo is a separate event for engineering students. Need a disability accommodation? Use the Career Center's accommodation request form.",
+   "script": [
+    {
+     "line": "ask q=\"career fair dates\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://careers.usc.edu/employers-spring-career-fair/",
+    "https://careers.usc.edu/fall-career-fair/",
+    "https://careers.usc.edu/channels/attend-career-event/"
+   ],
+   "chips": [
+    "When is the next career fair"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Spring 2027",
+     "eid": "career-fair-spring-2027",
+     "qsim": 0.82915619758885,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1024,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:34:49.068Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A271",
+   "text": "where is bovard auditorium",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Bovard Auditorium location",
+   "reply": "**Bovard Administration Building & Auditorium**\n- Bovard Administration Building \u00b7 address not listed\n- About **1 min walk** from you (TCC, Trousdale side)",
+   "script": [
+    {
+     "line": "place.where place=bovard",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.openstreetmap.org/way/406923885",
+    "https://www.usc.edu/we-are-usc/the-university/our-history/historical-timeline/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1068,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:35:04.123Z",
+   "grade": "GOOD",
+   "grade_note": "\"address not listed\""
+  },
+  {
+   "id": "A297",
+   "text": "where can i get a usc hoodie",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Bookstore / merchandise",
+   "reply": "**Returns (merchandise):** unwashed, unworn or defective items can be returned for a refund **within 30 days of purchase** (for online orders, within 30 days of shipping). Every return needs a **Return Form**, and refunds go back to your original payment method. Sale and clearance items and gift cards are final.\n\n**CAMPUSCONNECT (tech):** return or exchange within **five business days** with the receipt, unopened and in new condition. Non-defective hardware sales are final, and non-defective returns may carry a **20% restocking fee**.\n\n**Payment:** Visa, Mastercard, American Express, Discover, PayPal and USC Bookstores gift cards. The Bookstore **doesn't accept international credit cards** online (it suggests PayPal instead), and **no personal checks or money orders**. USC employees get 10% off many items. Textbook orders go through Follett, and regalia through Herff Jones. Customer service: 1-800-447-8620, customerservice@uscbookstore.com.",
+   "script": [
+    {
+     "line": "ask q=\"where can i get a usc hoodie\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.uscbookstore.com/faq",
+    "https://www.uscbookstore.com/payment-methods"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "bookstore-returns-payment",
+     "qsim": 0.6793662204867575,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1055,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:35:19.121Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "Bookstore returns/payment FAQ; never says \"USC Bookstore, 840 Childs Way\" sells hoodies"
+  },
+  {
+   "id": "A323",
+   "text": "cs club that does hackathons and meets weekly",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "CS/hackathon clubs; mention meeting frequency honestly",
+   "reply": "No upcoming events found for that search. Try searching for `#ai`, `#robotics`, `#career`, or `#freefood`.",
+   "script": [
+    {
+     "line": "events.find q=\"cs club that does hackathons and meets weekly\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Browse Events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:35:34.096Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "events.find with the whole sentence as query \u2192 \"No upcoming events\"; should be club.find topic=hackathon/cs (TH.CLUBS)"
+  },
+  {
+   "id": "A343",
+   "text": "finacial aid ofice",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Financial Aid office info",
+   "reply": "The WBB program (Marshall School of Business) **isn't eligible for federal or state aid**. The Financial Aid Office and Marshall work together so your aid meets your need at each school. Apply with the FAFSA and CSS Profile, using USC's school code, when you apply to USC.\n\n- **Year 1 at USC:** the Financial Aid Office determines your need. Any Pell Grant, Cal Grant or SEOG you would have qualified for is replaced with University Grant. You won't get work-study or federal loans, but private loans are available.\n- **Years 2 (HKUST) and 3 (Bocconi):** no FAFSA or CSS Profile is needed. Marshall decides scholarships using your Year 1 expected family contribution and that school's costs.\n- **Year 4:** if you return to USC, submit an updated FAFSA and CSS Profile.\n\nMarshall may also offer merit scholarships directly; contact Marshall about those.",
+   "script": [
+    {
+     "line": "ask q=\"finacial aid ofice\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000001407"
+   ],
+   "chips": [
+    "What is the financial aid office phone number",
+    "How do i apply for financial aid at usc",
+    "Do i need the fafsa for merit scholarships"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "world-bachelor-in-business-aid",
+     "qsim": 0.46709936649691375,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1042,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:35:49.132Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "Typo \"finacial aid ofice\" \u2192 KB answer about the WBB (World Bachelor in Business) program's aid; place.where finaid exists"
+  },
+  {
+   "id": "B358",
+   "text": "book a tennis court",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Court booking or honest pointer",
+   "reply": "When works for you?",
+   "script": [
+    {
+     "line": "do action=hub_request request=\"Book a tennis court for the student.\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "As soon as possible",
+    "Tomorrow",
+    "This weekend",
+    "Next week",
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "placeholder": ""
+    }
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"book a tennis court\",\"now\":\"Monday, November 9, 2026, 7:36 PM\",\"earlier\":[{\"text\":\"hackathons at usc\",\"line\":\"events.find q=\\\"hackathons at usc\\\"\"},{\"text\":\"career fair dates\",\"line\":\"ask q=\\\"career fair dates\\\"\"},{\"text\":\"where is bovard auditorium\",\"line\":\"place.where place=bovard\"},{\"text\":\"where can i get a usc hoodie\",\"line\":\"ask q=\\\"where can i get a usc hoodie\\\"\"},{\"text\":\"cs club that does hackathons and meets weekly\",\"line\":\"events.find q=\\\"cs club that does hackathons and meets weekly\\\"\"},{\"text\":\"finacial aid ofice\",\"line\":\"ask q=\\\"finacial aid ofice\\\"\"}]}",
+   "ms": 2520,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:36:05.620Z",
+   "grade": "GOOD",
+   "grade_note": "AI \u2192 hub_request for tennis court, asks when (simulated)"
+  },
+  {
+   "id": "B366",
+   "text": "what grade do i need on the phys final for a b+",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Final needed for B+ in PHYS 151",
+   "reply": "For **B+** in **PHYS 151** you need about **102%** on the final. That\u2019s above 100%, so B+ is out of reach unless there\u2019s extra credit.\n- Current grade: 80.8% (B-)\n- The final is 30% of the grade\n- Assumes the rest of your coursework stays at your current average\n\n_Scores and weights are sample data on the demo account._",
+   "script": [
+    {
+     "line": "grades.need course=\"PHYS 151\" target=\"B+\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Open PHYS 151",
+    "When is the final?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:36:19.126Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B379",
+   "text": "get me a smoothie",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Order from C&G Juice",
+   "reply": "Where should I order your **smoothie** from? These take mobile orders and are open now:",
+   "script": [
+    {
+     "line": "do action=hub_order_food request=\"get me a smoothie\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [
+    "{\"type\":\"options\",\"id\":\"mwha95kcrd001w\",\"options\":[{\"label\":\"Trojan Grounds featuring illy\",\"sub\":\"Open \u00b7 6:30 AM \u2013 12 AM \u00b7 5 min walk\",\"value\":\"@place:trojangrounds\"}]}"
+   ],
+   "extra": [
+    {
+     "placeholder": "Or type a venue"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1029,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:36:34.149Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B402",
+   "text": "when are my exams",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Student's exams list",
+   "reply": "Your upcoming exams:\n- **CSCI 104 Midterm 2** \u00b7 Fri, Nov 13, 7 PM\u20138:50 PM \u00b7 in 4 days\n- **PSYC 100 Midterm 2** \u00b7 Mon, Nov 16, 2 PM\u20133:20 PM \u00b7 in 7 days\n- **MATH 226 Midterm 2** \u00b7 Wed, Nov 18, 10 AM\u201310:50 AM \u00b7 in 9 days\n- **PHYS 151 Midterm 2** \u00b7 Fri, Nov 20, 8:30 AM\u20139:50 AM \u00b7 in 11 days\n- **MATH 226 Final exam** \u00b7 Wed, Dec 9, 2 PM\u20134 PM \u00b7 in 30 days (Registrar\u2019s final-exam slot)\n- **PSYC 100 Final exam** \u00b7 Fri, Dec 11, 2 PM\u20134 PM \u00b7 in 32 days (Registrar\u2019s final-exam slot)\n- **CSCI 104 Final exam** \u00b7 Sat, Dec 12, 11 AM\u20131 PM \u00b7 in 33 days (Registrar\u2019s final-exam slot)\n- **PHYS 151 Final exam** \u00b7 Mon, Dec 14, 4:30 PM\u20136:30 PM \u00b7 in 35 days (Registrar\u2019s final-exam slot)\n\n_Midterm dates are sample data; final-exam slots come from the Registrar\u2019s schedule._",
+   "script": [
+    {
+     "line": "exams.list",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Month view",
+    "Grades",
+    "Book a study room"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:36:49.149Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B421",
+   "text": "schedule a resume review",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Resume review booking",
+   "reply": "Resume reviews aren\u2019t booked as appointments: in fall and spring, **resume critiques are done only at drop-in advising**, **1:00\u20133:30 pm, Monday\u2013Friday**, no appointment needed. Bring your resume to the Career Center during those hours, or book a career advising appointment for other questions.",
+   "script": [
+    {
+     "line": "ask q=\"schedule a resume review\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Book career advising instead",
+    "How does this work at USC?"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1021,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:37:04.165Z",
+   "grade": "GOOD",
+   "grade_note": "Correct: resume reviews are drop-in only"
+  },
+  {
+   "id": "other469",
+   "text": "how do i make pasta",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Redirect",
+   "reply": "I can only help with questions about USC, and I answer using information from USC\u2019s official websites. Try asking me something about classes, deadlines, financial aid, housing, dining, health services or campus life.",
+   "script": [],
+   "sources": [],
+   "chips": [
+    "Plan my day",
+    "Plan my week",
+    "What are my grades?"
+   ],
+   "kinds": [
+    "off"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"how do i make pasta\",\"now\":\"Monday, November 9, 2026, 7:37 PM\",\"earlier\":[{\"text\":\"finacial aid ofice\",\"line\":\"ask q=\\\"finacial aid ofice\\\"\"},{\"text\":\"book a tennis court\",\"line\":\"do action=hub_request request=\\\"Book a tennis court for the student.\\\"\"},{\"text\":\"what grade do i need on the phys final for a b+\",\"line\":\"grades.need course=\\\"PHYS 151\\\" target=\\\"B+\\\"\"},{\"text\":\"get me a smoothie\",\"line\":\"do action=hub_order_food request=\\\"get me a smoothie\\\"\"},{\"text\":\"when are my exams\",\"line\":\"exams.list\"},{\"text\":\"schedule a resume review\",\"line\":\"ask q=\\\"schedule a resume review\\\"\"}]}",
+   "ms": 3011,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:37:21.166Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A009",
+   "text": "is the music library open on sunday",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Music Library Sunday hours",
+   "reply": "**Music Library** \u00b7 Sunday (Sun, Nov 15): **4 PM \u2013 8 PM**\n\n_Posted USC hours; holidays can differ._",
+   "script": [
+    {
+     "line": "place.hours place=music-library day=sunday",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libraries.usc.edu/hours"
+   ],
+   "chips": [
+    "See on the map"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1020,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:37:34.184Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A033",
+   "text": "study spot near viterbi",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Study spots near engineering buildings (SEL, Tutor Hall Caf\u00e9, etc.)",
+   "reply": "**Study spots:**\n- **Doheny Memorial Library** \u00b7 ~3 min walk \u00b7 open now (closes 8 pm)\n- **Cinematic Arts Library** \u00b7 ~3 min walk \u00b7 open now (closes 8 pm)\n- **East Asian Library** \u00b7 ~3 min walk \u00b7 open now (closes 8 pm)\n- **USC Writing Center (THH 216)** \u00b7 ~3 min walk \u00b7 open now (closes 8 pm)\n- **Leavey Library** \u00b7 ~5 min walk \u00b7 open now",
+   "script": [
+    {
+     "line": "place.find kind=\"study spot\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libanswers.usc.edu/faq/21402",
+    "https://libraries.usc.edu/hours",
+    "https://dornsife.usc.edu/writingcenter/",
+    "https://dornsife.usc.edu/next-gen-science/supplemental-instruction/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"study spot near viterbi\",\"now\":\"Monday, November 9, 2026, 7:37 PM\",\"earlier\":[{\"text\":\"book a tennis court\",\"line\":\"do action=hub_request request=\\\"Book a tennis court for the student.\\\"\"},{\"text\":\"what grade do i need on the phys final for a b+\",\"line\":\"grades.need course=\\\"PHYS 151\\\" target=\\\"B+\\\"\"},{\"text\":\"get me a smoothie\",\"line\":\"do action=hub_order_food request=\\\"get me a smoothie\\\"\"},{\"text\":\"when are my exams\",\"line\":\"exams.list\"},{\"text\":\"schedule a resume review\",\"line\":\"ask q=\\\"schedule a resume review\\\"\"},{\"text\":\"is the music library open on sunday\",\"line\":\"place.hours place=music-library day=sunday\"}]}",
+   "ms": 3048,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:37:51.223Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "AI \u2192 place.find kind=\"study spot\" dropped \"near Viterbi\": list is by distance from TCC (Doheny, Cinema, East Asian) \u2014 SEL not first"
+  },
+  {
+   "id": "A048",
+   "text": "late night food near campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Food open late (e.g. late-night spots, Seeds, Village)",
+   "reply": "Based on regular Fall 2026 hours:\n\n**Late night**\n- **Trojan Grounds featuring illy** is open until **midnight** Monday\u2013Friday.\n- **The Upstairs** (RTCC 2nd floor \u2014 poke, ramen, Sharetea, Coffee Bean) is open until **11:00pm on Thursdays** and bills itself as a late-night stop.\n- Dining halls generally close at **10:00pm** (EVK closes 8:00pm Thursday, USC Village 8:00pm Friday, Parkside 8:00pm Saturday).\n\n**Weekends**\n- EVK and Parkside open at **8:30am** Saturday and Sunday; USC Village opens 8:30am Saturday and **11:00am Sunday**.\n- **McKay's** (USC Hotel) serves breakfast 6:00\u201311:00am daily.\n- **Seeds Marketplace:** 9:00am\u20133:00pm; **Trojan Grounds:** 8:00am\u20136:00pm.\n- **Rosso Oro's** (USC Hotel): 11:00am\u20137:00pm daily.\n\nHoliday and game-day hours vary \u2014 check the Hours of Operation page.",
+   "script": [
+    {
+     "line": "ask q=\"late night food near campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://hospitality.usc.edu/hours-of-operation/",
+    "https://hospitality.usc.edu/dining-locations/theupstairs/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "late-night-and-weekend-food",
+     "qsim": 0.7453559924999299,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1103,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:38:04.282Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A078",
+   "text": "can i bring a guest to the gym",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Rec center guest policy",
+   "reply": "Guests need their own pass. Non-affiliated guests **18 or older** can buy passes:\n\n1. Create a **MyRecSports** account and sign the facility waiver online.\n2. Buy a pass with a credit or debit card. Guest standard passes (all facilities): **Day $15**, Week $40, Month $75, Semester $160.\n3. Show valid photo ID at entry.\n\nPeople under 18 can't buy a membership or pass. Anyone walking in (prospective members, family, friends wanting a tour) must complete an online waiver on their own device before passing the turnstiles. Memberships are **not transferable**, so don't lend someone your USC ID.",
+   "script": [
+    {
+     "line": "ask q=\"can i bring a guest to the gym\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://recsports.usc.edu/membership-information-fees/",
+    "https://recsports.usc.edu/about-us/forms-and-policies/"
+   ],
+   "chips": [
+    "Is the gym free at usc"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "bring-a-guest-to-the-gym",
+     "qsim": 0.5922200922639821,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1025,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:38:19.214Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A093",
+   "text": "which entrance can cars use",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Vehicle entrances (e.g. Gate 1 Exposition, Gate 3 Jefferson...)",
+   "reply": "Right now, **10 of 10** campus entrances are open.\n- **Open:** McCarthy Way Entrance, McClintock Ave. Entrance, Watt Way Entrance, Pardee Way Entrance, Royal Street Entrance, Downey Way Entrance, Jefferson Blvd. Entrance, Jefferson Blvd & Trousdale Pkwy, Exposition Blvd & Trousdale Pkwy, Jefferson Blvd & Watt Way\n- **Closed:** none\n\nNearest open entrance: **Exposition Blvd & Trousdale Pkwy**, about 4 min away.",
+   "script": [
+    {
+     "line": "gates.status",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/visitor-registration/"
+   ],
+   "chips": [
+    "See gates on the map",
+    "Walk to Exposition Blvd & Trousdale Pkwy"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1020,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:38:34.223Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "gates.status (all 10 open now) \u2014 doesn't say which entrances are for vehicles (McCarthy, McClintock 24/7; others weekdays)"
+  },
+  {
+   "id": "A107",
+   "text": "bike share near campus",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Metro Bike Share stations",
+   "reply": "**Metro Bike Share** has at least four stations around UPC: **Expo & Vermont, Figueroa & McCarthy, Jefferson & Figueroa, and University & Hoover**. Buy a pass (students can get a **discounted pass**), download the Metro Bike Share app, unlock a bike at a station, and return it to any station (listen for three beeps).\n\n**Other resources:** USC Transportation's interactive bike map shows on- and off-campus **bike repair stations, racks and bike share stations**. Nearby shops listed by USC Transportation include 3 Brother's Bike Shop (3008 Vermont Ave) and Lux's Bicycle Shop (1305 W Jefferson Blvd).\n\nRiding on campus? Register your bike with DPS \u2014 there's no cost.",
+   "script": [
+    {
+     "line": "ask q=\"bike share near campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/usc-bike-program/",
+    "https://dps.usc.edu/services/bikes/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "bike-share-and-bike-resources",
+     "qsim": 0.746003846592251,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1080,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:38:49.293Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A124",
+   "text": "is the area near figueroa safe",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Honest safety info and resources, no invented crime stats",
+   "reply": "USC is in the middle of Los Angeles, so it combines a large public safety operation with personal precautions:\n\n- **DPS** operates 24/7, 365 days a year, patrolling campus and surrounding neighborhoods in cars, on bikes and on foot.\n- **Community Service Officers** patrol all university-owned residential facilities; on-campus housing has **24/7 security**.\n- **Security ambassadors** (Yellow Jackets) watch the streets around campus.\n- **Free USC Lyft rides** at night inside campus boundaries, the **LiveSafe** app, and **nearly 300 blue light phones**.\n- **TrojansAlert** emergency texts/emails (students are auto-enrolled).\n\nUSC's safety tips start with \"Stay aware of your surroundings\" \u2014 avoid walking alone in isolated places and avoid texting while walking. Report emergencies to DPS at 213-740-4321 and non-emergencies at 213-740-6000.",
+   "script": [
+    {
+     "line": "ask q=\"is the area near figueroa safe\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002171",
+    "https://www.usc.edu/campus-safety/",
+    "https://safety.usc.edu/3-things-we-want-you-to-know-about-safety/",
+    "https://dps.usc.edu/services/trojans-alerts/"
+   ],
+   "chips": [
+    "How do i find off campus housing near usc"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "is-usc-campus-safe",
+     "qsim": 0.4423258684646915,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1031,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:39:04.254Z",
+   "grade": "GOOD",
+   "grade_note": "Generic but honest, no invented stats"
+  },
+  {
+   "id": "A136",
+   "text": "classes about ai next semester",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Spring 2027 AI-related courses from SOC",
+   "reply": "Here\u2019s what I found in the Spring 2027 Schedule of Classes:",
+   "script": [
+    {
+     "line": "ask q=\"classes about ai next semester\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [],
+   "kinds": [
+    ""
+   ],
+   "cards": [
+    "{\"type\":\"courses\",\"id\":\"mwhacoywmxvdb7\",\"term\":\"20271\",\"label\":\"Spring 2027\",\"courses\":[{\"code\":\"USC 099\",\"title\":\"WBB Semester At Large\",\"units\":\"1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18\",\"desc\":\"This is a zero unit, zero cost class to maintain USC student  status for WBB students while they are away studying at KHUST and  Bocconi.  Enrollment in this class will grant full time student  status at USC with access to student services.\",\"ge\":\"\",\"prereq\":[],\"sections\":[{\"id\":\"00901\",\"type\":\"Lecture\",\"meets\":[{\"days\":\"\",\"start\":\"TBA\",\"end\":\"TBA\"}],\"seats\":90,\"reg\":0,\"d\":true,\"instr\":\"\",\"sessio"
+   ],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1028,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:39:19.263Z",
+   "grade": "OTHER",
+   "grade_note": "Empty answer: \"Here's what I found in the Spring 2027 Schedule of Classes:\" with no courses listed"
+  },
+  {
+   "id": "A161",
+   "text": "how do i declare a minor",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Minor declaration process",
+   "reply": "To add a minor, contact the school that offers it; if approved, that school's advisor adds the minor code to your record. Each school runs its own process. Examples:\n- **Marshall minors:** you need **32-48 completed units, a declared major, and a minimum 2.75 USC GPA**. You can take at most three Marshall courses before admission. Applications are accepted year-round, with decisions typically within 10 business days. Marshall notes that all minors require at least **16 unique units outside your home academic department**.\n- **Thornton minors:** you're assigned a minor advisor; meetings aren't required, but you usually need D-clearance (Thornton Minor D-Clearance Request Form) for minor courses.\n- Majors and minors are declared with their departmental advisors (Thematic Option can declare only its own minor).\n\nTrack minor requirements on your STARS report. To **drop a minor**, ask your academic advisor to expire it from your record.",
+   "script": [
+    {
+     "line": "ask q=\"how do i declare a minor\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002737",
+    "https://students.marshall.usc.edu/current-students/applying-marshall-current-usc-students/marshall-minors",
+    "https://music.usc.edu/students/advising-process-minors/",
+    "https://dornsife.usc.edu/thematic-option/current-students/faq-current-students/"
+   ],
+   "chips": [
+    "Declare/change a major or add a minor for me",
+    "How do i change my major",
+    "I want to add a math minor"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "add-or-drop-minor",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1043,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:39:34.289Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A175",
+   "text": "when is spring break 2027",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Spring break dates 2027",
+   "reply": "- **Spring recess** \u00b7 Mar 14 \u2013 21 \u00b7 in 125 days",
+   "script": [
+    {
+     "line": "breaks.next which=spring",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://academics.usc.edu/calendar/"
+   ],
+   "chips": [
+    "Month view",
+    "When are my finals?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:39:49.273Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A187",
+   "text": "emergency funding for students",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Emergency/basic needs fund (Trojan Food Pantry, emergency aid)",
+   "reply": "**Student Basic Needs Supplemental Funding** is **one-time** money for currently enrolled students hit by sudden financial trouble they couldn't foresee, after they've used up other resources.\n\n- **What it can pay for:** housing or rent, food, unexpected medical or dental bills, and childcare. **What it can't:** transportation or gas, vehicle costs, books, supplies or technology, and tuition and fees.\n- **Eligibility:** enrolled at least half-time in the term you're asking about, a **$0 balance** on your USC bill, **approval from Financial Aid** (Student Basic Needs contacts Financial Aid for you), and the ability to provide bills or receipts.\n- **Timing:** the application opens around the **sixth week of each fall and spring semester** and stays open for **two weeks**. Review then takes up to **four weeks**.\n- **How to apply:** after connecting with Financial Aid, apply through **USC Scholarship Universe**, logging in as a USC Undergraduate or Graduate Applicant.\n\nNot sure you qualify? Fill out the Student Basic Needs contact form. Graduate students can also look into Graduate Student Government funds such as the GSG Emergency Fund.",
+   "script": [],
+   "sources": [
+    "https://studentbasicneeds.usc.edu/programs-and-services/economic-support/"
+   ],
+   "chips": [
+    "Does usc have emergency loans",
+    "Is there an emergency loan for international students"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "basic-needs-supplemental-funding",
+     "qsim": 0.8174238913695991,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1037,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:40:04.304Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A199",
+   "text": "can i have a guest stay overnight in my dorm",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Overnight guest policy",
+   "reply": "Yes, under the 2026\u201327 **Living Agreement** guest rules:\n- Your guest must be **with you at all times**, follow all housing rules, and **you're responsible for their conduct**.\n- **Overnight guests** (anyone in your room during quiet hours) must be **registered with your Customer Service Center** (or its designated agent) and carry the **guest pass** they're issued.\n- An overnight guest may stay **no more than 3 consecutive nights**, and only **twice in a month**.\n- **Residence halls and suites:** at most **2 guests** at a time per resident. **Apartments:** at most **4 guests** at a time, with no more than **2 overnight**.\n- Guests never get keys or access cards; minors need parent/guardian approval for an overnight stay.\n- No more than **3\u00d7 the number of assigned residents, or 20 people** (whichever is less) may be in a room, suite or apartment at once.\n- Extra limits can apply on home football game days and other special occasions, and guests can't arrive before or stay after contract dates.\n\nHousing policies apply to your guests, and violations go through Residential Education Review.",
+   "script": [
+    {
+     "line": "ask q=\"can i have a guest stay overnight in my dorm\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://resed.usc.edu/resources/move-in/",
+    "https://resed.usc.edu/resources/residential-review-process-policies/",
+    "https://housing.usc.edu/index.php/publication/2026-2027-living-agreement/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "guest-policy",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1028,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:40:19.307Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A211",
+   "text": "can i waive the usc health insurance",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Insurance waiver process/deadline",
+   "reply": "Your account already shows the SHIP charge **waived for 2026\u201327**, so there\u2019s nothing to submit this year. The waiver is annual: the next one is due by the third week of fall classes (**Fall 2027: September 10, 2027**).",
+   "script": [
+    {
+     "line": "ask q=\"can i waive the usc health insurance\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1020,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:40:34.312Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A225",
+   "text": "entrepreneurship club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Entrepreneurship clubs (Lavin, etc.)",
+   "reply": "EngageSC groups matching **entrepreneurship** (top 5 of 26):\n- **Entrepreneurship & Venture Management Association** \u00b7 Career \u00b7 0 upcoming events\n  EVMA is the graduate venture network at USC Marshall. We connect graduate students to the founders, investors,\u2026\n- **Viterbi Office of Technology Innovation and Entrepreneurship** \u00b7 Academic \u00b7 0 upcoming events\n  The mission of the Viterbi School Office of Technology Innovation and Entrepreneurship is to launch ventures w\u2026\n- **Master of Science in Social Entrepreneurship Student Association** \u00b7 Pre-Professional \u00b7 0 upcoming events\n  The mission of the MSSE SA is to foster new opportunities of growth and open connections for MSSE students and\u2026\n- **Vis Entrepreneurship** \u00b7 not registered yet \u00b7 0 upcoming events\n  Vis is the women in entrepreneurship organization at USC.\n- **MBA Entrepreneurship Club** \u00b7 Pre-Professional \u00b7 not registered yet \u00b7 0 upcoming events\n  \"The MBA Entrepreneurship Group is a student-led organization that exists to create an environment for collabo\u2026\n\n_From the EngageSC directory. Meeting times are rarely public; joining adds a group\u2019s posted events to My Day._",
+   "script": [
+    {
+     "line": "ask q=\"entrepreneurship club\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://clubs.marshall.usc.edu/evma/home/"
+   ],
+   "chips": [
+    "Join Entrepreneurship & Ventu",
+    "Details: Entrepreneurship & V",
+    "Join Viterbi Office of Techno",
+    "Details: Viterbi Office of Te",
+    "Browse clubs"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1044,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:40:49.347Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A245",
+   "text": "networking events for engineers",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Engineering networking events",
+   "reply": "No upcoming events found for that search. Try searching for `#ai`, `#robotics`, `#career`, or `#freefood`.",
+   "script": [
+    {
+     "line": "events.find q=\"networking  for engineers\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Browse Events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1013,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:41:04.326Z",
+   "grade": "NOT_FOUND",
+   "grade_note": "events.find \"networking  for engineers\" (word \"events\" stripped) \u2192 no events; Viterbi Career Connections events exist in feed"
+  },
+  {
+   "id": "A260",
+   "text": "how do i find research opportunities",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Undergraduate research (CURVE, SURF, faculty)",
+   "reply": "Ways to get started:\n1. **Know what you want:** what research interests you, what you hope to gain, and how many hours a week you can commit.\n2. **Search faculty webpages and labs** (including outside your major) and use your network: professors, TAs and classmates. Faculty office hours are a good way to connect.\n3. **Email faculty** with a short introduction (name, major, relevant courses/skills, why their work interests you, availability) and attach an up-to-date r\u00e9sum\u00e9. Cast a wide net.\n4. **Check postings:** Dornsife points students to the **USC Handshake** job and internship feed for current faculty research projects.\n\nPrograms are aimed at students early in their academic careers (e.g., CURVE, SURF), though the Provost's fellowship requires 64+ completed units. You can also do research through formal programs and funding (Viterbi's **CURVE**, Dornsife's **SOAR** and **SURF/SHURE**, the **Provost's Undergraduate Research Fellowship** for your own project) or coursework such as **Directed Research (490)** and senior capstones. Share your work at the **Undergraduate Symposium for Scholarly and Creative Work**.",
+   "script": [
+    {
+     "line": "ask q=\"how do i find research opportunities\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://viterbiundergrad.usc.edu/research/getting-started/",
+    "https://dornsife.usc.edu/css/surf/",
+    "https://viterbiundergrad.usc.edu/research/",
+    "https://academicprograms.usc.edu/services/undergraduate-research-and-experiential-learning/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "find-undergrad-research",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1034,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:41:19.357Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A272",
+   "text": "galen center directions",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Galen Center location",
+   "reply": "**Galen Center**\n- 3400 S Figueroa St, Los Angeles, CA 90089\n- About **8 min walk** from you (TCC, Trousdale side)",
+   "script": [
+    {
+     "line": "place.where place=\"Galen Center\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://viterbiundergrad.usc.edu/commencement/",
+    "https://www.openstreetmap.org/way/406923895"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"galen center directions\",\"now\":\"Monday, November 9, 2026, 7:41 PM\",\"earlier\":[{\"text\":\"when is spring break 2027\",\"line\":\"breaks.next which=spring\"},{\"text\":\"can i have a guest stay overnight in my dorm\",\"line\":\"ask q=\\\"can i have a guest stay overnight in my dorm\\\"\"},{\"text\":\"can i waive the usc health insurance\",\"line\":\"ask q=\\\"can i waive the usc health insurance\\\"\"},{\"text\":\"entrepreneurship club\",\"line\":\"ask q=\\\"entrepreneurship club\\\"\"},{\"text\":\"networking events for engineers\",\"line\":\"events.find q=\\\"networking  for engineers\\\"\"},{\"text\":\"how do i find research opportunities\",\"line\":\"ask q=\\\"how do i find research opportunities\\\"\"}]}",
+   "ms": 3089,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:41:36.424Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A298",
+   "text": "how do i find roommates",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Roommate search resources",
+   "reply": "Once you're assigned, log on to the **Housing portal**: your assignment shows the **screen names** of any students already assigned to your room or apartment. If you requested specific roommates and USC Housing could place you together, they appear there too.\n- **Requested (mutual) roommates** stay together as assigned.\n- **Matched roommates** (if you didn't request someone) can **change** as students are reassigned\u2014so your roommate list may update.\n- Before you were assigned, the roommate search let you contact potential roommates by screen name; after assignment the matching tools are no longer available.\n\nRoom numbers shown in the portal aren't guaranteed either.",
+   "script": [
+    {
+     "line": "ask q=\"how do i find roommates\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/assignments/",
+    "https://housing.usc.edu/index.php/application-4/"
+   ],
+   "chips": [
+    "I don't get along with my roommate what do i do"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "finding-out-your-roommate",
+     "qsim": 1.0000000000000002,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1051,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:41:49.394Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A324",
+   "text": "free food event tonight near the village",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Free food event tonight near Village \u2014 all constraints",
+   "reply": "Nothing left today, but these upcoming EngageSC events list food:\n- **Reading Together Party** \u00b7 Tue, Nov 10, 4:00 AM\u20136:00 PM \u00b7 USC Libraries\n- **Lunch w/ HR&A Advisors: Careers in Broadband and Network Infrastructure (Viterbi)** \u00b7 Tue, Nov 10, 11:30 AM\u20131:00 PM \u00b7 Viterbi Career Connections\n- **Marine Corps Birthday** \u00b7 Tue, Nov 10, 12:00 PM\u20132:00 PM \u00b7 Veterans Resource Center\n- **Cookies & Connections - UG & MS** \u00b7 Tue, Nov 10, 3:00 PM\u20134:00 PM \u00b7 USC Viterbi Women In Engineering\n\n_Food is as listed by the host on EngageSC; some events are for members or need an RSVP._",
+   "script": [
+    {
+     "line": "ask q=\"free food event tonight near the village\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://engage.usc.edu/USCLibraries/rsvp?id=415533"
+   ],
+   "chips": [
+    "RSVP: Reading Together Party",
+    "All events"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1021,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:42:04.376Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Honest \"nothing left today\" but lists tomorrow's food events anywhere (incl. a \"4:00 AM\u20136:00 PM\" event); \"near the village\" ignored"
+  },
+  {
+   "id": "A344",
+   "text": "regestration date spring",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Spring registration dates",
+   "reply": "**Spring 2027 registration**\n- Registration appointments posted: **Mon, Oct 5, 2026** (35 days ago)\n- Registration begins: **Mon, Oct 26, 2026** (14 days ago)\n- Last day to add: **Fri, Jan 29, 2027** (in 81 days)\n- Your appointment: **Tue, Nov 3, 2026 at 9:00 AM** (on this device)",
+   "script": [
+    {
+     "line": "cal.registration",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.usc.edu/academic-calendar/",
+    "https://arr.usc.edu/web-registration/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:42:19.384Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B359",
+   "text": "reserve a table on trousdale for my club",
+   "kind": "B",
+   "topic": "book_room",
+   "good_answer": "Trousdale tabling reservation flow",
+   "reply": "To **start a new student organization**, the real form asks for:\n- names/USC emails of the five officers and five+ members\n- whether it is religious/spiritual (ORSL path) or a club sport (RCC)\n\nReply with whatever applies (one message is fine). I\u2019ll fill in your name, USC ID and contact info from your account.",
+   "script": [
+    {
+     "line": "do action=\"proc:start-new-student-organization\" request=\"reserve a table on trousdale for my club\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Skip \u2014 use what\u2019s on file",
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "placeholder": "Type the details\u2026"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1019,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:42:34.391Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"reserve a table on trousdale for my club\" \u2192 start-new-student-organization process form"
+  },
+  {
+   "id": "B367",
+   "text": "show my transcript",
+   "kind": "B",
+   "topic": "grades",
+   "good_answer": "Transcript/grades (simulated)",
+   "reply": "**USC's pages don't give a set number of days** for a degree to appear on your transcript. What they do say:\n\n- The Registrar's **Degree Progress** office posts degrees to students' academic records, and you're **emailed at your USC address when your degree has been conferred**.\n- You get the degree date of the term in which you meet **all** requirements, including submitting supporting documents. To graduate in a term, finish everything by its last day and meet its administrative deadline: **Fall - Jan. 15; Spring - June 15; Summer - Sept. 15**.\n- **2026-27 conferral dates:** Fall 2026 degrees on **Dec. 16, 2026**; Spring 2027 degrees in **May 2027**.\n- **Ordering a transcript that shows your degree?** Check Experience USC first to make sure pending grades and degrees have posted.\n\nTo change your degree date, use \"Other Services\" in Experience USC or talk to your academic advisor.",
+   "script": [
+    {
+     "line": "ask q=\"show my transcript\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://arr.usc.edu/degree-progress/",
+    "https://ask.usc.edu/s/article/000002976",
+    "https://ask.usc.edu/s/article/000002991",
+    "https://arr.usc.edu/transcripts-services/"
+   ],
+   "chips": [
+    "How do i get an unofficial transcript",
+    "Will a medical leave show on my transcript",
+    "How do i order my official transcript"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "r4b-degree-posting",
+     "qsim": 0.8257228238447704,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1026,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:42:49.410Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"show my transcript\" \u2192 KB answer about when a degree appears on the transcript; should show grades/completed courses or how to order a transcript"
+  },
+  {
+   "id": "B380",
+   "text": "reorder my last meal",
+   "kind": "B",
+   "topic": "order",
+   "good_answer": "Reorder previous order",
+   "reply": "Where should I order your **meal** from? These take mobile orders and are open now:",
+   "script": [
+    {
+     "line": "do action=hub_order_food request=\"Reorder the student's last meal as a mobile order for pickup.\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [
+    "{\"type\":\"options\",\"id\":\"mwhahjzyv6znp6\",\"options\":[{\"label\":\"Trojan Grounds featuring illy\",\"sub\":\"Open \u00b7 6:30 AM \u2013 12 AM \u00b7 5 min walk\",\"value\":\"@place:trojangrounds\"}]}"
+   ],
+   "extra": [
+    {
+     "placeholder": "Or type a venue"
+    }
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"reorder my last meal\",\"now\":\"Monday, November 9, 2026, 7:43 PM\",\"earlier\":[{\"text\":\"galen center directions\",\"line\":\"place.where place=\\\"Galen Center\\\"\"},{\"text\":\"how do i find roommates\",\"line\":\"ask q=\\\"how do i find roommates\\\"\"},{\"text\":\"free food event tonight near the village\",\"line\":\"ask q=\\\"free food event tonight near the village\\\"\"},{\"text\":\"regestration date spring\",\"line\":\"cal.registration\"},{\"text\":\"reserve a table on trousdale for my club\",\"line\":\"do action=\\\"proc:start-new-student-organization\\\" request=\\\"reserve a table on trousdale for my club\\\"\"},{\"text\":\"show my transcript\",\"line\":\"ask q=\\\"show my transcript\\\"\"}]}",
+   "ms": 2708,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:43:06.100Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "AI \u2192 order flow, but asks where to order instead of reordering the last meal (no order history on demo account; should say so)"
+  },
+  {
+   "id": "B403",
+   "text": "put me on the waitlist for csci 270",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Waitlist flow or honest",
+   "reply": "You\u2019re already registered for **CSCI 270** in Spring 2027.",
+   "script": [
+    {
+     "line": "do action=register_class request=\"Put the student on the waitlist for CSCI 270.\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "How does this work at USC?"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"put me on the waitlist for csci 270\",\"now\":\"Monday, November 9, 2026, 7:43 PM\",\"earlier\":[{\"text\":\"how do i find roommates\",\"line\":\"ask q=\\\"how do i find roommates\\\"\"},{\"text\":\"free food event tonight near the village\",\"line\":\"ask q=\\\"free food event tonight near the village\\\"\"},{\"text\":\"regestration date spring\",\"line\":\"cal.registration\"},{\"text\":\"reserve a table on trousdale for my club\",\"line\":\"do action=\\\"proc:start-new-student-organization\\\" request=\\\"reserve a table on trousdale for my club\\\"\"},{\"text\":\"show my transcript\",\"line\":\"ask q=\\\"show my transcript\\\"\"},{\"text\":\"reorder my last meal\",\"line\":\"do action=hub_order_food request=\\\"Reorder the student's last meal as a mobile order for pickup.\\\"\"}]}",
+   "ms": 2544,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:43:20.944Z",
+   "grade": "GOOD",
+   "grade_note": "Says already registered for CSCI 270 Spring 2027"
+  },
+  {
+   "id": "B422",
+   "text": "find a bike near me",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Nearest bikes",
+   "reply": "**Lock it to a bike rack.** On campus, always park your bike at a rack; UPC has **more than 60** of them.\n\n- **Never block doorways, stairs, building entrances, access ways or ramps.** DPS impounds improperly parked bikes.\n- **Rack full?** Find another one nearby. Racks are built to stop theft; telephone poles aren't.\n- **Find racks:** USC Transportation's interactive bike map shows on- and off-campus bike racks, repair stations and Metro Bike Share stations.\n- **Lock it right:** ideally use two locks to secure both wheels and the frame. With one lock, put a **U-lock** through the frame and rear wheel.\n- **Register it with DPS (free).** USC policy requires it if you ride or park a bike on campus, and it helps DPS identify your bike if it's lost, stolen, recovered or impounded.\n- **Live in USC Housing?** Some buildings have secure bike parking: in USC Village, **McCarthy Honors**, **Cale and Irani**, **Cowlings and Ilium**, and **Nemirovsky and Bohnett**; plus the garages at **Annenberg**, **Centennial**, **Founders** and **Sierra**.\n\nRegistration questions: DPS, **(213) 740-5519**.",
+   "script": [
+    {
+     "line": "ask q=\"find a bike near me\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://safety.usc.edu/tips/mobility-speed/",
+    "https://housing.usc.edu/index.php/publication/resident-information-for-2026-2027/",
+    "https://dps.usc.edu/safety-tips/theft-prevention/",
+    "https://transnet.usc.edu/index.php/usc-bike-program/"
+   ],
+   "chips": [
+    "Is there bike share at usc"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "supp-where-to-park-bike",
+     "qsim": 0.47809144373375745,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1029,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:43:34.440Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"find a bike near me\" \u2192 bike-parking rules; bikes.nearest / Metro Bike Share stations not used"
+  },
+  {
+   "id": "other470",
+   "text": "asdfghjkl",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Clarifying response",
+   "reply": "I can only help with questions about USC, and I answer using information from USC\u2019s official websites. Try asking me something about classes, deadlines, financial aid, housing, dining, health services or campus life.",
+   "script": [],
+   "sources": [],
+   "chips": [
+    "Plan my day",
+    "Plan my week",
+    "What are my grades?"
+   ],
+   "kinds": [
+    "off"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"asdfghjkl\",\"now\":\"Monday, November 9, 2026, 7:43 PM\",\"earlier\":[{\"text\":\"regestration date spring\",\"line\":\"cal.registration\"},{\"text\":\"reserve a table on trousdale for my club\",\"line\":\"do action=\\\"proc:start-new-student-organization\\\" request=\\\"reserve a table on trousdale for my club\\\"\"},{\"text\":\"show my transcript\",\"line\":\"ask q=\\\"show my transcript\\\"\"},{\"text\":\"reorder my last meal\",\"line\":\"do action=hub_order_food request=\\\"Reorder the student's last meal as a mobile order for pickup.\\\"\"},{\"text\":\"put me on the waitlist for csci 270\",\"line\":\"do action=register_class request=\\\"Put the student on the waitlist for CSCI 270.\\\"\"},{\"text\":\"find a bike near me\",\"line\":\"ask q=\\\"find a bike near me\\\"\"}]}",
+   "ms": 2616,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:43:51.037Z",
+   "grade": "OTHER",
+   "grade_note": "Gibberish gets the USC-only refusal instead of \"didn't catch that\""
+  },
+  {
+   "id": "A010",
+   "text": "cinema library hours",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Cinematic Arts Library hours",
+   "reply": "\ud83d\udfe1 **Cinematic Arts Library**: Closing soon \u00b7 Closes 8 PM\n\n**This week:**\n- Sun: 12 PM \u2013 8 PM\n- Mon: 9 AM \u2013 8 PM\n- Tue: 9 AM \u2013 8 PM\n- Wed: 9 AM \u2013 8 PM\n- Thu: 9 AM \u2013 8 PM\n- Fri: 9 AM \u2013 5 PM\n- Sat: Closed\n\n_Day-by-day hours copied from the live libraries.usc.edu/hours table._",
+   "script": [
+    {
+     "line": "hours.check place=\"cinema library hours\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libraries.usc.edu/hours"
+   ],
+   "chips": [
+    "See on map"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:44:04.438Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A034",
+   "text": "where can i nap on campus",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Nap spots / quiet lounges (honest)",
+   "reply": "None of the campus places I carry mention **nap spots, quiet rest areas to nap on campus**.",
+   "script": [
+    {
+     "line": "place.search what=\"nap spots, quiet rest areas to nap on campus\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://hospitality.usc.edu/hours-of-operation/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"where can i nap on campus\",\"now\":\"Monday, November 9, 2026, 7:44 PM\",\"earlier\":[]}",
+   "ms": 2640,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:44:21.068Z",
+   "grade": "NOT_FOUND",
+   "grade_note": "AI \u2192 place.search nap spots \u2192 \"None of the campus places I carry mention\u2026\"; no honest suggestion (quiet lounges, libraries)"
+  },
+  {
+   "id": "A049",
+   "text": "where can i get boba near usc",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Boba places near USC Village/Figueroa",
+   "reply": "USC Hospitality coffee spots at UPC (regular Fall 2026 hours):\n\n- **Trojan Grounds featuring illy** (642 West 34th St): illy espresso, lattes, matcha and specialty teas \u2014 Mon\u2013Fri 6:30am\u2013midnight, Sat\u2013Sun 8:00am\u20136:00pm\n- **The Upstairs** (RTCC 2nd floor): **Sharetea boba** and a Coffee Bean & Tea Leaf \u2014 Mon\u2013Wed 11:00am\u20137:00pm, Thu until 11:00pm, Fri until 5:00pm\n- **Coffee Bean & Tea Leaf** (School of Cinematic Arts, 900 W 34th St): Mon\u2013Thu 7:00am\u20136:00pm, Fri until 5:00pm\n- **Caf\u00e9 Annenberg** (3630 Watt Way): illy coffee \u2014 Mon\u2013Thu 7:30am\u20136:30pm, Fri until 3:00pm\n- **Literatea** (Doheny Library): Equator Coffee and loose-leaf teas \u2014 Mon\u2013Thu 8:00am\u20133:00pm, Fri until 1:30pm\n- **Popovich Caf\u00e9** (630 Childs Way): Equator coffee, espresso and matcha lattes \u2014 Mon\u2013Thu 7:30am\u20135:30pm, Fri until 2:00pm\n\nAt HSC: Trojan Grounds featuring illy (HSC) and **Keck Starbucks**. Bring a clean reusable mug for $0.10 off at Trojan Grounds featuring illy, Coffee Bean & Tea Leaf, Caf\u00e9 Annenberg, Literatea and Popovich (also Tutor Hall Caf\u00e9 and Law Cafe).",
+   "script": [
+    {
+     "line": "ask q=\"where can i get boba near usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://hospitality.usc.edu/dining-locations/trojan-grounds-featuring-illy/",
+    "https://hospitality.usc.edu/dining-locations/theupstairs/",
+    "https://hospitality.usc.edu/dining-locations/coffee-bean-tea-leaf/",
+    "https://hospitality.usc.edu/dining-locations/cafe-annenberg/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "coffee-and-boba-on-campus",
+     "qsim": 0.6666666666666666,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1035,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:44:34.471Z",
+   "grade": "GOOD",
+   "grade_note": "Names Sharetea boba at The Upstairs"
+  },
+  {
+   "id": "A079",
+   "text": "basketball courts on campus",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Where to play pickup basketball (Lyon Center)",
+   "reply": "Lyon Center Main Gym courts are **first-come, first-served** outside scheduled programming:\n\n- **Basketball (Courts A & B):** Mon\u2013Thu 6:00 am\u201311:15 pm; Fri 6:00 am\u20139:45 pm; Sat 9:00 am\u20136:45 pm; Sun 9:00 am\u201311:15 pm.\n- **Court C** rotates by sport:\n  - **Pickleball:** Mon\u2013Thu 11 am\u20132 pm; Fri 12\u20132 pm; Sat 4\u20137 pm\n  - **Badminton:** Mon 2\u20135 pm; Wed 2\u20137 pm; Thu 5\u201311:15 pm; Fri 5:30\u20138:30 pm; Sat 9 am\u201312 pm\n  - **Volleyball:** Tue & Thu 2\u20135 pm; Wed 7\u201311:15 pm; Fri 2\u20135 pm; Sat 12\u20134 pm\n  - You set up and take down the equipment.\n- **Gear:** borrow basketballs, volleyballs, soccer balls, pickleball paddles and badminton rackets at the **Lyon Center Pro Shop** (return by the end of the day).\n- **Outdoors:** **Brittingham Field** and **Village Turf** are open first-come, first-served when not scheduled.",
+   "script": [
+    {
+     "line": "ask q=\"basketball courts on campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://recsports.usc.edu/rec-facilities/operating-hours/",
+    "https://recsports.usc.edu/rec-facilities/lyon-center/",
+    "https://recsports.usc.edu/about-us/forms-and-policies/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "open-rec-courts",
+     "qsim": 0.4364357804719848,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1069,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:44:49.516Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A094",
+   "text": "do i need my id to get on campus",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "ID requirement policy",
+   "reply": "Most on-campus jobs are posted on **Handshake**: log in, go to **Jobs**, and filter by **Position Type** for on-campus positions. You can also add the Handshake widget on my.usc.edu (Student Jobs tab).\n\n- **Timing:** most fall openings are posted by the first or second week of August, but departments post all year.\n- **Job fair:** the **Virtual On-Campus Student Job Fair** for Spring 2027 is **Friday, January 8, 2027, 1:00\u20134:00 pm PT, on Handshake**. Registration opens Nov. 2, 2026; RSVP in Handshake Events. It covers work-study and non-work-study jobs and is open to all majors, years and degree levels.\n- **Where departments post:** the USC Bookstore, Hospitality/USC Hotel, Housing and Rec Sports use Handshake. DPS applications are at the DPS front desk (3667 McClintock Ave, in the Downey Way Parking Structure). For grader jobs, ask faculty directly.\n- Apply with a resume, a cover letter and your availability schedule.\n\nInternational (F-1) students aren't eligible for work-study positions; see the Office of International Services for on-campus employment rules.",
+   "script": [
+    {
+     "line": "ask q=\"do i need my id to get on campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://careers.usc.edu/resources/find-on-campus-student-jobs/",
+    "https://careers.usc.edu/on-campus-student-job-fair/",
+    "https://recsports.usc.edu/about-us/job-opportunities/"
+   ],
+   "chips": [
+    "What is a uscard",
+    "Is usc campus open to the public",
+    "Where can i mail a package on campus"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Spring 2027",
+     "eid": "on-campus-jobs",
+     "qsim": 0.8164965809277259,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1032,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:45:04.490Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"do i need my id to get on campus\" \u2192 KB answer about on-campus jobs on Handshake; campus.access answers this"
+  },
+  {
+   "id": "A108",
+   "text": "where can i park my bike",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Bike racks / bike registration",
+   "reply": "The nearest bike racks are **by Bovard Administration Building**, about **1 min** from you. I have 40 rack locations on the map (positions are approximate), plus the Metro Bike Share docks.\nLock your frame to a rack: bikes locked to railings or ramps can be impounded.",
+   "script": [
+    {
+     "line": "bikes.nearest",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Show bike parking",
+    "How do I register my bike?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:45:19.488Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A125",
+   "text": "bike got stolen what do i do",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "Report to DPS, bike theft reporting",
+   "reply": "I\u2019m sorry that happened. **Report the theft to DPS right away:** **213-740-4321** (UPC) or **323-442-1000** (HSC), 24 hours a day. You can also reach DPS through the free **LiveSafe** app.\n\n- **Bikes and scooters:** a registered **serial number** is your best chance of getting a stolen bike back, and police across the country use these numbers. Free DPS registration (scooters and skateboards too) lets DPS identify your property if it's recovered or impounded.\n- **Laptops:** report a stolen laptop to DPS or your local police immediately. Your manufacturer registration can help with recovery. Borrowed an **ITS loaner**? The loan agreement makes you responsible for its full replacement cost.\n- **Maybe just lost?** DPS Lost and Found: **213-740-9759** or lostandfound@dps.usc.edu (UPC), **323-442-1200** (HSC). Found items are kept **90 days**.\n- **Camera footage:** as the victim, you can submit DPS's **CCTV Video Request Form**. If video exists, it costs **$150** and takes about **5-7 business days**.\n- **Next time:** use a **U-lock** on the frame and rear wheel, and never leave your laptop unattended, even at the library. Leavey Library lends **free cable locks** at its first-floor circulation desk for use in the building.",
+   "script": [
+    {
+     "line": "ask q=\"bike got stolen what do i do\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/contact/report/",
+    "https://dps.usc.edu/2024/05/06/community-safety-advisory-9/",
+    "https://dps.usc.edu/services/bikeserialnumber/",
+    "https://dps.usc.edu/services/bikes/"
+   ],
+   "chips": [
+    "How do i lock my bike so it doesn't get stolen"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "supp-stolen-bike-or-laptop",
+     "qsim": 1.0000000000000002,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1031,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:45:34.512Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A137",
+   "text": "is buad 304 hard",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "Honest: no difficulty data; course info",
+   "reply": "USC\u2019s pages don\u2019t rate how hard a course is or how much work it takes. Here\u2019s what the Spring 2027 Schedule of Classes lists for **BUAD 304 \u2014 Organizational Behavior and Leadership** (4 units). The syllabus, your academic advisor and the department can tell you more about the workload, and free tutoring is available if you need it.",
+   "script": [
+    {
+     "line": "ask q=\"is buad 304 hard\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [
+    "Book an advising appointment"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [
+    "{\"type\":\"courses\",\"id\":\"mwhal234nnroqj\",\"term\":\"20271\",\"label\":\"Spring 2027\",\"courses\":[{\"code\":\"BUAD 304\",\"title\":\"Organizational Behavior and Leadership\",\"units\":\"4\",\"desc\":\"The role of leadership in business organizations; concepts and skills for managing oneself and others.\",\"ge\":\"\",\"prereq\":[],\"sections\":[{\"id\":\"14720\",\"type\":\"Lecture\",\"meets\":[{\"days\":\"MW\",\"start\":\"08:00\",\"end\":\"09:20\"}],\"seats\":30,\"reg\":3,\"d\":false,\"instr\":\"Zachariah Berry\",\"session\":\"001\",\"units\":\"4.0\",\"cancelled\":false,\"notes\":\"\",\"link\":\"A\"},{\"id\":\"14736\",\"type\":\"Lecture\",\"meets\":[{\"days\":\"MW\",\"start\":\"08:00\",\"end\":\"0"
+   ],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1022,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:45:49.513Z",
+   "grade": "GOOD",
+   "grade_note": "Honest: no difficulty data"
+  },
+  {
+   "id": "A162",
+   "text": "pass no pass deadline",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "P/NP deadline",
+   "reply": "Spring 2027 deadlines for **session 001** courses:\n- **Jan 8** \u2013 last day to register and settle without a late fee\n- **Jan 11** \u2013 classes begin\n- **Jan 29** \u2013 last day to register/add, drop and receive a refund, enroll Pass/No Pass or Audit, and purchase or waive Tuition Refund Insurance\n- **Feb 2** \u2013 same add/drop/refund/P-NP/Audit deadline for **Monday-only** classes\n- **Feb 26** \u2013 last day to drop **without a W** and to change P/NP to a letter grade\n- **Apr 9** \u2013 last day to **withdraw** (W)\n- **Apr 30** \u2013 classes end\n\nCourses in other sessions have their own dates (Calendar icon in the Schedule of Classes). Changes are due by **11:59 PM PT** on the deadline.",
+   "script": [
+    {
+     "line": "ask q=\"pass no pass deadline\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://arr.usc.edu/registration-calendar/",
+    "https://ask.usc.edu/s/article/000001713"
+   ],
+   "chips": [
+    "Can i still take my class credit no credit",
+    "Monday only class deadline",
+    "Last day to drop a class fall 2026"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Spring 2027",
+     "eid": "spring-2027-add-drop-withdraw-deadlines",
+     "qsim": 0.8043996665398437,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1032,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:46:04.535Z",
+   "grade": "GOOD",
+   "grade_note": "P/NP deadline Jan 29 (Spring) \u2014 but Fall 2026 P/NP deadline not given"
+  },
+  {
+   "id": "A176",
+   "text": "when is commencement",
+   "kind": "A",
+   "topic": "deadlines",
+   "good_answer": "Commencement date",
+   "reply": "**Commencement Week 2027** runs **Wednesday, May 12 \u2013 Saturday, May 15, 2027**.\n\n- **Main Stage Ceremony:** **Thursday, May 13, 2027, 6:30 pm** at the **Los Angeles Memorial Coliseum**. It includes honorary degrees, the keynote, remarks from President Beong-Soo Kim and the official conferral of degrees. Doors open at 4:30 pm, graduates must arrive by **6:00 pm**, and the ceremony lasts about two hours.\n- **School ceremonies** (where you cross the stage): most are **Friday, May 14**, and the rest are **Saturday, May 15**, on campus or at the Shrine Auditorium, Galen Center or Coliseum.\n- **Doctoral/PhD ceremonies and special celebrations:** May 12\u201313.\n- **Baccalaureate:** Wednesday, May 12, 5:00 pm, Bovard Auditorium.\n\nAll in-person ceremonies are livestreamed and available on demand. The hashtag is #uscgrad.",
+   "script": [
+    {
+     "line": "ask q=\"when is commencement\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://commencement.usc.edu/faq/",
+    "https://commencement.usc.edu/2026/10/29/update-on-2027-usc-commencement/",
+    "https://commencement.usc.edu/main-stage-ceremony/",
+    "https://commencement.usc.edu/"
+   ],
+   "chips": [
+    "When is graduation 2027",
+    "Where will viterbi's commencement ceremony be",
+    "I graduate in december when is my commencement"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Spring 2027",
+     "eid": "commencement-2027-dates",
+     "qsim": 0.6416889479197478,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1031,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:46:19.546Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A188",
+   "text": "can i get a refund if i drop a class",
+   "kind": "A",
+   "topic": "finaid",
+   "good_answer": "Tuition refund policy",
+   "reply": "**To withdraw from the university:**\n1. **Notify your academic advisor.**\n2. **Drop all your courses** in Web Registration, watching the deadlines (you may owe tuition if you don't drop in time), and look for the confirmation email.\n3. **Ask to have your program of study closed** (email your advisor or contact the One Stop via askUSC).\n4. Review the Leave of Absence guidelines and contact all relevant offices to close things out.\n\n**Registered for a future term but not coming?** If you haven't paid tuition (including with financial aid) or confirmed attendance and registration is still open, unschedule and drop your classes in Web Registration. If you've paid or the refund deadline has passed, request a petition through the Email Us form.\n\n**Financial aid:** withdrawing from all classes after add/drop and before the **60% mark** means returning part of your federal aid. If you plan to come back, a leave of absence is the route for that.",
+   "script": [
+    {
+     "line": "ask q=\"can i get a refund if i drop a class\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002754",
+    "https://ask.usc.edu/s/article/000002424",
+    "https://ask.usc.edu/s/article/000001824",
+    "https://ask.usc.edu/s/article/000001115"
+   ],
+   "chips": [
+    "Drop or withdraw from a class for me",
+    "What happens if i withdraw from all my classes f1"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "withdraw-from-usc-or-transfer-out",
+     "qsim": 0.5923488777590923,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1037,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:46:34.565Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"refund if i drop a class\" \u2192 how to withdraw from the university; should give the refund deadline (Fall: Sep 11, passed) / Tuition Refund Insurance"
+  },
+  {
+   "id": "A200",
+   "text": "summer housing usc",
+   "kind": "A",
+   "topic": "housing",
+   "good_answer": "Summer housing info",
+   "reply": "**Summer Housing** runs from just after Commencement in May until just before Fall Check-In in August, with **four contract periods** that each have fixed start and end dates.\n- It requires a **separate application** on the Housing portal once it opens. Not all buildings are available, and non-students who meet specific requirements may also be housed.\n- Details for the upcoming summer usually appear in **mid-March**, so **Summer 2027 dates and rates aren't posted yet**. Summer rents can differ from academic-year rents.\n- Summer contracts have a **$400** confirmation payment; staying between your spring contract and a summer contract costs **$50/night** (live-through).\n- Maymester participants should read the Maymester information USC Housing posts in the spring.\n- **No summer housing in 2028**\u2014USC Housing is fully reserved for the LA28 Olympic Games.",
+   "script": [
+    {
+     "line": "ask q=\"summer housing usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/summer-housing/",
+    "https://housing.usc.edu/index.php/housing-fees/",
+    "https://housing.usc.edu/index.php/section/rents-and-billing/"
+   ],
+   "chips": [
+    "Can i change my housing assignment before move in"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current (Summer 2027 details not yet posted)",
+     "eid": "summer-housing",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1037,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:46:49.575Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A212",
+   "text": "covid testing on campus",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "COVID testing availability",
+   "reply": "**Stay home until you've been fever-free for 24 hours and feel better, and contact Student Health if you need care.** Here's what USC Student Health advises for respiratory illnesses like COVID-19 and flu:\n\n- **Get care or advice:** book a **respiratory illness telemedicine appointment** or talk to a nurse through **MySHR** or the 24/7 line, **213-740-9355 (WELL)**.\n- **Higher risk?** If you're immunocompromised or have a condition that puts you at risk of severe illness, seek medical care. Antiviral medications may be recommended.\n- **Getting worse or trouble breathing?** Seek medical attention. In an emergency, call **911**.\n- **Classes:** tell your professors you'll be absent so they can give you alternate materials. Sick notes shouldn't be required.\n- **Testing:** if you have symptoms, you can pick up a test kit at the Student Health Center front desk. USC's Pop Testing program **closed May 19, 2023**.",
+   "script": [
+    {
+     "line": "ask q=\"covid testing on campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://studenthealth.usc.edu/flu-advisory/",
+    "https://studenthealth.usc.edu/pop-testing-hours-and-locations/",
+    "https://campussupport.usc.edu/students/health-wellness/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "supp-covid-positive",
+     "qsim": 0.9999999999999998,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1025,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:47:04.573Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A226",
+   "text": "clubs for international students",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "International student orgs",
+   "reply": "EngageSC groups for **international students** (64):\n- **International Student Assembly** \u00b7 Student Government, Ethnic/Cultural \u00b7 1 upcoming events\n- **Parkside International Residential College** \u00b7 Residential Education \u00b7 3 upcoming events \u00b7 joining closed\n- **Bridges International** \u00b7 Spiritual, Ethnic/Cultural\n- **Gaming International Graduate Students Association** \u00b7 Spiritual, Social\n- **Graduate International Student Club** \u00b7 Ethnic/Cultural, Social\n- **Graduate Student Association of Political Science and International Relations** \u00b7 Academic\n- **International Business Association** \u00b7 Pre-Professional, Academic\n- **International City/County Management Association Student Chapter - USC** \u00b7 Pre-Professional, Career\n- \u2026and 56 more",
+   "script": [
+    {
+     "line": "club.find topic=\"international students\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://engage.usc.edu/"
+   ],
+   "chips": [
+    "Browse clubs"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1044,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:47:19.604Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A246",
+   "text": "movie screenings this week",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Film screenings",
+   "reply": "No upcoming events found for that search. Try searching for `#ai`, `#robotics`, `#career`, or `#freefood`.",
+   "script": [
+    {
+     "line": "events.find q=\"movie screening\" hashtag=movies",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Browse Events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"movie screenings this week\",\"now\":\"Monday, November 9, 2026, 7:47 PM\",\"earlier\":[{\"text\":\"pass no pass deadline\",\"line\":\"ask q=\\\"pass no pass deadline\\\"\"},{\"text\":\"when is commencement\",\"line\":\"ask q=\\\"when is commencement\\\"\"},{\"text\":\"can i get a refund if i drop a class\",\"line\":\"ask q=\\\"can i get a refund if i drop a class\\\"\"},{\"text\":\"summer housing usc\",\"line\":\"ask q=\\\"summer housing usc\\\"\"},{\"text\":\"covid testing on campus\",\"line\":\"ask q=\\\"covid testing on campus\\\"\"},{\"text\":\"clubs for international students\",\"line\":\"club.find topic=\\\"international students\\\"\"}]}",
+   "ms": 2633,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:47:36.205Z",
+   "grade": "NOT_FOUND",
+   "grade_note": "AI \u2192 events.find \"movie screening\" #movies \u2192 none; screenings exist this week (e.g. \"Sweater Weather Screening\", Visions & Voices screening Mon)"
+  },
+  {
+   "id": "A261",
+   "text": "career center drop in hours",
+   "kind": "A",
+   "topic": "careers",
+   "good_answer": "Drop-in advising hours",
+   "reply": "\ud83d\udd34 **USC Career Center**: Closed \u00b7 Opens tomorrow 8:30 AM\n\n**This week:**\n- Sun: Closed\n- Mon: 8:30 AM \u2013 5 PM\n- Tue: 8:30 AM \u2013 5 PM\n- Wed: 8:30 AM \u2013 5 PM\n- Thu: 8:30 AM \u2013 5 PM\n- Fri: 8:30 AM \u2013 5 PM\n- Sat: Closed",
+   "script": [
+    {
+     "line": "hours.check place=\"career center drop in hours\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://careers.usc.edu/front-page/learn-about-the-career-center/",
+    "https://careers.usc.edu/channels/appointments",
+    "https://careers.usc.edu/iris/",
+    "https://careers.usc.edu/employers-spring-career-fair/"
+   ],
+   "chips": [
+    "See on map"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:47:49.599Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Gives Career Center office hours (8:30\u20135), not drop-in advising hours (1:00\u20133:30 PM Mon\u2013Fri) which Tommy knows (A254)"
+  },
+  {
+   "id": "A273",
+   "text": "where is the mail stop",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "The Mail Stop location/hours",
+   "reply": "**The Mail Stop**\n- McCarthy Way Parking Structure (PSX) \u00b7 620 McCarthy Way, Los Angeles, CA 90089\n- About **4 min walk** from you (TCC, Trousdale side)",
+   "script": [
+    {
+     "line": "place.where place=mailstop",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/publication/resident-information-for-2026-2027/",
+    "https://mycard.usc.edu/accepted-locations/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1063,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:48:04.654Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A299",
+   "text": "whats there to do around usc",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Nearby things: Expo Park museums, Exposition Park, LA Live",
+   "reply": "USC is in the middle of Los Angeles, so it combines a large public safety operation with personal precautions:\n\n- **DPS** operates 24/7, 365 days a year, patrolling campus and surrounding neighborhoods in cars, on bikes and on foot.\n- **Community Service Officers** patrol all university-owned residential facilities; on-campus housing has **24/7 security**.\n- **Security ambassadors** (Yellow Jackets) watch the streets around campus.\n- **Free USC Lyft rides** at night inside campus boundaries, the **LiveSafe** app, and **nearly 300 blue light phones**.\n- **TrojansAlert** emergency texts/emails (students are auto-enrolled).\n\nUSC's safety tips start with \"Stay aware of your surroundings\" \u2014 avoid walking alone in isolated places and avoid texting while walking. Report emergencies to DPS at 213-740-4321 and non-emergencies at 213-740-6000.",
+   "script": [
+    {
+     "line": "ask q=\"whats there to do around usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002171",
+    "https://www.usc.edu/campus-safety/",
+    "https://safety.usc.edu/3-things-we-want-you-to-know-about-safety/",
+    "https://dps.usc.edu/services/trojans-alerts/"
+   ],
+   "chips": [
+    "I broke my arm can i get accommodations",
+    "Who are the people in yellow jackets"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "is-usc-campus-safe",
+     "qsim": 0.6735753140545635,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1064,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:48:19.667Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"whats there to do around usc\" \u2192 DPS safety blurb (\"USC is in the middle of Los Angeles\u2026\"); no Expo Park museums/LA Live"
+  },
+  {
+   "id": "A325",
+   "text": "study room for 6 people tomorrow afternoon",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Bookable room for 6 tomorrow afternoon (or offer to book)",
+   "reply": "Which library?",
+   "script": [
+    {
+     "line": "do action=reserve_room request=\"Reserve a library study room for 6 people tomorrow afternoon (Tuesday, November 10, 2026).\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Leavey Library",
+    "Doheny Memorial Library",
+    "Science & Engineering Library",
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "placeholder": ""
+    }
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"study room for 6 people tomorrow afternoon\",\"now\":\"Monday, November 9, 2026, 7:48 PM\",\"earlier\":[{\"text\":\"covid testing on campus\",\"line\":\"ask q=\\\"covid testing on campus\\\"\"},{\"text\":\"clubs for international students\",\"line\":\"club.find topic=\\\"international students\\\"\"},{\"text\":\"movie screenings this week\",\"line\":\"events.find q=\\\"movie screening\\\" hashtag=movies\"},{\"text\":\"career center drop in hours\",\"line\":\"hours.check place=\\\"career center drop in hours\\\"\"},{\"text\":\"where is the mail stop\",\"line\":\"place.where place=mailstop\"},{\"text\":\"whats there to do around usc\",\"line\":\"ask q=\\\"whats there to do around usc\\\"\"}]}",
+   "ms": 3043,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:48:36.657Z",
+   "grade": "GOOD",
+   "grade_note": "AI \u2192 reserve_room"
+  },
+  {
+   "id": "A345",
+   "text": "helth center hours",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Engemann hours",
+   "reply": "Typical hours when fall/spring classes are in session:\n\n**Engemann (UPC)**\n- Mon-Thu: close at **7 PM**\n- Fri: close at **5 PM**\n- Sat: half day, close at **1 PM**\n\n**Eric Cohen (HSC)**\n- Mon & Tue: open early at **7 AM**\n- Thu: close late at **7 PM**\n- Wed & Fri: **9 AM-5 PM**\n\n**Medical telehealth**\n- Mon-Thu: 7 AM-7 PM\n- Fri: 9 AM-5 PM\n- Sat-Sun: 8:30 AM-5 PM\n\nSummer hours are shorter (5 PM closures). USC says hours may change, so check usc.edu/myshr for open appointments or call **213-740-9355 (WELL)**. When the centers are closed, that number still connects you to a nurse, counselor or advocate 24/7.",
+   "script": [
+    {
+     "line": "ask q=\"helth center hours\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://studenthealth.usc.edu/hours/",
+    "https://sites.usc.edu/new-student-health-requirements/planning-your-care/things-to-know/"
+   ],
+   "chips": [
+    "Health center is closed what do i do"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "student-health-hours",
+     "qsim": 0.5716619504750294,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1054,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:48:49.677Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B404",
+   "text": "set a reminder for my math exam",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Reminder creation",
+   "reply": "Your upcoming exams:\n- **MATH 226 Midterm 2** \u00b7 Wed, Nov 18, 10 AM\u201310:50 AM \u00b7 in 9 days\n- **MATH 226 Final exam** \u00b7 Wed, Dec 9, 2 PM\u20134 PM \u00b7 in 30 days (Registrar\u2019s final-exam slot)\n\n_Midterm dates are sample data; final-exam slots come from the Registrar\u2019s schedule._",
+   "script": [
+    {
+     "line": "exams.list course=\"MATH 226\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Month view",
+    "Grades",
+    "Book a study room"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:49:04.650Z",
+   "grade": "BAD_ACTION",
+   "grade_note": "\"set a reminder for my math exam\" \u2192 exams list; no reminder offered/created"
+  },
+  {
+   "id": "B423",
+   "text": "where's the nearest open gate",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Nearest open gate",
+   "reply": "Right now, **10 of 10** campus entrances are open.\n- **Open:** McCarthy Way Entrance, McClintock Ave. Entrance, Watt Way Entrance, Pardee Way Entrance, Royal Street Entrance, Downey Way Entrance, Jefferson Blvd. Entrance, Jefferson Blvd & Trousdale Pkwy, Exposition Blvd & Trousdale Pkwy, Jefferson Blvd & Watt Way\n- **Closed:** none\n\nNearest open entrance: **Exposition Blvd & Trousdale Pkwy**, about 4 min away.",
+   "script": [
+    {
+     "line": "gates.status",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/visitor-registration/"
+   ],
+   "chips": [
+    "See gates on the map",
+    "Walk to Exposition Blvd & Trousdale Pkwy"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1021,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:49:19.668Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "gates.status lists all 10 open but the nearest open gate line is the answer; OK-ish but buried (same output as \"which gates are open\")"
+  },
+  {
+   "id": "other471",
+   "text": "what's 17 times 23",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "391 or redirect",
+   "reply": "I can only help with questions about USC, and I answer using information from USC\u2019s official websites. Try asking me something about classes, deadlines, financial aid, housing, dining, health services or campus life.",
+   "script": [],
+   "sources": [],
+   "chips": [
+    "Plan my day",
+    "Plan my week",
+    "What are my grades?"
+   ],
+   "kinds": [
+    "off"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"what's 17 times 23\",\"now\":\"Monday, November 9, 2026, 7:49 PM\",\"earlier\":[{\"text\":\"where is the mail stop\",\"line\":\"place.where place=mailstop\"},{\"text\":\"whats there to do around usc\",\"line\":\"ask q=\\\"whats there to do around usc\\\"\"},{\"text\":\"study room for 6 people tomorrow afternoon\",\"line\":\"do action=reserve_room request=\\\"Reserve a library study room for 6 people tomorrow afternoon (Tuesday, November 10, 2026).\\\"\"},{\"text\":\"helth center hours\",\"line\":\"ask q=\\\"helth center hours\\\"\"},{\"text\":\"set a reminder for my math exam\",\"line\":\"exams.list course=\\\"MATH 226\\\"\"},{\"text\":\"where's the nearest open gate\",\"line\":\"gates.status\"}]}",
+   "ms": 2382,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:49:36.040Z",
+   "grade": "OTHER",
+   "grade_note": "Simple arithmetic refused as not about USC (fine to redirect, but stiff)"
+  },
+  {
+   "id": "A011",
+   "text": "can i print at leavey",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "Printing at Leavey (ITS/Library printing, cost or how to print)",
+   "reply": "**1. Create a Library Print account (once):** tap your USCard on any library Xerox printer and enter your NetID and password, or sign in at **libraryprint.usc.edu** or in the **Pharos Print** app.\n\n**2. Send your document**\n- **From a laptop (web):** go to **libraryprint.usc.edu** \u2192 **Upload** \u2192 set options \u2192 preview.\n- **From a phone:** Pharos Print app (server **libraryprint.usc.edu**, port **443**) \u2192 open your file with Pharos Print \u2192 set options \u2192 Apply Changes. Or use **touchless printing**: in the Pharos Print app select your job, tap the QR code button, scan the QR code on the printer and confirm.\n- **From a library computer:** print to **USC_Student_Color** or **USC_Student_BW**.\n\n**3. Release it:** at any library Xerox printer, tap your USCard (or enter credentials) \u2192 **Print Release** \u2192 pick the job \u2192 print. Release color jobs on a color printer.\n\n**Printer locations** include LVL 113 (1st floor) and LVL 202, DML 119 (Stacks 5), SSL 201, CPA/LIPA B40 and DEN B21D (color); B&W only at DML G4, DML G24, DML 110 and NML 100.",
+   "script": [
+    {
+     "line": "ask q=\"can i print at leavey\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libraries.usc.edu/print-scan-or-copy",
+    "https://libraries.usc.edu/print-scan-or-copy/create-library-print-account",
+    "https://libraries.usc.edu/print-scan-or-copy/print-libraryprint.usc.edu",
+    "https://libraries.usc.edu/print-scan-or-copy/print-mobile-print"
+   ],
+   "chips": [
+    "Print a document in a USC library for me"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "library-printing-how",
+     "qsim": 0.7715167498104596,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1030,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:49:49.698Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A035",
+   "text": "is the tcc 3rd floor good for studying",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "TCC 3rd Floor Lounge info",
+   "reply": "Here\u2019s the closest match I found on USC\u2019s pages:\n\nFrom **Tutor Campus Center/Steven and Kathryn Sample Building Directory - Trojan Event Services** \u2014 _3rd Floor_:\n- Building \u2014 Name of Office \u2014 Contact \u2014 Website\n- TCC 315 \u2014 Lactation Room \u2014 (213) 764-4943 \u2014 Website\n- TCC 330 \u2014 Fraternity & Sorority Leadership Development \u2014 USCFSLD@usc.edu \u2014 Website\n- TCC 330 \u2014 USC Veterans Resource Center \u2014 vrc@usc.edu \u2014 Website",
+   "script": [
+    {
+     "line": "ask q=\"is the tcc 3rd floor good for studying\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://trojanevents.usc.edu/venues/ronald-tutor-campus-center-meeting-rooms/building-directory/"
+   ],
+   "chips": [
+    "Leavey study pods"
+   ],
+   "kinds": [
+    "p"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "confidence": "medium"
+    }
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"is the tcc 3rd floor good for studying\",\"now\":\"Monday, November 9, 2026, 7:50 PM\",\"earlier\":[{\"text\":\"study room for 6 people tomorrow afternoon\",\"line\":\"do action=reserve_room request=\\\"Reserve a library study room for 6 people tomorrow afternoon (Tuesday, November 10, 2026).\\\"\"},{\"text\":\"helth center hours\",\"line\":\"ask q=\\\"helth center hours\\\"\"},{\"text\":\"set a reminder for my math exam\",\"line\":\"exams.list course=\\\"MATH 226\\\"\"},{\"text\":\"where's the nearest open gate\",\"line\":\"gates.status\"},{\"text\":\"can i print at leavey\",\"line\":\"ask q=\\\"can i print at leavey\\\"\"},{\"text\":\"is the tcc 3rd floor good for studying\",\"line\":\"ask q=\\\"is the tcc 3rd floor good for studying\\\"\"}]}",
+   "ms": 2646,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:50:06.325Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "AI \u2192 ask; TCC 3rd-floor office directory (lactation room, FSL office) instead of the TCC 3rd Floor Lounge study info in TH.PLACES"
+  },
+  {
+   "id": "A050",
+   "text": "cheapest place to eat on campus",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Affordable dining options",
+   "reply": "The lowest **2026\u201327** rent USC Housing lists is **$4,500 per person per semester**, for a **two-bedroom triple in Troy Hall**; Troy Hall's one-bedroom for 3 is **$4,550**. Troy Hall residents (upperclassmen) also pay for a required partial meal plan.\n\n- **Next-lowest per-semester options:** La Sorbonne two-bedroom triple **$5,670**; one-bedroom for 3 or two-bedroom loft for 4 in the USC Village apartments **$5,850**.\n- **Freshmen:** McCarthy Honors four-person loft doubles are **$5,850** (honors scholarship holders only); Marks Tower doubles are **$6,500**.\n- **Graduate students** are billed monthly; the lowest listed rate is **$1,000/month** (e.g., a Fairmont two-bedroom for 4).\n- **Meal plans:** all freshmen get the **Cardinal Plan ($4,219/semester)**; upperclassmen in apartments get **Flex 120 ($2,074)**; grads have no required plan.\n- Assignments go by application date and availability, so you may not get the cheapest room type.",
+   "script": [
+    {
+     "line": "ask q=\"cheapest place to eat on campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/buildings/troy-hall/",
+    "https://housing.usc.edu/index.php/buildings/la-sorbonne/",
+    "https://housing.usc.edu/index.php/buildings/usc-village-building-9/",
+    "https://housing.usc.edu/index.php/buildings/mccarthy-honors-residential-college/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "supp-cheapest-housing-options",
+     "qsim": 0.5824352060364906,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1025,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:50:19.714Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"cheapest place to eat on campus\" \u2192 cheapest housing rent (Troy Hall $4,500)"
+  },
+  {
+   "id": "A080",
+   "text": "intramural sports how to join",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "IM sports signup (IMLeagues / Rec Sports)",
+   "reply": "**Recreational Sports** \u00b7 Student Life\n- Join on its EngageSC page: https://engage.usc.edu/Recsports/\n- Club website: https://recsports.usc.edu/\n- Registered student organization.",
+   "script": [
+    {
+     "line": "club.join club=\"Recreational Sports\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://engage.usc.edu/Recsports/"
+   ],
+   "chips": [
+    "Join in Trojan Hub"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1043,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:50:34.737Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "club.join \"Recreational Sports\" EngageSC page; no intramural signup steps (IMLeagues via Rec Sports)"
+  },
+  {
+   "id": "A095",
+   "text": "how do i get on campus as a guest speaker",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Guest/visitor access procedure",
+   "reply": "Right now, **10 of 10** campus entrances are open.\n- **Open:** McCarthy Way Entrance, McClintock Ave. Entrance, Watt Way Entrance, Pardee Way Entrance, Royal Street Entrance, Downey Way Entrance, Jefferson Blvd. Entrance, Jefferson Blvd & Trousdale Pkwy, Exposition Blvd & Trousdale Pkwy, Jefferson Blvd & Watt Way\n- **Closed:** none\n\nNearest open entrance: **Exposition Blvd & Trousdale Pkwy**, about 4 min away.",
+   "script": [
+    {
+     "line": "gates.status",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/visitor-registration/"
+   ],
+   "chips": [
+    "See gates on the map",
+    "Walk to Exposition Blvd & Trousdale Pkwy"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:50:49.721Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"guest speaker\" access \u2192 gates.status; should be visitor/event guest registration (visitor.usc.edu, host department)"
+  },
+  {
+   "id": "A109",
+   "text": "lax to usc",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Directions LAX to USC (FlyAway/Metro/rideshare)",
+   "reply": "**Metro rail (works with your U-Pass):** take the **E Line westbound** from Jefferson/USC, Expo Park/USC or Expo/Vermont to **Expo/Crenshaw**, transfer to the **K Line southbound** to the **LAX/Metro Transit Center**, then ride the **LAX Metro Connector** shuttle to the terminals (every 10\u201315 minutes, 4 AM\u20131 AM; free with valid proof of transit).\n\n**Bus + rail:** **J Line** bus southbound from 37th Street/USC to Harbor Freeway, then the **C Line** westbound to the LAX/Metro Transit Center and the Connector shuttle.\n\n**USC bus + FlyAway:** take a USC bus to Union Station (weekdays), then the **LAX FlyAway** from Bus Stop 1 in Patsaouras Transit Plaza \u2014 **$9.75 one way**.\n\nReverse any route to come from LAX. Rideshare (Uber or Lyft) is also an option. Questions: auxtrans@usc.edu.",
+   "script": [
+    {
+     "line": "ask q=\"lax to usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/getting-to-lax/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "getting-to-lax",
+     "qsim": 1.0000000000000002,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1067,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:51:04.782Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A126",
+   "text": "what's the livesafe app",
+   "kind": "A",
+   "topic": "safety",
+   "good_answer": "LiveSafe / USC safety app info",
+   "reply": "**LiveSafe**\nFree USC safety app managed by DPS and USC Emergency Planning. One-touch calls to DPS or 911; Anonymous messaging (suspicious activity, crimes in progress); SafeWalk virtual escort by friends/family.\n\nSet up: download **LiveSafe**, create a profile, choose **University of Southern California**.",
+   "script": [
+    {
+     "line": "safety.livesafe",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/safety-app/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1020,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:51:19.747Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A138",
+   "text": "what's csci 310 about",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "CSCI 310 description",
+   "reply": "**CSCI 310 \u00b7 Software Engineering** (Fall 2026) \u00b7 4 units\n\nIntroduction to the software engineering process and software lifecycle. Covers project management, requirements, architecture, design, implementation, testing, and maintenance phase activities in team based projects. Prerequisites: CSCI 201. Duplicates credit in former CSCI 377.\n\n_Also offered in Spring 2027._",
+   "script": [
+    {
+     "line": "course.about course=\"CSCI 310\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [
+    "When does it meet?",
+    "Prereqs"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1014,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:51:34.751Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A163",
+   "text": "can i audit a class",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Auditing policy",
+   "reply": "To audit, register for the course in Web Registration and select the **Audit** grade option (you may need the instructor's permission first).\n- **Cost:** audits are charged regular tuition, which matters if your enrollment exceeds 18 units (the flat-rate range).\n- **Credit:** none. Audited courses don't appear on your USC transcript or grade report, aren't counted in your GPA, and aren't included in enrolled units for financial aid or full-time status.\n- **Deadline:** through the end of the **third week** (session 001: Fall 2026 Sept 11; Spring 2027 Jan 29).\n- **Not allowed** in courses numbered 390, 490, 590, 594, 690, 790, 794, 990 or 994.\n\nExplore financial aid and scholarship implications with USC officials before choosing audit.",
+   "script": [
+    {
+     "line": "ask q=\"can i audit a class\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002067",
+    "https://ask.usc.edu/s/article/000002142",
+    "https://arr.usc.edu/grades/",
+    "https://arr.usc.edu/registration-calendar/"
+   ],
+   "chips": [
+    "When is the last day to change a class to audit"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "audit-a-course",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1048,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:51:49.797Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A213",
+   "text": "i need a doctor's note for missing class",
+   "kind": "A",
+   "topic": "health",
+   "good_answer": "Student Health policy on notes",
+   "reply": "**USC Student Health doesn\u2019t provide \u201cclass excuse\u201d notes** for short-term absences or missed deadlines, and it doesn\u2019t authenticate notes from outside doctors.\n- Instead, you can print Student Health\u2019s **\u201cAbsence Excuse\u201d form** to self-verify your illness and start the conversation with your instructor. It also confirms that Student Health doesn\u2019t issue absence excuses.\n- **Tell your instructor** as soon as you can.\n- **Need care?** Book an illness/injury appointment in MySHR or call **213-740-9355** (24/7).\n- **Longer or more serious situation?** Campus Support & Intervention (**213-740-0411**) can help with your classes.",
+   "script": [
+    {
+     "line": "ask q=\"i need a doctor's note for missing class\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://studenthealth.usc.edu/policy-on-medical-excuses-for-class-absence/",
+    "https://campussupport.usc.edu/students/academics/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1027,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:52:04.786Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A227",
+   "text": "how do i start a club",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Process to register a new org",
+   "reply": "New organizations are recognized only in **spring** of their first year, and the **Spring 2027 RSO Recognition application is open now on EngageSC**.\n\n**Key dates:** the application opened **October 27** and closes **November 22 at 11:59 pm** (late applications aren't accepted). Advisors submit their requirements separately by **December 1**. Recognition lasts through **June 30, 2027**.\n\n**You need:**\n- Five officers: president, vice president, secretary, treasurer and programming chair\n- One full-time USC faculty or staff advisor (not on sabbatical or leave)\n- At least five additional student members\n- A Constitution and an Accountability Document on the required 2026-27 fillable templates\n- For each of the five officers: Hazing Prevention 101 and RSO Officer Learning Path certificates (completed between July 1, 2026 and the deadline) plus a signed Commitment to Community form\n\n**To start:** search the EngageSC Directory to make sure your group doesn't already exist, then click **+Register a new Recognized Student Organization** (religious or spiritual groups pick the Office of Religious and Spiritual Life option). One officer submits everything from a laptop or desktop, not mobile. Questions: stuacts@usc.edu.",
+   "script": [
+    {
+     "line": "ask q=\"how do i start a club\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+    "https://campusactivities.usc.edu/programs/recognized-student-organizations/new-student-organizations/",
+    "https://campusactivities.usc.edu/programs/recognized-student-organizations/faq-rso-recognition-process/"
+   ],
+   "chips": [
+    "Start a new student organization for me"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Spring 2027",
+     "eid": "start-new-student-organization",
+     "qsim": 0.9999999999999998,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1043,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:52:19.813Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A247",
+   "text": "what events are good for meeting people",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Social events recommendation",
+   "reply": "### \u2b50 Recommended Events for You\n_Ranked by your thumbs up ratings and matching hashtags (Netflix-style)_\n\n**Reading Together Party**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 AM \u00b7 \ud83d\udccd Doheny Memorial Library, Room 241, Los Angeles, California 90089, United States  \n\ud83c\udff7\ufe0f `#freefood #social #service #community`\n\n**Lunch w/ HR&amp;A Advisors: Careers in Broadband and Network Infrastructure (Viterbi)**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 11:30 AM \u00b7 \ud83d\udccd Viterbi Career Connections  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Marine Corps Birthday**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 12 PM \u00b7 \ud83d\udccd Veterans Resource Center  \n\ud83c\udff7\ufe0f `#freefood #social #service #community`\n\n**Cookies &amp; Connections - UG &amp; MS**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 3 PM \u00b7 \ud83d\udccd USC Viterbi Women In Engineering  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Cookies &amp; Connections - PhD**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 PM \u00b7 \ud83d\udccd USC Viterbi Women In Engineering  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Chick-Fil-A &amp; Chill**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 PM \u00b7 \ud83d\udccd New North Residential College  \n\ud83c\udff7\ufe0f `#freefood #social #rafloorprogram`",
+   "script": [
+    {
+     "line": "events.recommend count=6",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Open Events Calendar",
+    "Show #robotics events",
+    "Show #freefood events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1023,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:52:34.804Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "events.recommend top pick \"Reading Together Party \u2026 Tomorrow at 4 AM\" (bad time data); not about meeting people"
+  },
+  {
+   "id": "A274",
+   "text": "what is the hecuba statue",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Hecuba statue in USC Village piazza",
+   "reply": "**Hecuba statue**\nHecuba, queen of Troy, unveiled in the USC Village piazza at the Village grand opening in fall 2017.\n\n- Unveiled by President Nikias at the USC Village grand opening in fall 2017",
+   "script": [
+    {
+     "line": "landmark.facts place=hecuba",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://village.usc.edu/about-hecuba/"
+   ],
+   "chips": [
+    "Show on the map"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1018,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:52:49.810Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A300",
+   "text": "best spots for sunset photos on campus",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Photo spots (honest)",
+   "reply": "**Study spots matching greenery, old / historic, outdoor:**\n- **Law School Cafe** \u00b7 ~4 min walk \u00b7 next to **Exposition Park** (park / green, ~75 m on the map) \u00b7 Indoor and shaded outdoor seating \u00b7 closed now\n\n**Green spaces to sit or work outside** (OpenStreetMap):\n- **Associates Park** \u00b7 park / green \u00b7 ~1 min walk\n- **Alumni Park** \u00b7 park / green \u00b7 ~2 min walk\n- **Hutton Park** \u00b7 park / green \u00b7 ~2 min walk\n- **McCarthy Quad** \u00b7 park / green \u00b7 ~4 min walk\n- **Exposition Park Rose Garden** \u00b7 garden \u00b7 ~6 min walk\n\n_No single place in the data has all of: greenery, old / historic. Closest matches first._",
+   "script": [
+    {
+     "line": "place.find kind=\"outdoor space\" attrs=\"green, historic\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.openstreetmap.org/",
+    "https://hospitality.usc.edu/dining-locations/law-school-cafe/",
+    "https://hospitality.usc.edu/hours-of-operation/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"best spots for sunset photos on campus\",\"now\":\"Monday, November 9, 2026, 7:53 PM\",\"earlier\":[{\"text\":\"what's csci 310 about\",\"line\":\"course.about course=\\\"CSCI 310\\\"\"},{\"text\":\"can i audit a class\",\"line\":\"ask q=\\\"can i audit a class\\\"\"},{\"text\":\"i need a doctor's note for missing class\",\"line\":\"ask q=\\\"i need a doctor's note for missing class\\\"\"},{\"text\":\"how do i start a club\",\"line\":\"ask q=\\\"how do i start a club\\\"\"},{\"text\":\"what events are good for meeting people\",\"line\":\"events.recommend count=6\"},{\"text\":\"what is the hecuba statue\",\"line\":\"landmark.facts place=hecuba\"}]}",
+   "ms": 3451,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:53:07.255Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "AI \u2192 place.find outdoor/green/historic \"study spots\" with Law School Cafe first; nothing about sunset/photo spots"
+  },
+  {
+   "id": "A326",
+   "text": "quiet library open after 10pm on friday",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Library open past 10pm Friday and quiet",
+   "reply": "**Libraries matching quiet:**\n- **Doheny Memorial Library** \u00b7 ~3 min walk \u00b7 listed as a quiet space \u00b7 open now (closes 8 pm)",
+   "script": [
+    {
+     "line": "place.find kind=library attrs=quiet",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libanswers.usc.edu/faq/21402",
+    "https://libraries.usc.edu/hours"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1048,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:53:19.860Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Drops \"open after 10pm on Friday\": Doheny closes 5 PM Fri; Leavey (open till midnight Fri) not shown"
+  },
+  {
+   "id": "A346",
+   "text": "carer center",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Career Center info",
+   "reply": "The **USC Career Center** is in the **Student Union, STU 110 and B1** (3601 Trousdale Parkway), open **Monday\u2013Friday, 8:30 am\u20135:00 pm PT**.\n\n- Front desk: **(213) 740-9111**. General questions: careers@usc.edu. Employer inquiries: recruit@usc.edu.\n- Services include resume reviews and career advising (drop-ins in STU 110, 1:00\u20133:30 pm weekdays in fall and spring, plus 30-minute appointments booked in Handshake), online networking through the Trojan Network, and job search resources.\n- Many schools also have their own **school-based career centers**. USC uses a federated model, so you can get help from both.",
+   "script": [
+    {
+     "line": "ask q=\"carer center\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://careers.usc.edu/front-page/learn-about-the-career-center/",
+    "https://careers.usc.edu/resources/school-based-career-services/",
+    "https://careers.usc.edu/channels/appointments"
+   ],
+   "chips": [
+    "How do i find an internship as a cs major",
+    "How do i make a career center appointment"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "career-center-location-hours",
+     "qsim": 0.8970852271450606,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1067,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:53:34.890Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B405",
+   "text": "what's on my calendar today",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Today's schedule",
+   "reply": "No upcoming events found for that search. Try searching for `#ai`, `#robotics`, `#career`, or `#freefood`.",
+   "script": [
+    {
+     "line": "events.find q=\"what's on my  today\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Browse Events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:53:49.852Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"what's on my calendar today\" \u2192 events.find \"what's on my  today\" \u2192 no events; my.calendar / my day exists"
+  },
+  {
+   "id": "B424",
+   "text": "am i in a safe zone",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Zone check",
+   "reply": "USC Housing partners with **Off-Campus Housing 101**, which lists rentals from private landlords in the North University Park area around campus (and near HSC). Listings are within the **USC DPS patrol zone**, and the service offers customer support (find it via the off-campus listing link on housing.usc.edu). USC **doesn't endorse or guarantee** the listings\u2014you're responsible for choosing your landlord and unit.\n\nTips from USC's Office of International Services:\n- Watch for **rental scams**\u2014contact DPS before exchanging money or personal information with someone posing as a landlord.\n- Live within DPS patrol areas (about one mile around campus) and consider USC transportation routes.\n- Know your rights as a tenant.\n\nHelp: **Student Basic Needs** can make off-campus housing referrals; GSG and USG offer free legal counseling; and for landlord/tenant legal help, the Gould **Housing Law and Policy Clinic** currently isn't taking new clients and refers students to **Stay Housed LA**.",
+   "script": [
+    {
+     "line": "ask q=\"am i in a safe zone\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://housing.usc.edu/index.php/section/undergraduate-upperclassmen/",
+    "https://housing.usc.edu/index.php/csc/",
+    "https://ois.usc.edu/getting-started/living-in-united-states-students/housing/",
+    "https://campussupport.usc.edu/students/basic-needs-2/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "off-campus-housing",
+     "qsim": 0.29095718698132317,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1032,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:54:04.869Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"am i in a safe zone\" \u2192 off-campus housing listings within DPS patrol zone; zone.check exists"
+  },
+  {
+   "id": "other472",
+   "text": "recommend a good netflix show",
+   "kind": "other",
+   "topic": "offtopic",
+   "good_answer": "Redirect",
+   "reply": "### \u2b50 Recommended Events for You\n_Ranked by your thumbs up ratings and matching hashtags (Netflix-style)_\n\n**Reading Together Party**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 AM \u00b7 \ud83d\udccd Doheny Memorial Library, Room 241, Los Angeles, California 90089, United States  \n\ud83c\udff7\ufe0f `#freefood #social #service #community`\n\n**Lunch w/ HR&amp;A Advisors: Careers in Broadband and Network Infrastructure (Viterbi)**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 11:30 AM \u00b7 \ud83d\udccd Viterbi Career Connections  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Marine Corps Birthday**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 12 PM \u00b7 \ud83d\udccd Veterans Resource Center  \n\ud83c\udff7\ufe0f `#freefood #social #service #community`\n\n**Cookies &amp; Connections - UG &amp; MS**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 3 PM \u00b7 \ud83d\udccd USC Viterbi Women In Engineering  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Cookies &amp; Connections - PhD**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 PM \u00b7 \ud83d\udccd USC Viterbi Women In Engineering  \n\ud83c\udff7\ufe0f `#robotics #engineering #viterbi #freefood`\n\n**Chick-Fil-A &amp; Chill**  \n\ud83d\udfe2 **88% Match** \u00b7 Free food  \n\ud83d\udcc5 Tomorrow at 4 PM \u00b7 \ud83d\udccd New North Residential College  \n\ud83c\udff7\ufe0f `#freefood #social #rafloorprogram`",
+   "script": [
+    {
+     "line": "events.recommend count=6",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Open Events Calendar",
+    "Show #robotics events",
+    "Show #freefood events"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1027,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:54:19.876Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"recommend a good netflix show\" \u2192 events.recommend (\"Netflix-style\") campus events"
+  },
+  {
+   "id": "A012",
+   "text": "how do i reserve a study room in leavey",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "How to book a Leavey group study room (libcal/booking) or offer to book",
+   "reply": "**Book online at libcal.usc.edu** with your USC NetID (you need a valid USC email). Doheny's rooms, for example, aren't booked by phone or in person.\n\n**Rules**\n- Reserve up to **7 days in advance**.\n- You'll get an email: **click the link within 30 minutes** to confirm, or the booking isn't complete.\n- Max **2 hours per calendar day** in total across all rooms (each group member can make a separate reservation).\n- **10-minute grace period:** if your group isn't there within 10 minutes of the start, you lose the rest of that hour.\n- Rooms are for current students' academic use; **groups of 2+ get priority** (if you're alone after the grace period, you may be asked to relocate), and reservations beat walk-ins.\n- Save your confirmation email (it settles disputes) and cancel through its link if you won't use the room.\n\nScience & Engineering and Norris rooms have some different rules, posted on each library's room page. Leavey's **lower-level ITS collaborative rooms** are booked **in person at the ITS desk only**.",
+   "script": [
+    {
+     "line": "ask q=\"how do i reserve a study room in leavey\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libraries.usc.edu/access-borrowing-policies",
+    "https://libraries.usc.edu/locations/doheny-memorial-library/rooms/dml-collaborative-work-rooms",
+    "https://libanswers.usc.edu/faq/24137",
+    "https://libraries.usc.edu/spaces-overview"
+   ],
+   "chips": [
+    "Reserve a library study room for me"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "study-room-reservations",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1024,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:54:34.885Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A036",
+   "text": "quiet place to study near ronald tutor campus center thats open after midnight",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "A spot near TCC open past midnight (Leavey) \u2014 must satisfy both constraints",
+   "reply": "**Study spots matching quiet, late:**\n- **Doheny Memorial Library** \u00b7 ~3 min walk \u00b7 listed as a quiet space \u00b7 open now (closes 8 pm)\n- **Leavey Library** \u00b7 ~5 min walk \u00b7 open 24 hours today \u00b7 open now\n\n_No single place in the data has all of: quiet, late. Closest matches first._",
+   "script": [
+    {
+     "line": "place.find kind=study attrs=quiet open=late",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libanswers.usc.edu/faq/21402",
+    "https://libraries.usc.edu/hours",
+    "https://dps.usc.edu/services/laptops/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1057,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:54:49.929Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Says no place is both quiet and open after midnight, lists Doheny (closes 8) first; Leavey (24h, has quiet floors) is the answer"
+  },
+  {
+   "id": "A051",
+   "text": "does evk have breakfast on weekends",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "EVK weekend brunch/breakfast hours",
+   "reply": "Based on regular Fall 2026 hours:\n\n**Late night**\n- **Trojan Grounds featuring illy** is open until **midnight** Monday\u2013Friday.\n- **The Upstairs** (RTCC 2nd floor \u2014 poke, ramen, Sharetea, Coffee Bean) is open until **11:00pm on Thursdays** and bills itself as a late-night stop.\n- Dining halls generally close at **10:00pm** (EVK closes 8:00pm Thursday, USC Village 8:00pm Friday, Parkside 8:00pm Saturday).\n\n**Weekends**\n- EVK and Parkside open at **8:30am** Saturday and Sunday; USC Village opens 8:30am Saturday and **11:00am Sunday**.\n- **McKay's** (USC Hotel) serves breakfast 6:00\u201311:00am daily.\n- **Seeds Marketplace:** 9:00am\u20133:00pm; **Trojan Grounds:** 8:00am\u20136:00pm.\n- **Rosso Oro's** (USC Hotel): 11:00am\u20137:00pm daily.\n\nHoliday and game-day hours vary \u2014 check the Hours of Operation page.",
+   "script": [
+    {
+     "line": "ask q=\"does evk have breakfast on weekends\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://hospitality.usc.edu/hours-of-operation/",
+    "https://hospitality.usc.edu/dining-locations/theupstairs/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "late-night-and-weekend-food",
+     "qsim": 0.37047928681747416,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1025,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:55:04.909Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"does evk have breakfast on weekends\" \u2192 late-night food list; EVK opens 8:30 AM Sat\u2013Sun"
+  },
+  {
+   "id": "A081",
+   "text": "is there a gym at hsc",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "HSC Fitness Center",
+   "reply": "- **Lyon Center** (80,000 sq ft, next to the outdoor pool): Rec Sports' main hub, with a training room of cardio and strength equipment, a Main Gym with three full multipurpose courts, a racquetball court, the Robinson Room studio, a cross-training room, the F45 studio, the Recovery Room, locker rooms and the Pro Shop.\n- **Village Fitness Center** (30,000 sq ft, USC Village): three fitness studios (multipurpose, cycling, aerial/boxing), a weight room with Hammer Strength benches and racks, cardio machines, gender-neutral restrooms and showers, and the Village Turf outside.\n- **HSC Fitness Center** (10,000 sq ft, Health Sciences Campus): cardio and strength areas, group exercise rooms, locker rooms and a lighted outdoor basketball court. Members with active memberships are eligible for **one hour of validated parking** (confirm at the HSC front desk).\n- **Uytengsu Aquatics Center:** outdoor 50-yard competition pool and dive pool for recreational lap swimming.\n- **Physical Education Building (PED):** gyms, a pool and rooms used for scheduled programming (such as club practices) and rentals.",
+   "script": [
+    {
+     "line": "ask q=\"is there a gym at hsc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://recsports.usc.edu/rec-facilities/lyon-center/",
+    "https://recsports.usc.edu/rec-facilities/village-fitness-center/",
+    "https://recsports.usc.edu/rec-facilities/hsc-fitness-center/",
+    "https://recsports.usc.edu/rec-facilities/uytengsu-aquatics-center/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "rec-facilities-overview",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1024,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:55:19.918Z",
+   "grade": "GOOD",
+   "grade_note": "HSC Fitness Center in list (3rd bullet)"
+  },
+  {
+   "id": "A096",
+   "text": "gate 1 hours",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Gate 1 hours/status",
+   "reply": "**Open 24/7 (staffed):** **McCarthy Way Entrance** (Figueroa St at McCarthy Way) and **McClintock Ave. Entrance** (Jefferson Blvd at McClintock).\n\n**Weekdays 6 AM\u20138 PM, closed weekends/holidays:** Watt Way (off Exposition), Pardee Way (Exposition, reservation-only lot), Royal Street (Jefferson at Royal) and Downey Way (Vermont at 36th Pl).\n\n**Jefferson Blvd. Entrance** (east of Vermont): weekdays 6 AM\u20138 PM, weekends 7:00 AM\u20133:30 PM, closed holidays.\n\n**Structures:** Grand Ave. Structure (357 W 35th St) \u2014 weekdays 6 AM\u20136 PM, after hours and weekends **USC ID access only**. Flower St. Structure (3701 Flower St) \u2014 **USCard required**, 24 hours.",
+   "script": [
+    {
+     "line": "ask q=\"gate 1 hours\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/about-us/entrance-hours/"
+   ],
+   "chips": [
+    "Can my friend come to campus at night"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "campus-entrance-gate-hours",
+     "qsim": 0.5850179393017045,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1032,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:55:34.938Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "USC has no \"Gate 1\" naming; lists all entrances but doesn't say so"
+  },
+  {
+   "id": "A110",
+   "text": "how to get to union station",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "E Line + transfer / directions",
+   "reply": "Here\u2019s the way to **Jefferson/USC Station (Metro E Line)** \u00b7 about 12 min walk \u00b7 hours not published (Transit)",
+   "script": [
+    {
+     "line": "ask q=\"how to get to union station\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/student-u-pass/"
+   ],
+   "chips": [
+    "Walk me there",
+    "Details"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1019,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:55:49.935Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Walk route to Jefferson/USC station only; no \"E Line to 7th St/Metro, transfer to B/D Line to Union Station\" or ICS shuttle via Union Station (which Tommy knows)"
+  },
+  {
+   "id": "A139",
+   "text": "find me a 2 unit class on fridays",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "2-unit courses meeting Friday \u2014 both constraints",
+   "reply": "**Fall 2026** courses matching **me a 2 unit** (meeting Fri):\n- **ARCH 114** Architecture: Culture and Community \u00b7 2 units \u00b7 Fri 10:00 AM\u201311:50 AM\n- **ARCH 571** Community-Based Design, Conservation and Planning \u00b7 2 units \u00b7 Fri 10:00 AM\u201311:50 AM\n- **DANC 101** Colloquium I: Joining the Creative Community \u00b7 1 units \u00b7 Fri 2:00 PM\u20133:20 PM\n- **GERO 478** Genetics of Aging in UK, Ireland and the United States \u00b7 4 units \u00b7 Wed 3:00 PM\u20135:00 PM; Thu/Fri 10:00 AM\u201312:00 PM\n- **LING 107** Communication Disorders in Our Communities \u00b7 4 units \u00b7 Fri 9:00 AM\u20139:50 AM (+5 more)\n- **PBHS 302** The Community Impact of Historical Trauma \u00b7 4 units \u00b7 Mon/Wed/Fri 9:00 AM\u20139:50 AM\n- **DANC 101** Colloquium I: Joining the Creative Community \u00b7 1 units \u00b7 Fri 2:00 PM\u20133:10 PM\n- **LING 107** Communication Disorders in Our Communities \u00b7 4 units \u00b7 Fri 9:00 AM\u20139:50 AM (+3 more)\n\n_From USC\u2019s Schedule of Classes as collected Nov 9, 2026. Check classes.usc.edu before you register._",
+   "script": [
+    {
+     "line": "course.find topic=\"me a 2 unit\" term=fridays days=F",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1025,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:56:04.951Z",
+   "grade": "GOOD",
+   "grade_note": "Topic parsed as \"me a 2 unit\" but results are 2-unit Friday courses"
+  },
+  {
+   "id": "A164",
+   "text": "how do i change my major",
+   "kind": "A",
+   "topic": "registration",
+   "good_answer": "Change of major process",
+   "reply": "Changing or adding a major is handled by the **school that offers the program** you want:\n1. **Contact that school's advising or admission office** (check its website first) for requirements, deadlines and process.\n2. If you're approved, **that school's advisor updates your record** by adding the new program of study (PoSt) code.\n\nHow hard it is depends on the major:\n- **Selective majors** have no open declaration and no guaranteed admission; they typically require a separate application, pre-application coursework and/or portfolio. Examples: Marshall/Leventhal, Viterbi, Cinematic Arts, Annenberg, Architecture, Roski, Iovine and Young, Kaufman, Dramatic Arts, Thornton, Gould, and select Dornsife programs.\n- **Open majors** (mostly Dornsife, Gerontology, Keck, Mann, select Price programs) can be declared after meeting with the school's advising or admission staff; some need a minimum GPA (e.g., 2.0 Gerontology, 3.0 Keck).\n\nExploratory students should declare before **Junior standing (64 units)**. Unsure what to choose? Academic Exploration Advising can help.",
+   "script": [
+    {
+     "line": "ask q=\"how do i change my major\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://ask.usc.edu/s/article/000002737",
+    "https://academicprograms.usc.edu/offices-and-units/academic-exploration-advising/what-is-exploratory/",
+    "https://academicprograms.usc.edu/offices-and-units/academic-exploration-advising/connect-with-an-aea-advisor/declared-advising/"
+   ],
+   "chips": [
+    "Declare/change a major or add a minor for me"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "current",
+     "eid": "change-or-declare-major",
+     "qsim": 1,
+     "exact": true
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1040,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:56:19.980Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A228",
+   "text": "finance clubs usc",
+   "kind": "A",
+   "topic": "clubs",
+   "good_answer": "Finance/investment clubs",
+   "reply": "From **Club Sports - Recreational Sports**:\n- Please review the Finances 101 document to learn about account types, depositing money, spending money, and reimbursements for Club Sports.",
+   "script": [
+    {
+     "line": "ask q=\"finance clubs usc\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://recsports.usc.edu/programs-and-classes/club-sports/"
+   ],
+   "chips": [],
+   "kinds": [
+    "p"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "confidence": "high"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1045,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:56:34.995Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"finance clubs usc\" \u2192 Club Sports Finances 101 document; club.find finance not used"
+  },
+  {
+   "id": "A248",
+   "text": "is there anything fun to do on friday night",
+   "kind": "A",
+   "topic": "events",
+   "good_answer": "Friday night events",
+   "reply": "From **Alpha Omega \u2013 Office of Religious and Spiritual Life**:\n- On Friday, we have fun, and it\u2019s different every week: sports, games nights, themed parties, etc.",
+   "script": [
+    {
+     "line": "ask q=\"is there anything fun to do on friday night\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://orsl.usc.edu/organizations/alpha-omega/"
+   ],
+   "chips": [],
+   "kinds": [
+    "p"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "confidence": "high"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1102,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:56:50.056Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "One religious club's blurb (\"On Friday, we have fun\") instead of Friday-night events (events.day friday)"
+  },
+  {
+   "id": "A275",
+   "text": "where's the traveler statue",
+   "kind": "A",
+   "topic": "places",
+   "good_answer": "Traveler statue at Hahn Plaza",
+   "reply": "**Traveler statue**\n- address not listed\n- About **1 min walk** from you (TCC, Trousdale side)",
+   "script": [
+    {
+     "line": "place.where place=traveler",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.usc.edu/usc-traditions/"
+   ],
+   "chips": [
+    "Walk me there"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1076,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:57:05.040Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A301",
+   "text": "what is greek life like",
+   "kind": "A",
+   "topic": "life",
+   "good_answer": "Greek life info",
+   "reply": "**It's a sizable community:** USC Fraternity & Sorority Life (FSL) counts **2,200+ student members** in **34 recognized chapters** across **4 governing councils**, and Greek life has been part of USC since **1887**.\n\n- **Interfraternity Council (IFC):** 6 recognized fraternities.\n- **Panhellenic Council (PHC):** 9 sororities.\n- **National Pan-Hellenic Council (NPHC):** 8 of the 9 historically Black \"Divine Nine\" organizations.\n- **Multicultural Greek Council (MGC):** 11 organizations (4 fraternities, 7 sororities).\n- **Not recognized:** FSL lists **19 fraternities** that operate independently of USC (for example Sigma Chi and Phi Delta Theta). They don't get USC recognition, oversight, advising or support, so check a group's status before joining.\n- **Joining:** recruitment is deferred, so you need **12 academic units** and a **2.50+ cumulative GPA** first (if you entered from high school, only USC units count). IFC fraternities recruit in **spring**, and many other groups recruit only in spring too.\n\nQuestions: FSL, **Ronald Tutor Campus Center, Suite 330**, **213-740-0113**, uscfsld@usc.edu.",
+   "script": [
+    {
+     "line": "ask q=\"what is greek life like\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://fsl.usc.edu/",
+    "https://fsl.usc.edu/about-us/",
+    "https://fsl.usc.edu/interfraternity-council/",
+    "https://fsl.usc.edu/panhellenic-council/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "supp-greek-life-size",
+     "qsim": 0.8451542547285166,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1097,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:57:20.073Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A327",
+   "text": "place to get breakfast before 8am",
+   "kind": "A",
+   "topic": "multi",
+   "good_answer": "Breakfast venue open before 8am",
+   "reply": "Where should I order your **breakfast** from? These take mobile orders and are open now:",
+   "script": [
+    {
+     "line": "do action=hub_order_food request=\"place to get breakfast before 8am\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Cancel"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [
+    "{\"type\":\"options\",\"id\":\"mwhb06g85rzyzr\",\"options\":[{\"label\":\"Trojan Grounds featuring illy\",\"sub\":\"Open \u00b7 6:30 AM \u2013 12 AM \u00b7 5 min walk\",\"value\":\"@place:trojangrounds\"}]}"
+   ],
+   "extra": [
+    {
+     "placeholder": "Or type a venue"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1019,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:57:35.004Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "\"place to get breakfast before 8am\" (a question) \u2192 starts a food order flow listing places \"open now\"; should list venues opening before 8 (EVK/Parkside 7 AM, Trojan Grounds 6:30)"
+  },
+  {
+   "id": "A347",
+   "text": "thanksgiving brake",
+   "kind": "A",
+   "topic": "typos",
+   "good_answer": "Thanksgiving break dates",
+   "reply": "- **Thanksgiving recess** \u00b7 Nov 25 \u2013 29 \u00b7 in 16 days",
+   "script": [
+    {
+     "line": "breaks.next which=thanksgiving",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://academics.usc.edu/calendar/"
+   ],
+   "chips": [
+    "Month view",
+    "When are my finals?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"thanksgiving brake\",\"now\":\"Monday, November 9, 2026, 7:57 PM\",\"earlier\":[{\"text\":\"is there anything fun to do on friday night\",\"line\":\"ask q=\\\"is there anything fun to do on friday night\\\"\"},{\"text\":\"where's the traveler statue\",\"line\":\"place.where place=traveler\"},{\"text\":\"what is greek life like\",\"line\":\"ask q=\\\"what is greek life like\\\"\"},{\"text\":\"place to get breakfast before 8am\",\"line\":\"do action=hub_order_food request=\\\"place to get breakfast before 8am\\\"\"}]}",
+   "ms": 2547,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:57:51.544Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "B406",
+   "text": "plan my day",
+   "kind": "B",
+   "topic": "academics",
+   "good_answer": "Plan for today",
+   "reply": "**Here\u2019s your day, Jordan.** Easy evening ahead. I fit in 2 study blocks and a wind-down.\n\n_Suggestions only: nothing is booked until you add it. Walk times and lines are estimates._",
+   "script": [
+    {
+     "line": "plan.day",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Open full plan",
+    "Add these to My Day",
+    "Plan tomorrow",
+    "Make picks more me"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [
+    "{\"type\":\"plan\",\"id\":\"plmwhb0tno\",\"key\":\"2026-11-09\",\"day\":\"Today \u00b7 Nov 9\",\"tone\":\"chill\",\"title\":\"Easy evening ahead\",\"free\":\"3h 2m\",\"pct\":100,\"picks\":3,\"items\":[{\"t\":\"8:10 PM\",\"ic\":\"book\",\"title\":\"Finish PHYS 151 Lab report 10\",\"sub\":\"Leavey Library \u00b7 5 min walk\",\"sug\":true,\"kind\":\"study\",\"ev\":null},{\"t\":\"9:20 PM\",\"ic\":\"book\",\"title\":\"Study for CSCI 104 Midterm 2\",\"sub\":\"Leavey Library \u00b7 1 min walk\",\"sug\":true,\"kind\":\"study\",\"ev\":null},{\"t\":\"10:45 PM\",\"ic\":\"moon\",\"title\":\"Wind down\",\"sub\":\"Phone on Do Not Disturb\",\"sug\":true,\"kind\":\"wind\",\"ev\":null}],\"more\":4}"
+   ],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1078,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:58:05.084Z",
+   "grade": "GOOD",
+   "grade_note": "Plan card"
+  },
+  {
+   "id": "B425",
+   "text": "navigate me to sgm",
+   "kind": "B",
+   "topic": "services",
+   "good_answer": "Directions to SGM",
+   "reply": "I couldn\u2019t find **sgm** on the Trojan Hub map. Try a building name or code (like \u201cLeavey\u201d or \u201cTCC\u201d), or search the map.",
+   "script": [
+    {
+     "line": "ask q=\"navigate me to sgm\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [],
+   "chips": [
+    "Open the map"
+   ],
+   "kinds": [
+    ""
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1017,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:58:20.035Z",
+   "grade": "BAD_ACTION",
+   "grade_note": "\"navigate me to sgm\" \u2192 \"couldn't find sgm on the map\", although building.find knows SGM (A267)"
+  },
+  {
+   "id": "A013",
+   "text": "what library has the most outlets lol",
+   "kind": "A",
+   "topic": "libraries",
+   "good_answer": "A library suggestion with outlets/charging (e.g. Leavey Information Commons); honest if unknown",
+   "reply": "**USC Libraries list these places to plug in or charge:**\n\n- **Phone recharging stations:** Architecture & Fine Arts Library (lounge area near the stairway), **Doheny** (Los Angeles Times Reference Room), **Leavey** (main lobby next to the circulation desk), and the Library for International & Public Affairs (new group study area, northwest corner).\n- **Laptop outlets in Doheny Library:** the Los Angeles Times Reference Room, Faculty Hall, the East Asian Library, and select spaces in the book stacks.\n- **Leavey study pods** (2nd- and 3rd-floor lobbies) have built-in power outlets and USB ports for charging. Students can reserve one up to 7 days in advance at libcal.usc.edu/reserve/lvl-pods, for up to two hours per person per day.\n\n_The library help pages for phone stations and Doheny outlets were last updated in 2022 and 2019, so a spot may have moved._",
+   "script": [
+    {
+     "line": "ask q=\"what library has the most outlets lol\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libanswers.usc.edu/faq/21402",
+    "https://libanswers.usc.edu/faq/90664",
+    "https://libraries.usc.edu/space/lvl-2nd-floor-study-pods"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "2026-27",
+     "eid": "r4m-charge-laptop-phone",
+     "qsim": 0.7581753965757457,
+     "exact": false
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1024,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:58:35.052Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A037",
+   "text": "where do people study on weekends",
+   "kind": "A",
+   "topic": "study",
+   "good_answer": "Weekend-open study spaces with weekend hours",
+   "reply": "**Leavey Library is USC's 24-hour library.** During fall and spring it's generally open **24 hours Monday\u2013Thursday**, with shorter hours Friday\u2013Sunday, and it's open **continuously 24 hours during finals**.\n\n**This semester (Nov. 2026):** Mon\u2013Thu 24 hours; Fri closes at midnight; Sat 9am\u20139pm; Sun opens at 9am (listed as \"9am to 24 hours\").\n\n**ID rules**\n- Leavey requires **all visitors to show a photo ID** to enter, at all times.\n- After **9 p.m. and before 7 a.m.**, the Libraries' Access and Borrowing Policies allow only USC students, faculty, staff, alumni and sponsored guests in any library (the Leavey page itself lists only students, faculty and staff), so a non-USC friend can't stay overnight unless they fall into one of those groups. You'll be asked for your **physical USCard** (online-program students: digital USCard + government photo ID).\n\nComputing and printing help is available 24 hours on Leavey's 1st and 2nd floors during fall and spring. Leavey: 651 W. 35th St., circulation (213) 740-4350.",
+   "script": [
+    {
+     "line": "ask q=\"Where do students study on weekends at USC?\"",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://libraries.usc.edu/locations/leavey-library",
+    "https://libanswers.usc.edu/faq/21342",
+    "https://libraries.usc.edu/access-borrowing-policies"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "asOf": "Fall 2026",
+     "eid": "leavey-24-hours",
+     "qsim": 0.3849001794597505,
+     "exact": false
+    }
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"where do people study on weekends\",\"now\":\"Monday, November 9, 2026, 7:58 PM\",\"earlier\":[{\"text\":\"place to get breakfast before 8am\",\"line\":\"do action=hub_order_food request=\\\"place to get breakfast before 8am\\\"\"},{\"text\":\"thanksgiving brake\",\"line\":\"breaks.next which=thanksgiving\"},{\"text\":\"plan my day\",\"line\":\"plan.day\"},{\"text\":\"navigate me to sgm\",\"line\":\"ask q=\\\"navigate me to sgm\\\"\"},{\"text\":\"what library has the most outlets lol\",\"line\":\"ask q=\\\"what library has the most outlets lol\\\"\"},{\"text\":\"where do people study on weekends\",\"line\":\"ask q=\\\"where do people study on weekends\\\"\"}]}",
+   "ms": 3051,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:58:52.090Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A052",
+   "text": "how many meal swipes do i have",
+   "kind": "A",
+   "topic": "dining",
+   "good_answer": "Meal plan balance / honest pointer (personal)",
+   "reply": "**Your meal plan: Flex120 Plan**\n- Meal swipes left: **47** of 120\n- Dining Dollars: **$63.40**\n- Guest swipes left: **5**\n- 120 meal swipes + $150 Dining Dollars + 7 guest swipes per semester; up to 6 swipes per day, 1 per meal period",
+   "script": [
+    {
+     "line": "my.dining",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://my.usc.edu/",
+    "https://hospitality.usc.edu/meal-plan-options/"
+   ],
+   "chips": [
+    "Add Dining Dollars",
+    "Order food"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1016,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:59:05.063Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A082",
+   "text": "yoga on campus",
+   "kind": "A",
+   "topic": "gyms",
+   "good_answer": "Yoga classes / spaces",
+   "reply": "From **Campus Life - USC**:\n- Life on campus stays in motion. Student-run activities, exclusive film screenings, research showcases, open mic nights, outdoor yoga, pop-up shops \u2014 you name it, and we\u2019ve got it.\n\nFrom **Graduate & Professional - USC**:\n- USC offers an endless variety of activities and events for students to get involved in. From student-run clubs and organizations to exclusive film screenings and outdoor yoga, there is something for everyone on campus.",
+   "script": [
+    {
+     "line": "ask q=\"yoga on campus\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://www.usc.edu/life-usc/campus-life/",
+    "https://www.usc.edu/admissions-aid/admitted-students/graduate/"
+   ],
+   "chips": [],
+   "kinds": [
+    "p"
+   ],
+   "cards": [],
+   "extra": [
+    {
+     "confidence": "high"
+    }
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1028,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:59:20.087Z",
+   "grade": "MISSED_DETAILS",
+   "grade_note": "Generic campus-life blurb mentioning \"outdoor yoga\"; no USC Workout yoga classes/pass (Tommy knows them, A077)"
+  },
+  {
+   "id": "A097",
+   "text": "which gate is closest to the coliseum",
+   "kind": "A",
+   "topic": "access",
+   "good_answer": "Gate nearest Coliseum (Exposition side)",
+   "reply": "Right now, **10 of 10** campus entrances are open.\n- **Open:** McCarthy Way Entrance, McClintock Ave. Entrance, Watt Way Entrance, Pardee Way Entrance, Royal Street Entrance, Downey Way Entrance, Jefferson Blvd. Entrance, Jefferson Blvd & Trousdale Pkwy, Exposition Blvd & Trousdale Pkwy, Jefferson Blvd & Watt Way\n- **Closed:** none\n\nNearest open entrance: **Exposition Blvd & Trousdale Pkwy**, about 4 min away.",
+   "script": [
+    {
+     "line": "gates.status",
+     "via": "ai",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://dps.usc.edu/services/visitor-registration/"
+   ],
+   "chips": [
+    "See gates on the map",
+    "Walk to Exposition Blvd & Trousdale Pkwy"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": true,
+   "ai_status": [
+    200
+   ],
+   "ai_body": "{\"text\":\"which gate is closest to the coliseum\",\"now\":\"Monday, November 9, 2026, 7:59 PM\",\"earlier\":[{\"text\":\"navigate me to sgm\",\"line\":\"ask q=\\\"navigate me to sgm\\\"\"},{\"text\":\"what library has the most outlets lol\",\"line\":\"ask q=\\\"what library has the most outlets lol\\\"\"},{\"text\":\"where do people study on weekends\",\"line\":\"ask q=\\\"where do people study on weekends\\\"\"},{\"text\":\"Where do students study on weekends at USC?\",\"line\":\"ask q=\\\"Where do students study on weekends at USC?\\\"\"},{\"text\":\"how many meal swipes do i have\",\"line\":\"my.dining\"},{\"text\":\"yoga on campus\",\"line\":\"ask q=\\\"yoga on campus\\\"\"}]}",
+   "ms": 2966,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:59:37.035Z",
+   "grade": "WRONG_SCRIPT",
+   "grade_note": "AI \u2192 gates.status; never names the entrance nearest the Coliseum (Exposition Blvd side)"
+  },
+  {
+   "id": "A111",
+   "text": "is there a shuttle to the airport",
+   "kind": "A",
+   "topic": "transport",
+   "good_answer": "Airport shuttle availability (honest)",
+   "reply": "**To LAX**\n- USC shuttles: Limited, reservation-based shuttles from Widney Alumni House (Fall Break 2026: Oct 7-8, hourly 8 AM-5 PM). Thanksgiving/winter 2026 dates had not been posted as of Nov 9.\n- Metro: E Line westbound to Expo/Crenshaw, K Line southbound to LAX/Metro Transit Center, then free LAX Metro Connector shuttle (every 10-15 min, 4 AM-1 AM). Or J Line south to Harbor Fwy, then C Line west.\n- From Union Station: Before 3:55 PM and 6:05-9:25 PM all service is the ICS. Useful for Amtrak/Metrolink and the LAX FlyAway ($9.75, not covered by U-Pass).\n- Free USC Lyft does not go to LAX (outside its zone).",
+   "script": [
+    {
+     "line": "transport.lax",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://transnet.usc.edu/index.php/bus-map-schedules/",
+    "https://transnet.usc.edu/index.php/how-to-use-lyft/"
+   ],
+   "chips": [],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1015,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T03:59:50.095Z",
+   "grade": "GOOD",
+   "grade_note": ""
+  },
+  {
+   "id": "A140",
+   "text": "open seats in psyc 100",
+   "kind": "A",
+   "topic": "courses",
+   "good_answer": "PSYC 100 seat availability (or honest if not live)",
+   "reply": "**PSYC 100 \u00b7 Introduction to Psychology** (Spring 2027): **51 of 160 lecture seats open**.\n- Lecture 52430 \u00b7 Tue/Thu 8:00 AM\u20139:20 AM \u00b7 15 of 40 open\n- Lecture 52410 \u00b7 Mon/Wed 8:30 AM\u20139:50 AM \u00b7 4 of 40 open\n- Lecture 52450 \u00b7 Tue/Thu 8:00 AM\u20139:20 AM \u00b7 10 of 20 open\n- Lecture 52420 \u00b7 Tue/Thu 4:00 PM\u20135:20 PM \u00b7 **full**\n- Lecture 52400 \u00b7 Tue/Thu 4:00 PM\u20135:20 PM \u00b7 22 of 40 open\n\n_Also offered in Fall 2026._\n\n_Seat counts as collected Nov 9, 2026; they change as students register._",
+   "script": [
+    {
+     "line": "course.seats course=\"PSYC 100\"",
+     "via": "script",
+     "accurate": true,
+     "badge": "\u26a1 AI converted words into script \u00b7 Verified public USC data (accurate, not modeled)"
+    }
+   ],
+   "sources": [
+    "https://classes.usc.edu/"
+   ],
+   "chips": [
+    "Who teaches it?"
+   ],
+   "kinds": [
+    "c"
+   ],
+   "cards": [],
+   "extra": [
+    {}
+   ],
+   "ai_post": false,
+   "ai_status": [],
+   "ai_body": null,
+   "ms": 1019,
+   "site_cmds": 178,
+   "hash": "#assistant",
+   "err": null,
+   "retried": false,
+   "at": "2026-11-15T04:00:05.111Z",
    "grade": "GOOD",
    "grade_note": ""
   }
