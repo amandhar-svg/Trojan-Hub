@@ -119,7 +119,8 @@
   var TS = TA && TA.Script;
   if (!TS || !TS.cmds) return;
   var DD = /\b(dining dollars?|diningdollars|dining dollar balance|dd|dds|dining money)\b/;
-  var PACE = /\b(per day|a day|each day|every day|daily|per week|a week|on track|pace|how much (should|can|do) i (spend|use)|spend(ing)?\b.*\b(day|week|rest|left)|use (them|it|they|my|all|up)|run out|running out|last (me|until|till|through)|left over|leftover|burn|budget|enough)\b/;
+  // only per-day / on-track / pace wording; general Dining Dollars questions belong to dining.dollars (scripts-plus.js)
+  var PACE = /\b(per day|a day|each day|every day|daily|per week|a week|on track|on pace|pace|burn rate|how much (should|can|do) i (spend|use)( \w+){0,4} (per|a|each) (day|week))\b/;
   function bot(md, chips, sources) { return { role: 'bot', kind: 'c', md: md, chips: chips || [], sources: sources || SOURCES }; }
   function go(label, screen, arg) { return { label: label, value: '@go:' + screen + (arg != null ? ':' + arg : ''), kind: '' }; }
   function say(label, value) { return { label: label, value: value || label.toLowerCase(), kind: '' }; }
@@ -131,7 +132,7 @@
     match: function (t) {
       if (!DD.test(t)) return null;
       if (/\b(add|buy|purchase|load|top up|top-up|block)\b/.test(t) && !/\b(should i|do i need|need to)\b/.test(t)) return null;
-      if (/\b(roll ?over|refund|transfer|donate|what are|where can|accepted|take dining)\b/.test(t) && !PACE.test(t)) return null;
+      if (/\b(roll ?over|refund|transfer|donate|where can|accepted)\b/.test(t)) return null;
       return PACE.test(t) ? {} : null;
     },
     run: function () {
@@ -150,7 +151,11 @@
         '\n' + status +
         '\n\n**Why that deadline:** Dining Dollars on Flex120, the Trojan Plan and blocks don’t roll over and aren’t refunded; they’re forfeited at the end of the semester. USC doesn’t list a separate cutoff date, so I used the last day of Fall 2026 (finals end Dec 16, USC academic calendar).' +
         '\n\n_Your balance is from the demo account. The recent purchases are simulated (sample menu prices), so the pace is an estimate._';
-      return [bot(md, [go('Open Wallet', 'wallet', 'dd'), say('Do they roll over?', 'do dining dollars roll over'), say('Where can I use them?', 'where can i use dining dollars')])];
+      var m0 = bot(md, [go('Open Wallet', 'wallet', 'dd'), say('Do they roll over?', 'do dining dollars roll over'), say('Where can I use them?', 'where can i use dining dollars')]);
+      m0.covers = ['dining', 'dollars', 'per', 'day', 'spend', 'spending', 'balance', 'track', 'pace', 'need'];
+      return [m0];
     }
   };
+  // checked before the general dining commands (it only matches per-day / on-track / pace wording)
+  (function () { var c = TS.cmds['wallet.dining'], rest = {}; Object.keys(TS.cmds).forEach(function (k) { if (k !== 'wallet.dining') { rest[k] = TS.cmds[k]; delete TS.cmds[k]; } }); delete TS.cmds['wallet.dining']; TS.cmds['wallet.dining'] = c; Object.keys(rest).forEach(function (k) { TS.cmds[k] = rest[k]; }); })();
 })();
