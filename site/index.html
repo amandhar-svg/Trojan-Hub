@@ -18970,6 +18970,12 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     return best.map(P).filter(Boolean);
   }
   X.findPlaces = findPlaces;
+  // the text names a place itself (an alias phrase or the place's full name), not just a word like "coffee"
+  function namedPlace(q) {
+    var t = ' ' + norm(q) + ' ';
+    if (Object.keys(ALIAS).some(function (id) { return ALIAS[id].some(function (al) { return !/^(pool|swim|clinic|doctor|pharmacy|target|seeds|coffee|library|gym)$/.test(al) && t.indexOf(' ' + al + ' ') >= 0; }); })) return true;
+    return (TH.PLACES || []).some(function (p) { var n = norm(String(p.name).replace(/\(.*?\)/g, '')); return n.length > 4 && t.indexOf(' ' + n + ' ') >= 0; });
+  }
   function pSrc(p) { var s = []; if (p.url) s.push(srcOf(p.url, p.name)); (p.sources || []).slice(0, 2).forEach(function (u) { if (typeof u === 'string' && u !== p.url) s.push(srcOf(u)); }); return s.slice(0, 2); }
   function rangesTxt(r) { return r == null ? 'not published' : !r.length ? 'closed' : TH.rangesText(r); }
   function hoursOn(p, d) { return TH.hoursHelpers.dayRanges(p, d); }
@@ -18996,9 +19002,11 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     }, function (t, raw) {
       if (!PLACE_Q.test(t) || /\b(registration|register|enroll|webreg|portal|application|deadline|class|course|seats?|parking permit|account|office hours of|professor|prof|ta)\b/.test(t)) return null;
       var ps = findPlaces(raw); if (!ps.length) return null;
+      // "is there any coffee open" is a list question for open.now, not Coffee Bean: only a named place counts here
+      if (/\b(any|anything|anywhere|something|somewhere|is there|are there)\b/.test(t) && !namedPlace(raw)) return null;
       var day = /\b(tomorrow|tmrw|tonight|today|this weekend|weekend|thanksgiving|veterans day|black friday|christmas eve|christmas|new years|game day|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun)\b/.exec(t);
       if (/\b(this week|weekly|all week|every day)\b/.test(t)) return null;
-      return day ? { place: ps.map(function (p) { return p.id; })[0] === ps[0].id && ps.length > 1 && /\bgym|library|dining hall/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id, day: day[1] } : { place: ps.length > 1 && /\b(gym|library|librar|dining halls?)\b/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id };
+      return day ? { place: ps.map(function (p) { return p.id; })[0] === ps[0].id && ps.length > 1 && /\bgym|library|dining hall/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id, day: day[1] } : { place: ps.length > 1 && /\b(gym|gyms|librar\w*|dining halls?)\b/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id };
     });
 
   F('place.week', 'Full weekly hours of a campus place plus upcoming holiday/special hours. "evk hours this week", "lyon center weekly schedule", "thanksgiving hours for the village gym". place',
@@ -19037,7 +19045,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       return [bot(md + '\n\n_Posted USC hours; specials and holidays can differ._', c === 'fitness' ? [SRC.rec] : c === 'study' ? [SRC.lib] : [SRC.hours], [go('Open the map', 'map')])];
     }, function (t, raw) {
       if (!/\b(open|still open|opened)\b/.test(t) || !/\b(what|whats|where|anything|anywhere|any|is there|somewhere|places?)\b/.test(t)) return null;
-      if (/\b(registration|enroll|class|course|seats?|section|apply|application|portal|house|position|spots?)\b/.test(t) || findPlaces(raw).length && !/\b(what|anything|any)\b/.test(t)) return null;
+      if (/\b(registration|enroll|class|course|seats?|section|apply|application|portal|house|position|spots?)\b/.test(t) || namedPlace(raw) && !/\b(what|anything|any)\b/.test(t)) return null;
       var c = catOf(t); if (!c) return null;
       var at = /\b(at|after|around|by) (\d{1,2}(:\d{2})? ?(am|pm)?|midnight|noon)\b/.exec(t), d = /\b(tomorrow|saturday|sunday|monday|tuesday|wednesday|thursday|friday)\b/.exec(t);
       var o = { cat: c }; if (at) o.at = at[2]; if (d) o.day = d[1]; if (/\b(late|tonight|late night|after 10)\b/.test(t) && !o.at) o.at = '10pm';
@@ -22656,6 +22664,16 @@ button.pl-title { padding: 0; }
 .x-post.p7-cl .pb { gap: 6px; }
 .x-post .pb .club-logo, .x-post.p7-cl .pb .club-logo { box-shadow: 0 0 0 2px rgba(255, 255, 255, .85); }
 .x-post.p7-cl .pb .club-logo.sm { width: 28px; height: 28px; border-radius: 8px; font-size: 11px; }
+/* a club's real banner (3:1) across the top of its card, at its own shape: never zoomed or cropped */
+.x-post.p7-bnr .p7-banner { position: absolute; top: 0; left: 0; right: 0; aspect-ratio: 3 / 1; z-index: 0 !important; display: block; background: rgba(0, 0, 0, .2); }
+.x-post.p7-bnr .p7-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.x-post.p7-bnr .pt { margin-top: calc((100% / 3) - 2px); }
+.x-post.p7-bnr::after { inset: 45% 0 0; }
+/* the host club's real logo as a crisp badge on event cards (logos are square, so nothing is cut off) */
+.p7-badge { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 10px; background: #fff; overflow: hidden; display: block; z-index: 2 !important; box-shadow: 0 2px 8px rgba(0, 0, 0, .28); }
+.p7-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.p7-badge.lg { width: 46px; height: 46px; border-radius: 12px; top: 14px; right: 14px; }
+.x-post.p7-hasbadge .pt { max-width: calc(100% - 44px); }
 .p7-po { display: flex !important; align-items: center; gap: 6px; min-width: 0; }
 .p7-po .club-logo.sm { width: 20px; height: 20px; border-radius: 6px; font-size: 8.5px; flex: none; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .8); }
 .x-bill .p7-po .club-logo.sm, .x-spot .p7-po .club-logo.sm { width: 24px; height: 24px; border-radius: 7px; font-size: 9.5px; }
@@ -28246,28 +28264,34 @@ button.pl-title { padding: 0; }
   const clubOf = id => (TH.clubById ? TH.clubById(id) : null);
   const eventClub = id => { const ev = TH.eventById ? TH.eventById(id) : null; return ev ? clubOf(ev.orgId) : null; };
   const photoOf = c => (TH.clubPhotos ? TH.clubPhotos(c) : []).find(x => x.kind === 'photo');
+  const logoOf = c => (TH.clubPhotos ? TH.clubPhotos(c) : []).find(x => x.kind === 'logo');
+  const badge = (c, size) => { const lg = logoOf(c); return lg ? `<span class="p7-badge ${size || ''}" aria-hidden="true"><img src="${lg.src}" alt="" loading="lazy" decoding="async"></span>` : ''; };
   const thumb = (c, size) => (TH.clubThumb ? TH.clubThumb(c, size || 'sm') : '');
   let byName = null;
   const clubByName = n => { if (!byName) { byName = new Map(); (TH.CLUBS || []).forEach(c => byName.set(String(c.name).toLowerCase(), c)); } return byName.get(String(n || '').toLowerCase().trim()) || null; };
   function clubImages(host) {
     if (!TH.clubCover) return;
-    // "Clubs like …" posters: the cover (photo → logo → generated graphic)
+    // "Clubs like …" posters. A club's real EngageSC banner is a wide 3:1 strip: show it whole at its own shape
+    // across the top of the card (never zoomed into a tall box). Clubs without one get the logo-on-color or
+    // generated cover as before.
     $$('.x-post.club[data-club]', host).forEach(b => {
       if (b.dataset.p7) return; const c = clubOf(b.dataset.club); if (!c) return; b.dataset.p7 = '1';
-      b.classList.add('p7-cl'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg">${TH.clubCover(c, { size: 'md' })}</span>`);
+      const ph = photoOf(c);
+      if (ph) { b.classList.add('p7-bnr'); b.insertAdjacentHTML('afterbegin', `<span class="p7-banner"><img src="${ph.src}" alt="" loading="lazy" decoding="async"></span>`); }
+      else { b.classList.add('p7-cl'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg">${TH.clubCover(c, { size: 'md', photo: false })}</span>`); }
       const big = $('.big', b); if (big) big.remove();
-      // a photo cover also gets the club's logo (as on the Clubs screen); logo and generated covers already show it
-      const pb = $('.pb', b); if (pb && photoOf(c)) pb.insertAdjacentHTML('afterbegin', thumb(c, 'sm'));
+      const pb = $('.pb', b); if (pb && ph) pb.insertAdjacentHTML('afterbegin', thumb(c, 'sm'));
     });
-    // event posters, the billboard and spotlights: the host club's photo behind, its logo next to the name
+    // Event posters, the billboard and spotlights keep their own colors: no club banner behind them (a banner is
+    // the club's, not that event's flyer). The host club's real logo shows as a crisp badge and next to its name.
     $$('.x-post[data-event]', host).forEach(b => {
       if (b.dataset.p7) return; const c = eventClub(b.dataset.event); if (!c) return; b.dataset.p7 = '1';
-      const ph = photoOf(c); if (ph) { b.classList.add('p7-ph'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg"><img src="${ph.src}" alt="" loading="lazy" decoding="async"></span>`); }
+      const bd = badge(c); if (bd) { b.classList.add('p7-hasbadge'); b.insertAdjacentHTML('beforeend', bd); }
       const po = $('.po', b); if (po) { po.classList.add('p7-po'); po.insertAdjacentHTML('afterbegin', thumb(c, 'sm')); }
     });
     $$('.x-bill, .x-spot', host).forEach(b => {
       if (b.dataset.p7) return; const ev = b.matches('[data-event]') ? b : $('[data-event]', b); const c = ev && eventClub(ev.dataset.event); if (!c) return; b.dataset.p7 = '1';
-      const ph = photoOf(c); if (ph) { b.classList.add('p7-ph'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg"><img src="${ph.src}" alt="" loading="lazy" decoding="async"></span>`); }
+      const bd = badge(c, 'lg'); if (bd) { b.classList.add('p7-hasbadge'); b.insertAdjacentHTML('beforeend', bd); }
       const m = $('.m', b); if (m) { m.classList.add('p7-po'); m.insertAdjacentHTML('afterbegin', thumb(c, 'sm')); }
     });
     // "Your clubs this week" cards and anything else with an event and an org line
