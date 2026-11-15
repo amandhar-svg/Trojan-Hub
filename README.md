@@ -46,3 +46,19 @@ node scripts/build-netlify.cjs --project /path/to/trojan-hub-v4 --out ./netlify-
 ```
 
 Run this from the Trojan Hub project. It rebuilds the app and regenerates `tommy-prompt.mjs` so the command list matches the app.
+
+## Club drafts and "Tommy is learning" (netlify/functions/tommy-extras.mjs)
+
+A second, separate function, so it can never break Ask Tommy:
+
+- `POST /api/tommy-draft` `{"kind": "announcement", "payload": {club, title, when, where, desc, rsvpUrl}}` or
+  `{"kind": "members-summary", "payload": {club, requests: [{title, votes, type, preferred}]}}` → `{"text", "model"}`.
+  Club officers press **Draft the announcement** or **Summarize what members want**. Claude Haiku writes from those
+  fields only: the app never sends member names, emails, dues or paid status, and the function removes emails and
+  phone numbers again. Every time, date, weekday, price and number in Claude's text must appear in the event facts
+  or the request list; otherwise Claude gets one retry, then the app shows its own template (labeled as one).
+  Limits: 12 drafts per visitor per 10 minutes and 300 a day (Netlify Blobs store `tommy-usage`).
+- `GET /api/tommy-learning` → `{"items": [{name, why, examples, count, last}]}`: the tools Claude proposed when Ask
+  Tommy couldn't answer a public question, read from the "scripts needed" list. Only Claude's proposal is shown
+  (its name, why, and AI-written example questions), never a student's own message. Approving or dismissing a
+  proposal in the app is simulated.
