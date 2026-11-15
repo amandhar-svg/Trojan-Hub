@@ -1237,7 +1237,7 @@ details.ta-course summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
       <li><b>Report a problem</b><span>photos, location, the right office</span></li>
       <li><b>Call Tommy</b><span>talk, and hear the answer</span></li>
     </ul>
-    <p class="hint muted">Demo date: Mon, Nov 9, 2026. Account actions are simulated on a demo student; wait times are estimates. Try More → Demo controls → 9 PM.</p>
+    <p class="hint muted">Account actions are simulated on a demo student; wait times are estimates. Try More → Demo controls → 9 PM.</p>
   </aside>
   <main class="device" aria-label="Trojan Hub app">
     <div id="screen-host"></div>
@@ -4998,7 +4998,7 @@ TH.INCIDENTS_META = {"source":"https://dps.usc.edu/alerts/log/","pdf":"https://d
           </div>
           <div class="card flat stack">
             <b>Demo controls</b>
-            <div class="field"><label for="demo-time">Demo time (the date stays Mon, Nov 9, 2026)</label>
+            <div class="field"><label for="demo-time">Demo time (today)</label>
               <select id="demo-time"><option value="live" ${sel === 'live' ? 'selected' : ''}>Live clock</option>${sel === 'custom' ? `<option value="custom" selected>Custom: ${fmtTime(TH.clock.now())}</option>` : ''}${DEMO_TIMES.map(([m, l]) => `<option value="${m}" ${sel === m ? 'selected' : ''}>${l}</option>`).join('')}</select>
               <span class="muted tiny">Try 9 PM: controlled campus access, USC Lyft hours and the safety map change.</span></div>
             <div class="field"><label for="demo-theme">Appearance</label><select id="demo-theme">${['system', 'light', 'dark'].map(t => `<option value="${t}" ${S.theme === t ? 'selected' : ''}>${t[0].toUpperCase() + t.slice(1)}</option>`).join('')}</select></div>
@@ -15552,7 +15552,8 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
 (function () {
   'use strict';
   var TA = window.TA = window.TA || {};
-  TA.settings = Object.assign({ ai: false, model: 'claude-opus-5-5', rememberKey: false, realDate: false }, TA.store.get('settings', {}) || {});
+  TA.settings = Object.assign({ ai: false, model: 'claude-opus-5-5', rememberKey: false, realDate: true }, TA.store.get('settings', {}) || {});
+  TA.settings.realDate = true; // the app runs on today's real date (campus time); a setting saved earlier can't pin it to the demo day
   TA.saveSettings = function () { TA.store.set('settings', TA.settings); };
   var handlers = {};
   TA.on = function (e, f) { (handlers[e] = handlers[e] || []).push(f); };
@@ -17437,7 +17438,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       '<label class="ta-check"><input type="checkbox" id="ta-show-script"' + (TA.settings.showScript !== false ? ' checked' : '') + '> Show the campus tool under each answer</label>' +
       '<p class="ta-fine">' + esc(avail) + '</p>' +
       '<div class="ta-card-actions"><button type="button" class="ta-btn primary" data-save-claude>Save</button></div></section>' +
-      '<section class="ta-set"><h3>Demo</h3><p class="ta-fine">The demo runs on <strong>' + esc(TA.fmtLongDate(TA.today())) + '</strong> so USC deadlines line up with the data collected that day. Account actions are simulated on the demo student.</p><div class="ta-card-actions"><button type="button" class="ta-btn" data-reset-demo>Reset demo account</button><button type="button" class="ta-btn" data-clear-chat>Clear conversation</button></div></section>';
+      '<section class="ta-set"><h3>Demo</h3><p class="ta-fine">Account actions are simulated on the demo student.</p><div class="ta-card-actions"><button type="button" class="ta-btn" data-reset-demo>Reset demo account</button><button type="button" class="ta-btn" data-clear-chat>Clear conversation</button></div></section>';
   };
   var sheetClick0 = UI.onSheetClick;
   UI.onSheetClick = function (e) {
