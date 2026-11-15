@@ -52,9 +52,10 @@ Run this from the Trojan Hub project. It rebuilds the app and regenerates `tommy
 A second, separate function, so it can never break Ask Tommy:
 
 - `POST /api/tommy-draft` `{"kind": "announcement", "payload": {club, title, when, where, desc, rsvpUrl}}` or
-  `{"kind": "members-summary", "payload": {club, requests: [{title, votes, type, preferred}]}}` → `{"text", "model"}`.
-  Club officers press **Draft the announcement** or **Summarize what members want**. Claude Haiku writes from those
-  fields only: the app never sends member names, emails, dues or paid status, and the function removes emails and
+  `{"kind": "members-summary", "payload": {club, requests: [{title, votes, type, preferred}]}}` or
+  `{"kind": "newsletter", "payload": {club, facts}}` → `{"text", "model"}`.
+  Club officers press **Draft the announcement**, **Summarize what members want** or the newsletter's **Draft with AI**. Claude Haiku writes from those
+  fields only: the app never sends member names, emails or who has paid, and the function removes emails and
   phone numbers again. Every time, date, weekday, price and number in Claude's text must appear in the event facts
   or the request list; otherwise Claude gets one retry, then the app shows its own template (labeled as one).
   Limits: 12 drafts per visitor per 10 minutes and 300 a day (Netlify Blobs store `tommy-usage`).

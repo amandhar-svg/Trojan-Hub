@@ -1229,7 +1229,7 @@ details.ta-course summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
       <li><b>USC Lyft, buses, Metro</b><span>real hours and schedules</span></li>
       <li><b>Mobile order &amp; Trojan Pass</b><span>virtual lines, return times</span></li>
       <li><b>Grades &amp; homework calendar</b><span>due dates, midterms, breaks</span></li>
-      <li><b>AI converts words to scripts</b><span>Runs on verified public data, not modeled</span></li>
+      <li><b>Ask Tommy, powered by Claude</b><span>Claude understands you; answers come from verified USC data</span></li>
       <li><b>Netflix-style recommendations</b><span>Thumbs up/down, hashtags, multi-day calendar</span></li>
       <li><b>Club hashtag AI generator</b><span>Clubs tag events; matching students get recommended</span></li>
       <li><b>Gates, zones, bike racks</b><span>fence, DPS and free Lyft zones</span></li>
@@ -17426,13 +17426,14 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   UI.sheets.settings = function () {
     var ICONS = TA.ICONS, st = AI.sampleState(), on = TA.settings.claude !== false;
-    var avail = !st.checked ? 'Checking whether the AI translator is available…' : st.off ? 'The AI translator was declined or isn’t available for this account, so I’m running on scripts alone.' : st.available ? 'The AI translator is available in this view.' : 'The AI translator isn’t available in this view (it works when this page is opened on claude.ai). Scripts handle everything they can read.';
+    var avail = !st.checked ? 'Checking whether Claude is available…' : st.off ? 'Claude was declined or isn’t available for this account, so Tommy answers with its built-in campus tools.' : st.available ? 'Claude is available in this view.' : 'Claude isn’t available in this view (it works on the Trojan Hub website), so Tommy answers with its built-in campus tools.';
     return '<div class="ta-sheet-h"><h2>Settings</h2><button type="button" class="ta-icon" data-close aria-label="Close">' + ICONS.close + '</button></div>' +
       '<section class="ta-set"><h3>' + ICONS.spark + ' How Tommy works</h3>' +
-      '<p class="ta-fine"><strong>1. Your message becomes a script.</strong> “What are my grades in math?” compiles to <code>grades.show course="MATH 226"</code>. <strong>2. The script runs on this device</strong> with access to your account, and can act for you after you confirm.</p>' +
-      '<label class="ta-check"><input type="checkbox" id="ta-claude-on"' + (on ? ' checked' : '') + '> Use AI when a script can’t read my message</label>' +
-      '<p class="ta-fine">The AI only rewrites your words into a script command. It has no access to your account and <strong>never sees what the script returns</strong>. It runs on your own claude.ai account. Crisis and safety messages are always handled on this device.</p>' +
-      '<label class="ta-check"><input type="checkbox" id="ta-show-script"' + (TA.settings.showScript !== false ? ' checked' : '') + '> Show the script under each answer</label>' +
+      '<p class="ta-fine"><strong>Claude Haiku understands your words.</strong> When Tommy’s campus tools can’t read a message, Claude picks the right tool for it. Answers come from verified USC data.</p>' +
+      '<p class="ta-fine"><strong>Your account stays on your phone.</strong> For grades, bookings, passes and other actions, Claude only reads your words and picks the campus tool; it runs on this device after you confirm.</p>' +
+      '<label class="ta-check"><input type="checkbox" id="ta-claude-on"' + (on ? ' checked' : '') + '> Use Claude Haiku (AI)</label>' +
+      '<p class="ta-fine">Claude has no access to your account and <strong>never sees your results</strong>. It runs on your own claude.ai account. Crisis and safety messages are always handled on this device.</p>' +
+      '<label class="ta-check"><input type="checkbox" id="ta-show-script"' + (TA.settings.showScript !== false ? ' checked' : '') + '> Show the campus tool under each answer</label>' +
       '<p class="ta-fine">' + esc(avail) + '</p>' +
       '<div class="ta-card-actions"><button type="button" class="ta-btn primary" data-save-claude>Save</button></div></section>' +
       '<section class="ta-set"><h3>Demo</h3><p class="ta-fine">The demo runs on <strong>' + esc(TA.fmtLongDate(TA.today())) + '</strong> so USC deadlines line up with the data collected that day. Account actions are simulated on the demo student.</p><div class="ta-card-actions"><button type="button" class="ta-btn" data-reset-demo>Reset demo account</button><button type="button" class="ta-btn" data-clear-chat>Clear conversation</button></div></section>';
@@ -17445,7 +17446,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       TA.settings.claude = !!(on && on.checked); TA.settings.showScript = !!(sh && sh.checked);
       try { TA.saveSettings(); } catch (er) { /* storage may be blocked */ }
       UI.renderMode(); UI.closeSheet(); if (UI.renderAll) UI.renderAll();
-      UI.push([{ role: 'bot', md: TA.settings.claude ? (AI.enabled() ? '**AI translator on.** It only turns messages I can’t read into script commands. It never sees your account or my answers.' : 'The AI translator is switched on, but it isn’t available in this view, so I’ll run on scripts alone.') : '**AI translator off.** I’ll run on scripts alone.' }]);
+      UI.push([{ role: 'bot', md: TA.settings.claude ? (AI.enabled() ? '**Claude Haiku on.** It picks the right campus tool when mine can’t read your message. It never sees your account or your results.' : 'Claude Haiku is switched on, but it isn’t available in this view, so I’ll answer with my built-in campus tools.') : '**Claude Haiku off.** I’ll answer with my built-in campus tools.' }]);
       return;
     }
     return sheetClick0.call(UI, e);
@@ -17563,6 +17564,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
  *   TA.AI.draft(kind, payload)  → Claude Haiku writes club text from club/event info only.
  *     kinds: 'announcement' {club, title, when, where, desc, rsvpUrl?}
  *            'members-summary' {club, requests:[{title, votes, type, preferred}]}
+ *            'newsletter' {club, facts}  (the app's own draft: upcoming event titles/times, a request and its votes)
  *     Payloads are checked here: only those fields, short strings, never member names, emails or dues.
  *   TA.AI.learning()            → the tools Claude proposed when Tommy couldn't answer something:
  *     {items:[{name, why, examples:[…], count, last}]}  (AI-written, never raw student messages)
@@ -17582,6 +17584,10 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     p = p || {};
     if (kind === 'announcement') {
       return { club: str(p.club, 120), title: str(p.title, 160), when: str(p.when, 120), where: str(p.where, 160), desc: str(p.desc, 900), rsvpUrl: /^https:\/\//.test(String(p.rsvpUrl || '')) ? str(p.rsvpUrl, 300) : '' };
+    }
+    if (kind === 'newsletter') {   // the app's own draft from the club calendar and requests (no member data)
+      var f = String(p.facts == null ? '' : p.facts).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ').slice(0, 1500);
+      return f.trim().length >= 10 ? { club: str(p.club, 120), facts: f } : null;
     }
     if (kind === 'members-summary') {
       var reqs = (Array.isArray(p.requests) ? p.requests : []).slice(0, 25).map(function (r) {
@@ -18326,7 +18332,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
           line: TS.line(cmd),
           via: via,
           accurate: true,
-          badge: '⚡ AI converted words into script · Verified public USC data (accurate, not modeled)'
+          badge: 'Verified public USC data (accurate, not modeled)'
         };
       }
     }
@@ -18425,8 +18431,8 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var el = renderMsg0.call(UI, m);
     if (m && m.script && m.role !== 'user' && TA.settings.showScript !== false) {
       var d = document.createElement('div'); d.className = 'ta-script' + (m.script.via === 'ai' ? ' ai' : '');
-      d.innerHTML = '<span class="ta-script-tag">' + (m.script.via === 'ai' ? 'AI → script' : 'script') + '</span><code>' + esc(m.script.line) + '</code><span class="ta-script-lock" aria-label="Result stayed on this device">' + (m.script.via === 'ai' ? 'AI saw your words only' : 'ran on device') + '</span>';
-      d.title = m.script.via === 'ai' ? 'The AI translated your words into this command. It never saw the result.' : 'Your message was compiled into this command on your device.';
+      d.innerHTML = '<span class="ta-script-tag">' + (m.script.via === 'ai' ? 'Claude Haiku · ran on your phone' : 'Tommy · on your phone') + '</span><code>' + esc(m.script.line) + '</code><span class="ta-script-lock" aria-label="Result stayed on this device">' + (m.script.via === 'ai' ? 'Claude saw your words only' : 'nothing sent to AI') + '</span>';
+      d.title = m.script.via === 'ai' ? 'Claude Haiku picked this campus tool from your words. It ran on your phone, and Claude never saw the result.' : 'Tommy answered this on your phone. Nothing was sent to an AI.';
       el.insertBefore(d, el.firstChild);
     }
     return el;
@@ -18436,7 +18442,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     try { mode0.call(UI); } catch (e) { }
     var sub = document.getElementById('ta-sub'), root = document.getElementById('ta-root');
     if (root) root.classList.toggle('ai', !!(AI && AI.enabled && AI.enabled()));
-    if (sub) sub.textContent = (AI && AI.enabled && AI.enabled()) ? 'Runs on scripts · AI translator on · Prototype' : 'Runs on scripts · Prototype';
+    if (sub) sub.textContent = (AI && AI.enabled && AI.enabled()) ? 'Powered by Claude' : 'Campus assistant';
   };
   // starter chips: the new things Tommy can do
   var starter0 = B.starterChips;
@@ -25110,7 +25116,10 @@ button.pl-title { padding: 0; }
       $('#nl-sub', host).oninput = sync; $('#nl-body', host).oninput = sync;
       $('#nl-ai', host).onclick = async () => {
         const b = $('#nl-ai', host), base = nlDraft(org); b.disabled = true; b.textContent = 'Drafting…'; let txt = null;
-        try { const s = window.claude && window.claude.use ? await window.claude.use('sample') : null; if (s) { const r = await s(`Write a short, warm weekly newsletter email from a USC student club officer named ${TH.student().first} to club members. Under 140 words, plain text, no subject line, no placeholders. Use only these facts:\n\n${base.body}`, { modelTier: 'quick' }); txt = r && r.text; } } catch (e) { txt = null; }
+        // Claude Haiku on this site's own server (js/ta/ai-extras.js → /api/tommy-draft): only the club name and this
+        // draft's facts (event titles and times, a request and its votes) are sent, never member names or dues.
+        try { const d = window.TA && TA.AI && typeof TA.AI.draft === 'function' ? await Promise.race([TA.AI.draft('newsletter', { club: org.name, facts: base.body.replace(/\s*Fight on,\s*\n[^\n]*\s*$/, '') }), new Promise(res => setTimeout(() => res(null), 25000))]) : null; if (d && typeof d.text === 'string' && d.text.trim()) txt = d.text.trim(); } catch (e) { txt = null; }
+        if (!txt) try { const s = window.claude && window.claude.use ? await window.claude.use('sample') : null; if (s) { const r = await s(`Write a short, warm weekly newsletter email from a USC student club officer named ${TH.student().first} to club members. Under 140 words, plain text, no subject line, no placeholders. Use only these facts:\n\n${base.body}`, { modelTier: 'quick' }); txt = r && r.text; } } catch (e) { txt = null; }
         if (!host.isConnected) return; nl.body = txt || base.body; if (!txt) nl.subject = base.subject; TH.toast(txt ? 'AI draft ready. Edit before sending.' : 'Drafted from your calendar and requests', 'sparkle'); TH.render(true);
       };
       $('#nl-form', host).addEventListener('submit', e => {
