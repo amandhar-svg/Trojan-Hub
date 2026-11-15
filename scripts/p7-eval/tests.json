@@ -1,0 +1,6186 @@
+[
+{
+"topic": "course",
+"q": "who is teaching csci 104 this semester",
+"expect": [
+"Slocum"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is csci 104",
+"expect": [
+"Tue",
+"12:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is csci 104",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for csci 104",
+"expect": [
+"CSCI 103"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for csci 104",
+"expect": [
+"December 12"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is csci 104 about",
+"expect": [
+"including linked lists"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in csci 104",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "is csci 104 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "CSCI 201 professor?",
+"expect": [
+"Papa"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "CSCI 201 class times",
+"expect": [
+"Tue",
+"11:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "CSCI 201 how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for CSCI 201",
+"expect": [
+"CSCI 104"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for CSCI 201",
+"expect": [
+"December 12"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats CSCI 201 cover",
+"expect": [
+"in Java; using"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in CSCI 201",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "is CSCI 201 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "CSCI 201"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for MATH226",
+"expect": [
+"Geske"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is MATH226 on",
+"expect": [
+"Mon",
+"9:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "MATH226 how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for MATH226",
+"expect": [
+"MATH 126"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for MATH226",
+"expect": [
+"December 9"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats MATH226 cover",
+"expect": [
+"valued functions; differential"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in MATH226",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "can i take MATH226 next semester",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "MATH 226"
+}
+}
+},
+{
+"topic": "course",
+"q": "who is teaching WRIT 150 this semester",
+"expect": [
+"Minami"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is WRIT 150 on",
+"expect": [
+"Mon",
+"11:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "is WRIT 150 4 units",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "what do i need before WRIT 150",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "WRIT 150 final date",
+"expect": [
+"December 9"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is WRIT 150 about",
+"expect": [
+"emphasizing analysis and"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many seats are left in WRIT 150",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "is WRIT 150 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "WRIT 150"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for PSYC 100",
+"expect": [
+"Kim"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is PSYC 100 on",
+"expect": [
+"Tue",
+"9:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "units for PSYC 100",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for PSYC 100",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "PSYC 100 final date",
+"expect": [
+"December 10"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is PSYC 100 about",
+"expect": [
+"psychological science, including"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many seats are left in PSYC 100",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "can i take PSYC 100 next semester",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for ECON 203",
+"expect": [
+"Yin"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "when does ECON 203 meet",
+"expect": [
+"Tue",
+"2:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "ECON 203 how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for ECON 203",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for ECON 203",
+"expect": [
+"December 10"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "describe ECON 203",
+"expect": [
+"firms and consumers"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "is ECON 203 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "is ECON 203 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "ECON 203"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches PHYS 151",
+"expect": [
+"Gould"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is PHYS 151",
+"expect": [
+"Mon",
+"8:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "is PHYS 151 4 units",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "what do i need before PHYS 151",
+"expect": [
+"MATH 125"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for PHYS 151",
+"expect": [
+"December 14"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is PHYS 151 about",
+"expect": [
+"dynamics of particles"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "is PHYS 151 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "can i take PHYS 151 next semester",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "PHYS 151"
+}
+}
+},
+{
+"topic": "course",
+"q": "who is teaching chem 105a this semester",
+"expect": [
+"Bertolini"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is chem 105a",
+"expect": [
+"Mon",
+"9:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "chem 105a how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for chem 105a",
+"expect": [
+"CHEM 050"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for chem 105a",
+"expect": [
+"December 14"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "describe chem 105a",
+"expect": [
+"and laws of"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "is chem 105a full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "is chem 105a available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "CHEM 105A"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for BISC120",
+"expect": [
+"Gracey"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "BISC120 class times",
+"expect": [
+"Mon",
+"9:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "is BISC120 4 units",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for BISC120",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for BISC120",
+"expect": [
+"December 16"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is BISC120 about",
+"expect": [
+"of key topics"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "is BISC120 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "is BISC120 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "BISC 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches CSCI270",
+"expect": [
+"Zhang"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is CSCI270 on",
+"expect": [
+"Mon",
+"3:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is CSCI270",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "what do i need before CSCI270",
+"expect": [
+"CSCI 104"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "when is the CSCI270 final",
+"expect": [
+"December 16"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is CSCI270 about",
+"expect": [
+"Greedy algorithms, divide"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in CSCI270",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "is CSCI270 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "CSCI 270"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches MATH 125",
+"expect": [
+"Tabing"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is MATH 125",
+"expect": [
+"Mon",
+"9:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "units for MATH 125",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for MATH 125",
+"expect": [
+"MATH 108"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "MATH 125 final date",
+"expect": [
+"December 9"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats MATH 125 cover",
+"expect": [
+"continuity, derivatives and"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in MATH 125",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "is MATH 125 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "MATH 125"
+}
+}
+},
+{
+"topic": "course",
+"q": "who is teaching AHIS120 this semester",
+"expect": [
+"Reyes"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is AHIS120",
+"expect": [
+"Tue",
+"11:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is AHIS120",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for AHIS120",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "when is the AHIS120 final",
+"expect": [
+"December 15"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is AHIS120 about",
+"expect": [
+"European art and"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "is AHIS120 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "is AHIS120 offered in spring",
+"expect": [
+"(isn.t|not|no).{0,40}Spring 2027|Spring 2027.{0,40}(isn.t|not)"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for COMM200",
+"expect": [
+"Pierson"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "COMM200 class times",
+"expect": [
+"Tue",
+"9:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is COMM200",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "COMM200 prereq?",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "when is the COMM200 final",
+"expect": [
+"December 10"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "describe COMM200",
+"expect": [
+"inquiry into human"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in COMM200",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "is COMM200 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "COMM 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches ACCT 410",
+"expect": [
+"Sweeney"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is ACCT 410 on",
+"expect": [
+"Tue",
+"8:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "units for ACCT 410",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "ACCT 410 prereq?",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "when is the ACCT 410 final",
+"expect": [
+"December 9"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats ACCT 410 cover",
+"expect": [
+"of accounting for"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many seats are left in ACCT 410",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "is ACCT 410 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "ACCT 410"
+}
+}
+},
+{
+"topic": "course",
+"q": "BUAD 280 professor?",
+"expect": [
+"Pfeffer"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is BUAD 280",
+"expect": [
+"Mon",
+"8:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is BUAD 280",
+"expect": [
+"\\b3\\b.{0,12}unit|units?.{0,20}\\b3\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "prereqs for BUAD 280",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for BUAD 280",
+"expect": [
+"December 11"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is BUAD 280 about",
+"expect": [
+"understanding financial statements"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in BUAD 280",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "is BUAD 280 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "BUAD 280"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for EE109",
+"expect": [
+"Redekopp"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "when does EE109 meet",
+"expect": [
+"Tue",
+"11:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "how many units is EE109",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "EE109 prereq?",
+"expect": [
+"EE 155"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "when is the EE109 final",
+"expect": [
+"December 12"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats EE109 cover",
+"expect": [
+"embedded programming, digital"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in EE109",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "is EE109 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "EE 109"
+}
+}
+},
+{
+"topic": "course",
+"q": "who is teaching CTCS190 this semester",
+"expect": [
+"Ellis"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "what days is CTCS190 on",
+"expect": [
+"Tue",
+"2:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "CTCS190 how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "CTCS190 prereq?",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for CTCS190",
+"expect": [
+"December 10"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is CTCS190 about",
+"expect": [
+"in the study"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in CTCS190",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "is CTCS190 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "CTCS 190"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches LING 115",
+"expect": [
+"Simpson"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "what time is LING 115",
+"expect": [
+"Tue",
+"9:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "LING 115 how many credits",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for LING 115",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for LING 115",
+"expect": [
+"December 10"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "describe LING 115",
+"expect": [
+"among diverse social"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in LING 115",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "can i take LING 115 next semester",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "LING 115"
+}
+}
+},
+{
+"topic": "course",
+"q": "whos the prof for HIST266",
+"expect": [
+"Sheehan"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "when does HIST266 meet",
+"expect": [
+"Mon",
+"3:30"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "is HIST266 4 units",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "HIST266 prereq?",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "HIST266 final date",
+"expect": [
+"December 14"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "describe HIST266",
+"expect": [
+"of East Asia"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "any spots open in HIST266",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "is HIST266 available spring 2027",
+"expect": [
+"(isn.t|not|no).{0,40}Spring 2027|Spring 2027.{0,40}(isn.t|not)"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "HIST 266"
+}
+}
+},
+{
+"topic": "course",
+"q": "soci 200 professor?",
+"expect": [
+"Werth"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "when does soci 200 meet",
+"expect": [
+"Mon",
+"2:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "is soci 200 4 units",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for soci 200",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "soci 200 final date",
+"expect": [
+"December 11"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats soci 200 cover",
+"expect": [
+"concepts of sociology"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "is soci 200 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "is soci 200 offered in spring",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "SOCI 200"
+}
+}
+},
+{
+"topic": "course",
+"q": "who teaches POSC 130",
+"expect": [
+"Renteln"
+],
+"oracle": {
+"cmd": "course.who",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "POSC 130 class times",
+"expect": [
+"Tue",
+"11:00"
+],
+"oracle": {
+"cmd": "course.when",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "units for POSC 130",
+"expect": [
+"\\b4\\b.{0,12}unit|units?.{0,20}\\b4\\b"
+],
+"oracle": {
+"cmd": "course.units",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "what are the prerequisites for POSC 130",
+"expect": [
+"(no|none|n.t have|not list)"
+],
+"oracle": {
+"cmd": "course.prereqs",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "final exam for POSC 130",
+"expect": [
+"December 15"
+],
+"oracle": {
+"cmd": "course.final",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats POSC 130 cover",
+"expect": [
+"law and politics"
+],
+"oracle": {
+"cmd": "course.about",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "is POSC 130 full",
+"expect": [
+"seat|full|open"
+],
+"oracle": {
+"cmd": "course.seats",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "is POSC 130 available spring 2027",
+"expect": [
+"Spring 2027"
+],
+"oracle": {
+"cmd": "course.offered",
+"args": {
+"course": "POSC 130"
+}
+}
+},
+{
+"topic": "course",
+"q": "does ahis 120 count for ge",
+"expect": [
+"GE-A"
+],
+"oracle": {
+"cmd": "course.ge",
+"args": {
+"course": "AHIS 120"
+}
+}
+},
+{
+"topic": "course",
+"q": "what ge category is psyc 100",
+"expect": [
+"GE-"
+],
+"oracle": {
+"cmd": "course.ge",
+"args": {
+"course": "PSYC 100"
+}
+}
+},
+{
+"topic": "course",
+"q": "classes about machine learning in spring",
+"expect": [
+"machine learning|Machine Learning"
+],
+"oracle": {
+"cmd": "course.find",
+"args": {
+"topic": "machine learning",
+"term": "spring"
+}
+}
+},
+{
+"topic": "course",
+"q": "any film classes on fridays",
+"expect": [
+"CTCS|CTPR|CTAN|film|Film|Cinema"
+],
+"oracle": {
+"cmd": "course.find",
+"args": {
+"topic": "film",
+"days": "F"
+}
+}
+},
+{
+"topic": "course",
+"q": "what does professor redekopp teach",
+"expect": [
+"CSCI|EE"
+],
+"oracle": {
+"cmd": "course.prof",
+"args": {
+"name": "redekopp"
+}
+}
+},
+{
+"topic": "course",
+"q": "whats the course code for data structures",
+"expect": [
+"CSCI 104"
+],
+"oracle": {
+"cmd": "course.code",
+"args": {
+"name": "data structures"
+}
+}
+},
+{
+"topic": "course",
+"q": "compare csci 103 and csci 104",
+"expect": [
+"CSCI 103",
+"CSCI 104"
+],
+"oracle": {
+"cmd": "course.compare",
+"args": {
+"a": "CSCI 103",
+"b": "CSCI 104"
+}
+}
+},
+{
+"topic": "course",
+"q": "what is ge-c",
+"expect": [
+"Social Analysis"
+],
+"oracle": {
+"cmd": "course.gecat",
+"args": {
+"cat": "C"
+}
+}
+},
+{
+"topic": "course",
+"q": "which classes count for ge-a in spring",
+"expect": [
+"GE-A"
+],
+"oracle": {
+"cmd": "course.gelist",
+"args": {
+"cat": "A",
+"term": "spring"
+}
+}
+},
+{
+"topic": "course",
+"q": "2 unit classes in spring",
+"expect": [
+"2-unit|2 unit"
+],
+"oracle": {
+"cmd": "course.byunits",
+"args": {
+"units": "2"
+}
+}
+},
+{
+"topic": "course",
+"q": "list the labs for phys 151",
+"expect": [
+"Lab"
+],
+"oracle": {
+"cmd": "course.sections",
+"args": {
+"course": "PHYS 151",
+"type": "lab"
+}
+}
+},
+{
+"topic": "course",
+"q": "what csci classes are offered in spring",
+"expect": [
+"CSCI 1\\d\\d"
+],
+"oracle": {
+"cmd": "course.dept",
+"args": {
+"prefix": "CSCI",
+"term": "spring"
+}
+}
+},
+{
+"topic": "places",
+"q": "is evk open",
+"expect": [
+"Everybody's[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "evk"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does evk close tomorrow",
+"expect": [
+"7 AM \u2013 10 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "evk",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is evk open on saturday",
+"expect": [
+"8:30 AM \u2013 10 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "evk",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is evk",
+"expect": [
+"635 W\\. 35th Street"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "evk"
+}
+}
+},
+{
+"topic": "places",
+"q": "evk phone number",
+"expect": [
+"0259"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "evk"
+}
+}
+},
+{
+"topic": "places",
+"q": "is parkside open rn",
+"expect": [
+"Parkside[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "parkside"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does parkside close tomorrow",
+"expect": [
+"7 AM \u2013 10 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "parkside",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is parkside open on saturday",
+"expect": [
+"8:30 AM \u2013 8 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "parkside",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is the parkside",
+"expect": [
+"3771 South McClintock Avenue"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "parkside"
+}
+}
+},
+{
+"topic": "places",
+"q": "phone number for parkside",
+"expect": [
+"5859"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "parkside"
+}
+}
+},
+{
+"topic": "places",
+"q": "is village dining hall still open",
+"expect": [
+"USC[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "villagedh"
+}
+}
+},
+{
+"topic": "places",
+"q": "when does village dining hall open tomorrow",
+"expect": [
+"7 AM \u2013 10 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "villagedh",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are village dining hall hours this saturday",
+"expect": [
+"8:30 AM \u2013 10 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "villagedh",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to village dining hall",
+"expect": [
+"3096 S\\. McClintock Avenue"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "villagedh"
+}
+}
+},
+{
+"topic": "places",
+"q": "village dining hall phone number",
+"expect": [
+"7925"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "villagedh"
+}
+}
+},
+{
+"topic": "places",
+"q": "is leavey still open",
+"expect": [
+"Leavey[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "leavey"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does leavey close tomorrow",
+"expect": [
+"Open 24 hours"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "leavey",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are leavey hours this saturday",
+"expect": [
+"9 AM \u2013 9 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "leavey",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is the leavey",
+"expect": [
+"651 W\\. 35th St\\."
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "leavey"
+}
+}
+},
+{
+"topic": "places",
+"q": "leavey phone number",
+"expect": [
+"4350"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "leavey"
+}
+}
+},
+{
+"topic": "places",
+"q": "is doheny library still open",
+"expect": [
+"Doheny[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "doheny"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does doheny library close tomorrow",
+"expect": [
+"9 AM \u2013 8 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "doheny",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "doheny library hours saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "doheny",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is doheny library",
+"expect": [
+"3550 Trousdale Pkwy"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "doheny"
+}
+}
+},
+{
+"topic": "places",
+"q": "phone number for doheny library",
+"expect": [
+"2924"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "doheny"
+}
+}
+},
+{
+"topic": "places",
+"q": "is science library open",
+"expect": [
+"Science[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "sel"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does science library close tomorrow",
+"expect": [
+"9 AM \u2013 8 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "sel",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is science library open on saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "sel",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to science library",
+"expect": [
+"910 Bloom Walk"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "sel"
+}
+}
+},
+{
+"topic": "places",
+"q": "phone number for science library",
+"expect": [
+"8507"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "sel"
+}
+}
+},
+{
+"topic": "places",
+"q": "is lyon center open",
+"expect": [
+"Lyon[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "lyon"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does lyon center close tomorrow",
+"expect": [
+"6 AM \u2013 11:30 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "lyon",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are lyon center hours this saturday",
+"expect": [
+"9 AM \u2013 7 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "lyon",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is lyon center",
+"expect": [
+"1026 W\\. 34th Street"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "lyon"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact lyon center",
+"expect": [
+"5127"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "lyon"
+}
+}
+},
+{
+"topic": "places",
+"q": "is village gym still open",
+"expect": [
+"USC[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "vfit"
+}
+}
+},
+{
+"topic": "places",
+"q": "village gym hours tomorrow",
+"expect": [
+"8 AM \u2013 11 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "vfit",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are village gym hours this saturday",
+"expect": [
+"11 AM \u2013 11 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "vfit",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to village gym",
+"expect": [
+"929 W\\. Jefferson Blvd"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "vfit"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact village gym",
+"expect": [
+"0233"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "vfit"
+}
+}
+},
+{
+"topic": "places",
+"q": "is seeds marketplace open rn",
+"expect": [
+"Seeds[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "seeds"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does seeds marketplace close tomorrow",
+"expect": [
+"7 AM \u2013 6 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "seeds",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "seeds marketplace hours saturday",
+"expect": [
+"9 AM \u2013 3 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "seeds",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to seeds marketplace",
+"expect": [
+"3607 Trousdale Pkwy"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "seeds"
+}
+}
+},
+{
+"topic": "places",
+"q": "seeds marketplace phone number",
+"expect": [
+"3491"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "seeds"
+}
+}
+},
+{
+"topic": "places",
+"q": "is panda express open",
+"expect": [
+"Panda[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "panda"
+}
+}
+},
+{
+"topic": "places",
+"q": "when does panda express open tomorrow",
+"expect": [
+"10:30 AM \u2013 6 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "panda",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is panda express open on saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "panda",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is panda express",
+"expect": [
+"3607 Trousdale Pkwy"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "panda"
+}
+}
+},
+{
+"topic": "places",
+"q": "phone number for panda express",
+"expect": [
+"3481"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "panda"
+}
+}
+},
+{
+"topic": "places",
+"q": "trojan grounds open right now?",
+"expect": [
+"Trojan[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "trojangrounds"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does trojan grounds close tomorrow",
+"expect": [
+"6:30 AM \u2013 12 AM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "trojangrounds",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "trojan grounds hours saturday",
+"expect": [
+"8 AM \u2013 6 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "trojangrounds",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is trojan grounds",
+"expect": [
+"642 West 34th St"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "trojangrounds"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact trojan grounds",
+"expect": [
+"7848"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "trojangrounds"
+}
+}
+},
+{
+"topic": "places",
+"q": "bookstore open right now?",
+"expect": [
+"USC[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "bookstore"
+}
+}
+},
+{
+"topic": "places",
+"q": "bookstore hours tomorrow",
+"expect": [
+"7:45 AM \u2013 8 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "bookstore",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are bookstore hours this saturday",
+"expect": [
+"9 AM \u2013 5 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "bookstore",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is bookstore",
+"expect": [
+"840 Childs Way"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "bookstore"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact bookstore",
+"expect": [
+"8620"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "bookstore"
+}
+}
+},
+{
+"topic": "places",
+"q": "is career center open rn",
+"expect": [
+"USC[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "career"
+}
+}
+},
+{
+"topic": "places",
+"q": "what time does career center close tomorrow",
+"expect": [
+"8:30 AM \u2013 5 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "career",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "career center hours saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "career",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is the career center",
+"expect": [
+"3601 Trousdale Parkway"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "career"
+}
+}
+},
+{
+"topic": "places",
+"q": "phone number for career center",
+"expect": [
+"9111"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "career"
+}
+}
+},
+{
+"topic": "places",
+"q": "is financial aid office open",
+"expect": [
+"Financial[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "finaid"
+}
+}
+},
+{
+"topic": "places",
+"q": "when does financial aid office open tomorrow",
+"expect": [
+"9 AM \u2013 5 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "finaid",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are financial aid office hours this saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "finaid",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to financial aid office",
+"expect": [
+"700 Childs Way"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "finaid"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact financial aid office",
+"expect": [
+"4444"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "finaid"
+}
+}
+},
+{
+"topic": "places",
+"q": "is c&g juice still open",
+"expect": [
+"C&G[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cgjuice"
+}
+}
+},
+{
+"topic": "places",
+"q": "when does c&g juice open tomorrow",
+"expect": [
+"10 AM \u2013 6 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cgjuice",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are c&g juice hours this saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cgjuice",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is the c&g juice",
+"expect": [
+"3607 Trousdale Pkwy"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "cgjuice"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact c&g juice",
+"expect": [
+"3482"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "cgjuice"
+}
+}
+},
+{
+"topic": "places",
+"q": "is literatea open rn",
+"expect": [
+"Literatea[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "literatea"
+}
+}
+},
+{
+"topic": "places",
+"q": "literatea hours tomorrow",
+"expect": [
+"8 AM \u2013 3 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "literatea",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is literatea open on saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "literatea",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "where is the literatea",
+"expect": [
+"3550 Trousdale Pkwy"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "literatea"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i contact literatea",
+"expect": [
+"4261"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "literatea"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to the pool",
+"expect": [
+"Next to the Lyon Center"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "uac"
+}
+}
+},
+{
+"topic": "places",
+"q": "popovich cafe open right now?",
+"expect": [
+"Popovich[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "popovich"
+}
+}
+},
+{
+"topic": "places",
+"q": "popovich cafe hours tomorrow",
+"expect": [
+"7:30 AM \u2013 5:30 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "popovich",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "what are popovich cafe hours this saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "popovich",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to popovich cafe",
+"expect": [
+"630 Childs Way"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "popovich"
+}
+}
+},
+{
+"topic": "places",
+"q": "popovich cafe phone number",
+"expect": [
+"1166"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "popovich"
+}
+}
+},
+{
+"topic": "places",
+"q": "is cafe annenberg still open",
+"expect": [
+"Caf\u00e9[^\\n]{0,80}|open|closed",
+"(open|closed|Open|Closed)"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cafeannenberg"
+}
+}
+},
+{
+"topic": "places",
+"q": "cafe annenberg hours tomorrow",
+"expect": [
+"7:30 AM \u2013 6:30 PM"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cafeannenberg",
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "places",
+"q": "is cafe annenberg open on saturday",
+"expect": [
+"closed|Closed"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "cafeannenberg",
+"day": "saturday"
+}
+}
+},
+{
+"topic": "places",
+"q": "how do i get to cafe annenberg",
+"expect": [
+"3630 Watt Way"
+],
+"oracle": {
+"cmd": "place.where",
+"args": {
+"place": "cafeannenberg"
+}
+}
+},
+{
+"topic": "places",
+"q": "cafe annenberg phone number",
+"expect": [
+"9743"
+],
+"oracle": {
+"cmd": "place.contact",
+"args": {
+"place": "cafeannenberg"
+}
+}
+},
+{
+"topic": "open",
+"q": "what's open right now for food",
+"expect": [
+"Everybody's Kitchen \\(EVK\\)"
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "food"
+}
+}
+},
+{
+"topic": "open",
+"q": "anywhere to eat open rn",
+"expect": [
+"Everybody's Kitchen \\(EVK\\)"
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "food"
+}
+}
+},
+{
+"topic": "open",
+"q": "which libraries are open now",
+"expect": [
+"Leavey Library"
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "study"
+}
+}
+},
+{
+"topic": "open",
+"q": "any gyms open right now",
+"expect": [
+"Lyon|Village Fitness|No "
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "gym"
+}
+}
+},
+{
+"topic": "open",
+"q": "is there any coffee open",
+"expect": [
+"Coffee|Grounds|Literatea|caf|Caf\u00e9|No "
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "coffee"
+}
+}
+},
+{
+"topic": "open",
+"q": "what food is open at 11pm",
+"expect": [
+"11 PM|No "
+],
+"oracle": {
+"cmd": "open.now",
+"args": {
+"cat": "food",
+"at": "11pm"
+}
+}
+},
+{
+"topic": "open",
+"q": "what is open latest tonight for food",
+"expect": [
+"until"
+],
+"oracle": {
+"cmd": "open.late",
+"args": {
+"cat": "food"
+}
+}
+},
+{
+"topic": "open",
+"q": "which dining halls are open",
+"expect": [
+"EVK|Everybody"
+],
+"oracle": {
+"cmd": "dining.halls",
+"args": {}
+}
+},
+{
+"topic": "open",
+"q": "are the dining halls open tomorrow",
+"expect": [
+"EVK|Everybody"
+],
+"oracle": {
+"cmd": "dining.halls",
+"args": {
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "open",
+"q": "closest bathroom",
+"expect": [
+"Restroom|restroom"
+],
+"oracle": {
+"cmd": "place.nearest",
+"args": {
+"cat": "restroom"
+}
+}
+},
+{
+"topic": "open",
+"q": "nearest place to eat",
+"expect": [
+"min walk"
+],
+"oracle": {
+"cmd": "place.nearest",
+"args": {
+"cat": "food"
+}
+}
+},
+{
+"topic": "open",
+"q": "where can i get boba",
+"expect": [
+"boba|Boba|tea|Tea|None"
+],
+"oracle": {
+"cmd": "place.search",
+"args": {
+"what": "boba"
+}
+}
+},
+{
+"topic": "open",
+"q": "how busy is evk right now",
+"expect": [
+"Est"
+],
+"oracle": {
+"cmd": "place.crowd",
+"args": {
+"place": "evk"
+}
+}
+},
+{
+"topic": "open",
+"q": "is evk open on thanksgiving",
+"expect": [
+"not published|Not published|not posted|unknown"
+],
+"oracle": {
+"cmd": "place.hours",
+"args": {
+"place": "evk",
+"day": "thanksgiving"
+}
+}
+},
+{
+"topic": "open",
+"q": "lyon center hours this week",
+"expect": [
+"Mon",
+"Sun"
+],
+"oracle": {
+"cmd": "place.week",
+"args": {
+"place": "lyon"
+}
+}
+},
+{
+"topic": "open",
+"q": "all gender bathrooms",
+"expect": [
+"All-gender|Gender-neutral"
+],
+"oracle": {
+"cmd": "restroom.allgender",
+"args": {}
+}
+},
+{
+"topic": "dining",
+"q": "when is breakfast at evk",
+"expect": [
+"open and close times|7 AM"
+],
+"oracle": {
+"cmd": "dining.meals",
+"args": {
+"meal": "breakfast",
+"place": "evk"
+}
+}
+},
+{
+"topic": "dining",
+"q": "what meal plans are there",
+"expect": [
+"Cardinal",
+"Flex120"
+],
+"oracle": {
+"cmd": "dining.plans",
+"args": {}
+}
+},
+{
+"topic": "dining",
+"q": "how much is the cardinal plan",
+"expect": [
+"4,219"
+],
+"oracle": {
+"cmd": "dining.plans",
+"args": {
+"plan": "cardinal"
+}
+}
+},
+{
+"topic": "dining",
+"q": "where can i use meal swipes",
+"expect": [
+"EVK|Everybody"
+],
+"oracle": {
+"cmd": "dining.swipes",
+"args": {}
+}
+},
+{
+"topic": "dining",
+"q": "does seeds take swipes",
+"expect": [
+"Seeds"
+],
+"oracle": {
+"cmd": "dining.swipes",
+"args": {
+"place": "seeds"
+}
+}
+},
+{
+"topic": "dining",
+"q": "whats on the menu at parkside",
+"expect": [
+"hospitality.usc.edu"
+],
+"oracle": {
+"cmd": "dining.menu",
+"args": {
+"place": "parkside"
+}
+}
+},
+{
+"topic": "dining",
+"q": "how long is the wait at panda",
+"expect": [
+"Est"
+],
+"oracle": {
+"cmd": "dining.order",
+"args": {
+"place": "panda"
+}
+}
+},
+{
+"topic": "dining",
+"q": "can i use my uscard at the village",
+"expect": [
+"City Tacos"
+],
+"oracle": {
+"cmd": "dining.village",
+"args": {}
+}
+},
+{
+"topic": "dining",
+"q": "game day dining hours",
+"expect": [
+"Lyft|game"
+],
+"oracle": {
+"cmd": "dining.gameday",
+"args": {}
+}
+},
+{
+"topic": "offices",
+"q": "financial aid office hours",
+"expect": [
+"9 AM|9:00 AM"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "financial aid"
+}
+}
+},
+{
+"topic": "offices",
+"q": "career center phone number",
+"expect": [
+"740-9111"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "career center"
+}
+}
+},
+{
+"topic": "offices",
+"q": "where is osas",
+"expect": [
+"3601 Watt"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "osas"
+}
+}
+},
+{
+"topic": "offices",
+"q": "its help desk number",
+"expect": [
+"740-5555"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "its"
+}
+}
+},
+{
+"topic": "offices",
+"q": "lost and found",
+"expect": [
+"740-9759"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "lost and found"
+}
+}
+},
+{
+"topic": "offices",
+"q": "housing office phone",
+"expect": [
+"740-2546"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "housing office"
+}
+}
+},
+{
+"topic": "offices",
+"q": "when does the bookstore close",
+"expect": [
+"8 PM|8:00 PM"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "bookstore"
+}
+}
+},
+{
+"topic": "offices",
+"q": "mail stop hours",
+"expect": [
+"Mail Stop"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "mail stop"
+}
+}
+},
+{
+"topic": "offices",
+"q": "transportation office phone",
+"expect": [
+"740-3575"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "transportation office"
+}
+}
+},
+{
+"topic": "offices",
+"q": "pharmacy phone number",
+"expect": [
+"821-6100"
+],
+"oracle": {
+"cmd": "office.info",
+"args": {
+"office": "pharmacy"
+}
+}
+},
+{
+"topic": "transport",
+"q": "when is the next bus to union station",
+"expect": [
+"Union Station"
+],
+"oracle": {
+"cmd": "bus.next",
+"args": {
+"route": "union station"
+}
+}
+},
+{
+"topic": "transport",
+"q": "next shuttle to hsc",
+"expect": [
+"HSC|Intercampus"
+],
+"oracle": {
+"cmd": "bus.next",
+"args": {
+"route": "hsc"
+}
+}
+},
+{
+"topic": "transport",
+"q": "is usc lyft running",
+"expect": [
+"7 PM"
+],
+"oracle": {
+"cmd": "lyft.status",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "what time does free lyft start",
+"expect": [
+"7 PM"
+],
+"oracle": {
+"cmd": "lyft.status",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "where can i take usc lyft",
+"expect": [
+"Normandie"
+],
+"oracle": {
+"cmd": "lyft.rules",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "can i take usc lyft to lax",
+"expect": [
+"not covered|outside|does not go"
+],
+"oracle": {
+"cmd": "lyft.zone",
+"args": {
+"to": "lax"
+}
+}
+},
+{
+"topic": "transport",
+"q": "how do i get a u-pass",
+"expect": [
+"U-Pass"
+],
+"oracle": {
+"cmd": "upass.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "is the upass free",
+"expect": [
+"No additional cost|Transportation Fee"
+],
+"oracle": {
+"cmd": "upass.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "zipcar at usc",
+"expect": [
+"\\$35"
+],
+"oracle": {
+"cmd": "zipcar.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "closest metro station",
+"expect": [
+"Expo Park|Jefferson/USC"
+],
+"oracle": {
+"cmd": "metro.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "how do i get to lax",
+"expect": [
+"LAX"
+],
+"oracle": {
+"cmd": "transport.lax",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "how much is a parking permit",
+"expect": [
+"612"
+],
+"oracle": {
+"cmd": "parking.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "where can my parents park",
+"expect": [
+"\\$20"
+],
+"oracle": {
+"cmd": "parking.visitor",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "do i need to register my bike",
+"expect": [
+"DPS"
+],
+"oracle": {
+"cmd": "bike.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "what is the transportation fee",
+"expect": [
+"151"
+],
+"oracle": {
+"cmd": "transport.fee",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "metrolink student discount",
+"expect": [
+"50%"
+],
+"oracle": {
+"cmd": "metrolink.info",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "do the buses run on thanksgiving",
+"expect": [
+"holiday|no USC bus|No USC bus"
+],
+"oracle": {
+"cmd": "bus.holidays",
+"args": {
+"day": "thanksgiving"
+}
+}
+},
+{
+"topic": "transport",
+"q": "is campus cruiser still a thing",
+"expect": [
+"uspended"
+],
+"oracle": {
+"cmd": "transport.cruiser",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "how do i get to hsc",
+"expect": [
+"Intercampus|ICS"
+],
+"oracle": {
+"cmd": "transport.hsc",
+"args": {}
+}
+},
+{
+"topic": "transport",
+"q": "union station shuttle schedule",
+"expect": [
+"Union Station"
+],
+"oracle": {
+"cmd": "bus.schedule",
+"args": {
+"route": "union station"
+}
+}
+},
+{
+"topic": "safety",
+"q": "dps phone number",
+"expect": [
+"740-4321"
+],
+"oracle": {
+"cmd": "safety.contacts",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "dps non emergency number",
+"expect": [
+"740-6000"
+],
+"oracle": {
+"cmd": "safety.contacts",
+"args": {
+"topic": "non-emergency"
+}
+}
+},
+{
+"topic": "safety",
+"q": "when does campus close",
+"expect": [
+"9 PM"
+],
+"oracle": {
+"cmd": "campus.access",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "which gates are open after 9",
+"expect": [
+"McCarthy"
+],
+"oracle": {
+"cmd": "campus.access",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "safe walk",
+"expect": [
+"LiveSafe|escort"
+],
+"oracle": {
+"cmd": "safety.escort",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "can dps walk me home",
+"expect": [
+"escort"
+],
+"oracle": {
+"cmd": "safety.escort",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "what are blue light phones",
+"expect": [
+"300"
+],
+"oracle": {
+"cmd": "safety.bluelight",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "who are the yellow jackets",
+"expect": [
+"Security Ambassadors|Allied"
+],
+"oracle": {
+"cmd": "safety.ambassadors",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "any recent dps alerts",
+"expect": [
+"DPS|Timely"
+],
+"oracle": {
+"cmd": "safety.alerts",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "what is livesafe",
+"expect": [
+"LiveSafe"
+],
+"oracle": {
+"cmd": "safety.livesafe",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "how do i get usc emergency alerts",
+"expect": [
+"TrojansAlert"
+],
+"oracle": {
+"cmd": "safety.trojansalert",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "where is the dps station",
+"expect": [
+"McClintock"
+],
+"oracle": {
+"cmd": "safety.dps",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "clear bag policy",
+"expect": [
+"12"
+],
+"oracle": {
+"cmd": "safety.gameday",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "i lost my wallet on campus",
+"expect": [
+"740-9759|Lost"
+],
+"oracle": {
+"cmd": "safety.lostfound",
+"args": {}
+}
+},
+{
+"topic": "safety",
+"q": "noise complaint number",
+"expect": [
+"740-6000"
+],
+"oracle": {
+"cmd": "safety.report",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "when is the last day to drop a class",
+"expect": [
+"Nov 13|Oct 9"
+],
+"oracle": {
+"cmd": "cal.deadlines",
+"args": {
+"which": "drop"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "last day to withdraw",
+"expect": [
+"Nov 13"
+],
+"oracle": {
+"cmd": "cal.deadlines",
+"args": {
+"which": "withdraw"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "spring 2027 add deadline",
+"expect": [
+"Jan 29"
+],
+"oracle": {
+"cmd": "cal.deadlines",
+"args": {
+"term": "spring",
+"which": "add"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "when does spring semester start",
+"expect": [
+"Jan 11"
+],
+"oracle": {
+"cmd": "cal.term",
+"args": {
+"term": "spring"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "when is the last day of classes",
+"expect": [
+"Dec 4"
+],
+"oracle": {
+"cmd": "cal.term",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "is there class on veterans day",
+"expect": [
+"Veterans Day"
+],
+"oracle": {
+"cmd": "cal.holidays",
+"args": {
+"day": "veterans day"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "when is thanksgiving break",
+"expect": [
+"Nov 25"
+],
+"oracle": {
+"cmd": "cal.holidays",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "when are finals",
+"expect": [
+"Dec 9|December 9"
+],
+"oracle": {
+"cmd": "cal.finals",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "how many days until thanksgiving",
+"expect": [
+"16 days"
+],
+"oracle": {
+"cmd": "cal.countdown",
+"args": {
+"what": "thanksgiving"
+}
+}
+},
+{
+"topic": "calendar",
+"q": "when does registration open for spring",
+"expect": [
+"Oct 26"
+],
+"oracle": {
+"cmd": "cal.registration",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "how much is tuition",
+"expect": [
+"37,692"
+],
+"oracle": {
+"cmd": "cal.tuition",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "how much is an official transcript",
+"expect": [
+"\\$12|\\$15"
+],
+"oracle": {
+"cmd": "cal.transcript",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "what deadlines are coming up",
+"expect": [
+"Nov 13"
+],
+"oracle": {
+"cmd": "cal.upcoming",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "whats todays date",
+"expect": [
+"November 9"
+],
+"oracle": {
+"cmd": "time.today",
+"args": {}
+}
+},
+{
+"topic": "calendar",
+"q": "how much to replace my uscard",
+"expect": [
+"\\$25"
+],
+"oracle": {
+"cmd": "uscard.info",
+"args": {}
+}
+},
+{
+"topic": "clubs",
+"q": "when does dragon boat at usc meet",
+"expect": [
+"Sat"
+],
+"oracle": {
+"cmd": "club.meets",
+"args": {
+"club": "Dragon Boat at USC"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "when does Jolly Show meet",
+"expect": [
+"Mon"
+],
+"oracle": {
+"cmd": "club.meets",
+"args": {
+"club": "Jolly Show"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "when does nikkei student union meet",
+"expect": [
+"Thu"
+],
+"oracle": {
+"cmd": "club.meets",
+"args": {
+"club": "Nikkei Student Union"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "what time does Trojan Barbell Club meet",
+"expect": [
+"Mon"
+],
+"oracle": {
+"cmd": "club.meets",
+"args": {
+"club": "Trojan Barbell Club"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "clubs about chess",
+"expect": [
+"Trojan Chess Club"
+],
+"oracle": {
+"cmd": "club.find",
+"args": {
+"topic": "chess"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "are there any kpop dance clubs",
+"expect": [
+"K-?[Pp]op|KPOP|kpop"
+],
+"oracle": {
+"cmd": "club.find",
+"args": {
+"topic": "kpop dance"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "pre law organizations",
+"expect": [
+"[Ll]aw"
+],
+"oracle": {
+"cmd": "club.find",
+"args": {
+"topic": "pre law"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "how do i join the trojan chess club",
+"expect": [
+"engage.usc.edu"
+],
+"oracle": {
+"cmd": "club.join",
+"args": {
+"club": "trojan chess club"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "what is the whine and cheese club",
+"expect": [
+"unwind"
+],
+"oracle": {
+"cmd": "club.about",
+"args": {
+"club": "whine and cheese club"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "how many clubs are there",
+"expect": [
+"2000|2,000|800"
+],
+"oracle": {
+"cmd": "club.category",
+"args": {}
+}
+},
+{
+"topic": "clubs",
+"q": "most active clubs",
+"expect": [
+"events"
+],
+"oracle": {
+"cmd": "club.active",
+"args": {}
+}
+},
+{
+"topic": "clubs",
+"q": "what events does Academic Culture Assembly have",
+"expect": [
+"Academic"
+],
+"oracle": {
+"cmd": "club.events",
+"args": {
+"club": "Academic Culture Assembly"
+}
+}
+},
+{
+"topic": "clubs",
+"q": "what clubs should i join",
+"expect": [
+"match|Association|club|Club"
+],
+"oracle": {
+"cmd": "club.recommend",
+"args": {}
+}
+},
+{
+"topic": "events",
+"q": "events today",
+"expect": [
+"Sweater Weather Screening"
+],
+"oracle": {
+"cmd": "events.day",
+"args": {
+"day": "today"
+}
+}
+},
+{
+"topic": "events",
+"q": "whats going on tonight",
+"expect": [
+"tonight|No |PM"
+],
+"oracle": {
+"cmd": "events.day",
+"args": {
+"day": "tonight"
+}
+}
+},
+{
+"topic": "events",
+"q": "anything happening on campus tomorrow",
+"expect": [
+"Nov 10|tomorrow|Tomorrow"
+],
+"oracle": {
+"cmd": "events.day",
+"args": {
+"day": "tomorrow"
+}
+}
+},
+{
+"topic": "events",
+"q": "events this weekend",
+"expect": [
+"Nov 14|weekend"
+],
+"oracle": {
+"cmd": "events.day",
+"args": {
+"day": "weekend"
+}
+}
+},
+{
+"topic": "events",
+"q": "free food today",
+"expect": [
+"Sweater Weather Screening"
+],
+"oracle": {
+"cmd": "events.food",
+"args": {
+"day": "today"
+}
+}
+},
+{
+"topic": "events",
+"q": "where can i get free food this week",
+"expect": [
+"food"
+],
+"oracle": {
+"cmd": "events.food",
+"args": {}
+}
+},
+{
+"topic": "events",
+"q": "career events this week",
+"expect": [
+"[Cc]areer|No public"
+],
+"oracle": {
+"cmd": "events.search",
+"args": {
+"q": "career",
+"days": "7"
+}
+}
+},
+{
+"topic": "events",
+"q": "whats happening right now",
+"expect": [
+"now|Happening|No public events are happening"
+],
+"oracle": {
+"cmd": "events.now",
+"args": {}
+}
+},
+{
+"topic": "events",
+"q": "whats happening this week",
+"expect": [
+"public events"
+],
+"oracle": {
+"cmd": "events.week",
+"args": {
+"which": "this"
+}
+}
+},
+{
+"topic": "events",
+"q": "arts events this week",
+"expect": [
+"Arts|arts"
+],
+"oracle": {
+"cmd": "events.cat",
+"args": {
+"cat": "arts"
+}
+}
+},
+{
+"topic": "events",
+"q": "tell me about the world food day market",
+"expect": [
+"World Food Day"
+],
+"oracle": {
+"cmd": "event.info",
+"args": {
+"title": "world food day market"
+}
+}
+},
+{
+"topic": "account",
+"q": "how many swipes do i have left",
+"expect": [
+"47"
+],
+"oracle": {
+"cmd": "my.dining",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "dining dollars balance",
+"expect": [
+"63\\.40"
+],
+"oracle": {
+"cmd": "my.dining",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "how much is on my uscard",
+"expect": [
+"42\\.50"
+],
+"oracle": {
+"cmd": "my.uscard",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what do i owe",
+"expect": [
+"1,250"
+],
+"oracle": {
+"cmd": "my.balance",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when is my bill due",
+"expect": [
+"Nov 13"
+],
+"oracle": {
+"cmd": "my.balance",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "where do i live",
+"expect": [
+"Cowlings"
+],
+"oracle": {
+"cmd": "my.housing",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when are my library books due",
+"expect": [
+"Nov 12"
+],
+"oracle": {
+"cmd": "my.library",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when is my registration appointment",
+"expect": [
+"Nov 3"
+],
+"oracle": {
+"cmd": "my.registration",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "do i have any holds",
+"expect": [
+"none|no holds"
+],
+"oracle": {
+"cmd": "my.registration",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what classes am i taking",
+"expect": [
+"CSCI 104"
+],
+"oracle": {
+"cmd": "my.classes",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when is my next class",
+"expect": [
+"PHYS|MATH|CSCI|PSYC"
+],
+"oracle": {
+"cmd": "my.next_class",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when are my finals",
+"expect": [
+"December"
+],
+"oracle": {
+"cmd": "my.finals",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "who is my advisor",
+"expect": [
+"Taylor Morgan"
+],
+"oracle": {
+"cmd": "my.advisor",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "how many units am i taking",
+"expect": [
+"16"
+],
+"oracle": {
+"cmd": "my.units",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "who are my professors",
+"expect": [
+"Slocum"
+],
+"oracle": {
+"cmd": "my.profs",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what classes do i have tomorrow",
+"expect": [
+"PHYS 151"
+],
+"oracle": {
+"cmd": "my.classes_on",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "my orders",
+"expect": [
+"order"
+],
+"oracle": {
+"cmd": "my.orders",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "my bookings",
+"expect": [
+"booking|reservation"
+],
+"oracle": {
+"cmd": "my.bookings",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what clubs am i in",
+"expect": [
+"club"
+],
+"oracle": {
+"cmd": "my.clubs",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "whats my usc id",
+"expect": [
+"1234"
+],
+"oracle": {
+"cmd": "my.profile",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what is my major",
+"expect": [
+"Computer Science"
+],
+"oracle": {
+"cmd": "my.profile",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "when am i free tomorrow",
+"expect": [
+"Free|free"
+],
+"oracle": {
+"cmd": "my.free",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "how many guest swipes do i have",
+"expect": [
+"5"
+],
+"oracle": {
+"cmd": "my.guestswipes",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what does my week look like",
+"expect": [
+"Today|Tomorrow"
+],
+"oracle": {
+"cmd": "my.week",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "any notifications",
+"expect": [
+"Welcome|otification"
+],
+"oracle": {
+"cmd": "my.notifications",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "do i have a parking permit",
+"expect": [
+"permit"
+],
+"oracle": {
+"cmd": "my.parking",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "my prescriptions",
+"expect": [
+"Cetirizine"
+],
+"oracle": {
+"cmd": "my.health",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what are my deadlines",
+"expect": [
+"Nov 1"
+],
+"oracle": {
+"cmd": "my.deadlines",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "do any of my finals conflict",
+"expect": [
+"finals"
+],
+"oracle": {
+"cmd": "my.final_conflicts",
+"args": {}
+}
+},
+{
+"topic": "account",
+"q": "what did i save to my calendar",
+"expect": [
+"saved|calendar"
+],
+"oracle": {
+"cmd": "my.calendar",
+"args": {}
+}
+},
+{
+"topic": "misc",
+"q": "tell me a fun fact about usc",
+"expect": [
+"USC|Trojan|Tommy|Traveler"
+],
+"oracle": {
+"cmd": "usc.facts",
+"args": {}
+}
+},
+{
+"topic": "misc",
+"q": "who is traveler",
+"expect": [
+"Traveler"
+],
+"oracle": {
+"cmd": "usc.facts",
+"args": {
+"topic": "traveler"
+}
+}
+},
+{
+"topic": "misc",
+"q": "tell me about tommy trojan",
+"expect": [
+"1930"
+],
+"oracle": {
+"cmd": "landmark.facts",
+"args": {
+"place": "tommy"
+}
+}
+},
+{
+"topic": "misc",
+"q": "does the ai see my grades",
+"expect": [
+"only your words|never"
+],
+"oracle": {
+"cmd": "tommy.privacy",
+"args": {}
+}
+},
+{
+"topic": "misc",
+"q": "where do you get your info",
+"expect": [
+"Schedule of Classes|USC pages"
+],
+"oracle": {
+"cmd": "tommy.sources",
+"args": {}
+}
+},
+{
+"topic": "faq",
+"q": "do i have to go to orientation",
+"expect": [
+"Welcome Trojans|sophomore|new incoming"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "whats the minimum gpa for usc masters programs",
+"expect": [
+"no university-wide minimum|minimum GPA"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "international admit how do i get my i20",
+"expect": [
+"Trojan International|I-20"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "any career fairs left this semester",
+"expect": [
+"career"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i arrive at my dorm before move in day",
+"expect": [
+"Early Arrival"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much is a single room in usc housing",
+"expect": [
+"single|8,500"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is it ok to park after 5 without a permit",
+"expect": [
+"permit|citation"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i get units for doing research with a professor",
+"expect": [
+"490"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much is it per night to arrive early",
+"expect": [
+"75"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "does auditing a class cost tuition",
+"expect": [
+"standard tuition|charged"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i pay my enrollment deposit",
+"expect": [
+"300|deposit"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "which computer labs have adobe creative cloud",
+"expect": [
+"software|Adobe|computing center"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "i got an outside scholarship do i need to tell usc",
+"expect": [
+"FAST|Outside"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the digital course material fee",
+"expect": [
+"310"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "are there merit scholarships for grad students",
+"expect": [
+"Merit|merit"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "when is summer registration 2027",
+"expect": [
+"May 1[78]"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i study abroad on an f1 visa",
+"expect": [
+"F-1|abroad"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i register for orientation",
+"expect": [
+"invitation|USC email"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the isep form",
+"expect": [
+"ISEP|verification"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i petition to drop a class late",
+"expect": [
+"petition"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how can i find my professors email",
+"expect": [
+"directory"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "im on academic notice how do i get off",
+"expect": [
+"2\\.0|cumulative"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "when do i meet my advisor as a new student",
+"expect": [
+"Advise USC|advising"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "where do i find my ap credit",
+"expect": [
+"Transfer Credit Report|TCR"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "do i need to move out over winter break",
+"expect": [
+"Winter Break|winter break"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i print in the dorms",
+"expect": [
+"USCard|print"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "who can see my grades",
+"expect": [
+"FERPA|records"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i check if my grad application is complete",
+"expect": [
+"missing|status"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i renew my library books online",
+"expect": [
+"My Account|renew|Renew"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "whats usc's acceptance rate",
+"expect": [
+"12\\.6|admitted"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can my friend sleep over in my dorm",
+"expect": [
+"guest|Guest"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i work full time on campus over winter break as an international student",
+"expect": [
+"40 hours|on-campus"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what can i use my uscard for",
+"expect": [
+"USCard|ID"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what happens at a student conduct meeting",
+"expect": [
+"notice|conduct"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is it free to see a doctor at the health center",
+"expect": [
+"Student Health Fee|don.t pay"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i get a prerequisite waived",
+"expect": [
+"Prerequisite Waiver|waiver"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "grad tuition per unit",
+"expect": [
+"2,539"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is there a newsletter for parents",
+"expect": [
+"newsletter|Parents"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i do cpt full time",
+"expect": [
+"part time|20 hours"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "when does fall 2027 registration start",
+"expect": [
+"Fall 2027|March"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i fill out course evaluations",
+"expect": [
+"evaluation"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much does ship cost",
+"expect": [
+"1,313|2,474"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "does usc give free antivirus",
+"expect": [
+"SentinelOne"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is there an app for ordering food on campus",
+"expect": [
+"Campus Dining app|Transact"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is there a cheaper permit if i carpool",
+"expect": [
+"carpool|477"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i change the name that shows on my records",
+"expect": [
+"chosen|preferred|Experience USC"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is purf",
+"expect": [
+"Provost|PURF"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i pay tuition with a 529",
+"expect": [
+"529"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i transfer my f1 to usc from another school",
+"expect": [
+"transfer|SEVIS|I-20"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i change my payment plan",
+"expect": [
+"payment plan|Payment plan"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how long is the grace period after graduation for f1",
+"expect": [
+"60"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i take a semester off",
+"expect": [
+"leave of absence|Leave"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what does myCourseBin scheduled mean",
+"expect": [
+"myCourseBin|no seat|not a registration"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "whats included in flex 120",
+"expect": [
+"120 meal|Flex120"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i tour the dorms before choosing",
+"expect": [
+"can.t offer tours|tours"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the progressive degree program",
+"expect": [
+"Progressive|master"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "does usc have family housing",
+"expect": [
+"Bel-Air|family"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "i need to extend my i20",
+"expect": [
+"extension|program end date"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "are international students required to have ship",
+"expect": [
+"automatically enrolled|SHIP"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "when is the study abroad application due",
+"expect": [
+"Overseas Studies|applications"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "where is my customer service center",
+"expect": [
+"Customer Service Center|CSC"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "i sprained my ankle can osas help",
+"expect": [
+"OSAS|temporary"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can alumni use the library",
+"expect": [
+"one semester|graduat"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what fees are on my bill besides tuition",
+"expect": [
+"Programming|fee"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what software is free for students",
+"expect": [
+"Free Campus-Wide Software|no charge"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i email a librarian",
+"expect": [
+"Ask a Librarian|Chat|chat"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i get money back if i drop after the deadline",
+"expect": [
+"petition|Withdrawal"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how long can i be unemployed on opt",
+"expect": [
+"90"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what does escheat mean on my student account",
+"expect": [
+"Escheat|unclaimed"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i download my financial aid summary",
+"expect": [
+"Financial Aid Summary|FAST"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i log in to myshr",
+"expect": [
+"MySHR"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is there a fee for registering late",
+"expect": [
+"late registration fee|Late registration"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "i am undeclared who advises me",
+"expect": [
+"Academic Exploration|Exploratory"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i defer my admission to grad school",
+"expect": [
+"defer|update"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "do sophomores get guaranteed housing",
+"expect": [
+"guarantee|priority"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i switch rooms with my friend",
+"expect": [
+"swap|CSC"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "when is move out in may",
+"expect": [
+"May 12"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "why do i have a 300 dollar credit",
+"expect": [
+"Enrollment Commitment Deposit|300"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do cs majors find internships",
+"expect": [
+"Viterbi Career Connections"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how is financial need calculated",
+"expect": [
+"cost of attendance|COA"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "is 794 considered full time",
+"expect": [
+"full-time|794"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "if i withdraw from usc will i get a refund",
+"expect": [
+"drop all|tuition"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i travel abroad while waiting for opt",
+"expect": [
+"OPT|travel"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much funding do i need to show for an i20",
+"expect": [
+"first year|funds"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what comes with the cardinal meal plan",
+"expect": [
+"Cardinal|4,219"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much is printing at leavey",
+"expect": [
+"WEPA|print"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i audit a course",
+"expect": [
+"Audit|audit"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i have a microwave in my dorm",
+"expect": [
+"microfridge|microwave"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is form i-515a",
+"expect": [
+"I-515A"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the interest rate on unpaid balances",
+"expect": [
+"12 percent|finance charge"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "where are my holds in experience usc",
+"expect": [
+"Experience USC|hold"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how much can i borrow in direct loans as a sophomore",
+"expect": [
+"4,500"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how does the trojan meal plan work",
+"expect": [
+"Trojan Plan|4,840|Dining Dollars"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i switch my major before i start at usc",
+"expect": [
+"departments|major"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "does usc have student dental insurance",
+"expect": [
+"Delta Dental|dental"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i prove im enrolled",
+"expect": [
+"confirmation|Registration|verification"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the grand avenue library",
+"expect": [
+"Grand Avenue|Grand Depository"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can usc discipline me for free speech",
+"expect": [
+"Leonard Law|First Amendment"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what do i need for a study abroad application",
+"expect": [
+"Pre-Approval|Recommendation"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i reset my netid password",
+"expect": [
+"NetID|reset|Reset"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i set up duo",
+"expect": [
+"Duo|two-factor|2FA"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i connect to usc wifi",
+"expect": [
+"USC Secure Wireless|Wi-Fi|wifi"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i get a parking permit as a student",
+"expect": [
+"permit"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "where do i pick up packages",
+"expect": [
+"package|CSC"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i get a replacement uscard",
+"expect": [
+"replac"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "can i bring a car as a freshman",
+"expect": [
+"car|parking|permit"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "how do i add dining dollars",
+"expect": [
+"Dining Dollars"
+],
+"oracle": null
+},
+{
+"topic": "faq",
+"q": "what is the w on my transcript",
+"expect": [
+"W"
+],
+"oracle": null
+}
+]

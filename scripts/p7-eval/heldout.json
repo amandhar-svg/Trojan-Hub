@@ -1,0 +1,954 @@
+[
+{
+"topic": "places",
+"q": "yo what time does the village gym close tonight",
+"expect": [
+"11 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "parkside open sunday?",
+"expect": [
+"8:30 AM \u2013 10 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "leavey hrs sat",
+"expect": [
+"9 AM \u2013 9 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "is seeds still open",
+"expect": [
+"Seeds"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "lyon center sunday hours",
+"expect": [
+"9 AM \u2013 11:30 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "doheny open on sunday",
+"expect": [
+"12 PM \u2013 8 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "evk thursday hours",
+"expect": [
+"7 AM \u2013 8 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "when does sel close tmrw",
+"expect": [
+"8 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "panda express hours today",
+"expect": [
+"10:30 AM \u2013 6 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "bookstore hours sunday",
+"expect": [
+"10 AM \u2013 5 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "wheres doheny",
+"expect": [
+"3550 Trousdale"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "how far is leavey from me",
+"expect": [
+"min"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "is the pool open",
+"expect": [
+"Uytengsu|pool|Aquatics"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "whats the number for evk",
+"expect": [
+"740-0259"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "engemann phone",
+"expect": [
+"740-9355"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "what does the village dining hall have",
+"expect": [
+"Village Dining|dining hall"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "is evk open on veterans day",
+"expect": [
+"7 AM \u2013 10 PM"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "trader joes hours",
+"expect": [
+"Trader Joe"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "is the career center open rn",
+"expect": [
+"Career Center"
+],
+"oracle": null
+},
+{
+"topic": "places",
+"q": "what time does panda close",
+"expect": [
+"6 PM"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "im hungry whats open",
+"expect": [
+"Everybody|EVK|Parkside|Village|open"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "anything open for food after 10",
+"expect": [
+"10 PM|No |open"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "need coffee whats open right now",
+"expect": [
+"Grounds|Literatea|Coffee|No |caf"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "any library open late tonight",
+"expect": [
+"Leavey|until|No"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "whats open at 7am",
+"expect": [
+"7 AM|No"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "gyms open on sunday",
+"expect": [
+"Lyon|Village Fitness"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "whats the closest restroom to me",
+"expect": [
+"Restroom|restroom"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "closest place to grab food",
+"expect": [
+"min walk"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "where can i find vegan food",
+"expect": [
+"vegan|Vegan|None"
+],
+"oracle": null
+},
+{
+"topic": "open",
+"q": "where can i get gluten free",
+"expect": [
+"Gluten|gluten|None"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "who is teaching math 125 in the fall",
+"expect": [
+"Tabing|Hall"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "math125 times",
+"expect": [
+"Mon|9:00"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "econ 203 units",
+"expect": [
+"4"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "prereq for csci 103 in spring",
+"expect": [
+"CSCI 102"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "whens the writ 150 final",
+"expect": [
+"December"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "psyc 100 who teaches it",
+"expect": [
+"Kim|Pearson|Holovatyk"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "is csci 104 full for spring",
+"expect": [
+"seats|open|full"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "what is psyc 100 about",
+"expect": [
+"psych|Psych|behavior|mind"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "does csci 104 need d-clearance",
+"expect": [
+"D-clearance"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "is math 226 in spring too",
+"expect": [
+"Spring 2027"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "data structures course number",
+"expect": [
+"CSCI 104"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "csci 103 vs csci 104 whats the diff",
+"expect": [
+"CSCI 103|CSCI 104"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "whats ge h",
+"expect": [
+"Global"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "easy 1 unit classes",
+"expect": [
+"1-unit|1 unit"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "machine learning classes with open seats",
+"expect": [
+"seats|Machine|machine"
+],
+"oracle": null
+},
+{
+"topic": "course",
+"q": "art history classes on tuesdays",
+"expect": [
+"AHIS|art|Art"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "what meal plans does usc have",
+"expect": [
+"Cardinal"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "how much is flex 120",
+"expect": [
+"2,074"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "how many swipes do i have",
+"expect": [
+"47"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "dd left?",
+"expect": [
+"63\\.40"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "guest swipes left",
+"expect": [
+"5"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "can i use swipes at panda",
+"expect": [
+"Panda|swipe"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "whats on the evk menu today",
+"expect": [
+"hospitality.usc.edu"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "how long is the wait at seeds rn",
+"expect": [
+"Est"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "when is lunch at parkside",
+"expect": [
+"open and close|Parkside"
+],
+"oracle": null
+},
+{
+"topic": "dining",
+"q": "are dining halls open on veterans day",
+"expect": [
+"Veterans|7 AM"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "next bus to union station?",
+"expect": [
+"Union Station"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "is the free lyft on yet",
+"expect": [
+"7 PM"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "lyft zone boundaries",
+"expect": [
+"Normandie"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "does usc lyft go to santa monica",
+"expect": [
+"boundary|Boundary|not covered|can.t confirm"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "how do i get the metro pass",
+"expect": [
+"U-Pass"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "parking permit prices",
+"expect": [
+"612"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "wheres the nearest metro",
+"expect": [
+"Expo Park|Jefferson/USC|Metro"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "how to get to the airport from usc",
+"expect": [
+"LAX"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "is there a shuttle to the health science campus",
+"expect": [
+"Intercampus|ICS|HSC"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "bike registration usc",
+"expect": [
+"DPS"
+],
+"oracle": null
+},
+{
+"topic": "transport",
+"q": "how much is daily parking for visitors",
+"expect": [
+"20"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "whats the dps number",
+"expect": [
+"740-4321"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "what time does campus close to the public",
+"expect": [
+"9 PM"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "can someone walk me home at night",
+"expect": [
+"escort|Lyft"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "recent crime alerts",
+"expect": [
+"DPS|Timely"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "how does the livesafe app work",
+"expect": [
+"LiveSafe"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "where is lost and found",
+"expect": [
+"740-9759|Lost"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "what are the yellow jacket guys",
+"expect": [
+"Security Ambassadors|Allied"
+],
+"oracle": null
+},
+{
+"topic": "safety",
+"q": "blue light phones how many",
+"expect": [
+"300"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "last day to withdraw from a class",
+"expect": [
+"Nov 13"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "when does fall semester end",
+"expect": [
+"Dec 4"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "when do spring classes start",
+"expect": [
+"Jan 11"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "days till thanksgiving break",
+"expect": [
+"16"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "is there school on veterans day",
+"expect": [
+"Veterans Day"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "finals week dates",
+"expect": [
+"Dec 9|December 9"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "spring registration dates",
+"expect": [
+"Oct 26"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "whats tuition per semester",
+"expect": [
+"37,692"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "what's coming up academically",
+"expect": [
+"Nov 13|Nov 11"
+],
+"oracle": null
+},
+{
+"topic": "calendar",
+"q": "whats the date today",
+"expect": [
+"November 9"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "is there a hackathon club",
+"expect": [
+"Hack"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "climbing clubs",
+"expect": [
+"Climbing"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "surf club at usc",
+"expect": [
+"Surf"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "how do i join hacksc",
+"expect": [
+"HackSC"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "what is nikkei student union",
+"expect": [
+"Nikkei"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "when does the nikkei student union meet",
+"expect": [
+"Thu"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "how many student orgs does usc have",
+"expect": [
+"2000|2,000|800"
+],
+"oracle": null
+},
+{
+"topic": "clubs",
+"q": "clubs i should join",
+"expect": [
+"match|Association|club"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "whats going on today on campus",
+"expect": [
+"Sweater Weather|events|Event"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "free food on campus today",
+"expect": [
+"Sweater Weather|food"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "events tomorrow",
+"expect": [
+"Nov 10|tomorrow"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "anything fun this weekend",
+"expect": [
+"Nov 14|weekend"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "whats happening tonight",
+"expect": [
+"PM|tonight"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "career events this week",
+"expect": [
+"[Cc]areer|No public"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "any hackathons coming up",
+"expect": [
+"[Hh]ack|No public"
+],
+"oracle": null
+},
+{
+"topic": "events",
+"q": "art events this week",
+"expect": [
+"Arts|arts|No public"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "how much money is on my usc card",
+"expect": [
+"42\\.50"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "whats my balance due",
+"expect": [
+"1,250"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "when is my tuition due",
+"expect": [
+"Nov 13"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "my next class",
+"expect": [
+"PHYS|MATH|CSCI|PSYC"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "what classes do i have on wednesday",
+"expect": [
+"MATH|CSCI|PHYS|PSYC"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "who are my profs",
+"expect": [
+"Slocum"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "when are my finals this semester",
+"expect": [
+"December"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "do i have holds on my account",
+"expect": [
+"none|hold"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "my reg appointment",
+"expect": [
+"Nov 3"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "books due back when",
+"expect": [
+"Nov 12"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "whats my netid",
+"expect": [
+"jrivera"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "what dorm am i in",
+"expect": [
+"Cowlings"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "do i have any appointments",
+"expect": [
+"appointment"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "am i free tomorrow afternoon",
+"expect": [
+"Free|free"
+],
+"oracle": null
+},
+{
+"topic": "account",
+"q": "what does my week look like",
+"expect": [
+"Today|Tomorrow"
+],
+"oracle": null
+},
+{
+"topic": "misc",
+"q": "fun fact",
+"expect": [
+"USC|Trojan"
+],
+"oracle": null
+},
+{
+"topic": "misc",
+"q": "who sculpted tommy trojan",
+"expect": [
+"Burnham"
+],
+"oracle": null
+},
+{
+"topic": "misc",
+"q": "is my data private",
+"expect": [
+"only your words|device"
+],
+"oracle": null
+}
+]

@@ -710,7 +710,7 @@
     ['topic'], function (a) {
       var M = T().metro || {};
       return [bot('**Metro near the University Park Campus:**\n' + list((M.stations || []).map(function (s) { return s.name + ' · ' + s.line; })) + (M.toLAX ? '\n\n**To LAX:** ' + M.toLAX : '') + '\n\n' + (M.note || '') + '\n\nRide free with a **Metro U-Pass**.', [SRC.upass, srcOf('https://www.metro.net/', 'LA Metro')], [go('Metro on the map', 'map', 'transit')])];
-    }, function (t) { return /\b(metro|e line|expo line|j line|light rail|subway|train station)\b/.test(t) && !/\b(u ?pass|upass|metrolink|card)\b/.test(t) && /\b(where|closest|nearest|which|how|line|station|lax|airport|get to)\b/.test(t) ? {} : null; });
+    }, function (t) { return /\b(metro|e line|expo line|j line|light rail|subway|train station)\b/.test(t) && !/\b(u ?pass|upass|metrolink|card|pass|tap)\b/.test(t) && /\b(where|closest|nearest|which|how|line|station|lax|airport|get to)\b/.test(t) ? {} : null; });
 
   F('upass.info', 'Metro U-Pass for USC students: eligibility, cost, how to get or renew it. "how do i get a u-pass", "is the u-pass free", "renew upass for spring". topic?',
     ['topic'], function () {
@@ -975,8 +975,11 @@
 
   // ============================================================================================ EVENTS (EngageSC public events: TH.events())
   function evsBetween(a0, b0, f) { return (TH.events() || []).filter(function (e) { return !e.multiDay && e.e >= a0 && e.s < b0 && (!f || f(e)); }).sort(function (x, y) { return x.s - y.s; }); }
-  function evTime(e) { return e.allDay ? 'All day' : TH.fmtTime(e.s) + (e.e && +e.e !== +e.s ? '–' + TH.fmtTime(e.e) : ''); }
-  function evWhen(e) { return TH.fmtDate(e.s) + ', ' + evTime(e); }
+  // campus time, whatever the device's time zone
+  function evS(e) { return e.startISO && TH.laDate ? TH.laDate(e.startISO) : e.s; }
+  function evE(e) { return e.endISO && TH.laDate ? TH.laDate(e.endISO) : e.e; }
+  function evTime(e) { return e.allDay ? 'All day' : TH.fmtTime(evS(e)) + (e.e && +e.e !== +e.s ? '–' + TH.fmtTime(evE(e)) : ''); }
+  function evWhen(e) { return TH.fmtDate(evS(e)) + ', ' + evTime(e); }
   function evWhere(e) { return e.location ? String(e.location).split(',')[0].trim() : ''; }
   function evLine(e) { return '**' + evTime(e) + '** ' + e.title + (e.org ? ' · ' + e.org : '') + (evWhere(e) ? ' · ' + evWhere(e) : '') + (e.food ? ' · 🍕 food' : ''); }
   function evDays(a) {
@@ -993,7 +996,7 @@
   }
   F('events.day', 'Public campus events on a day or tonight/this weekend. "events today", "what’s happening tomorrow", "anything going on tonight". day? today|tonight|tomorrow|weekday|weekend',
     ['day'], function (a) { var r = evDays(a), evs = evsBetween(r.s, r.e); return evAnswer(evs, 'Public events **' + r.label + '** (' + evs.length + '):', null, 'No public EngageSC events listed ' + r.label + '.'); },
-    function (t) { var m = /^(?:any |are there any |what |whats |show me |list )?(?:events?|things to do|stuff to do|whats happening|what is happening|whats going on|anything going on|anything happening)(?: on campus)? (today|tonight|tomorrow|this weekend|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))(?: on campus)?$/.exec(t); return m ? { day: m[1].replace(/^on /, '') } : null; });
+    function (t) { var m = /^(?:any |are there any |what |whats |show me |list )?(?:events?|things to do|stuff to do|whats happening|what is happening|whats going on|what is going on|anything going on|anything happening|anything fun|something fun|anything fun happening|anything fun going on)(?: on campus)? (today|tonight|tomorrow|this weekend|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))(?: on campus)?$/.exec(t); return m ? { day: m[1].replace(/^on /, '') } : null; });
 
   F('events.food', 'Campus events with free food, on a day or soon. "free food today", "where can i get free food this week", "events with pizza tomorrow". day?',
     ['day'], function (a) {
@@ -1165,7 +1168,7 @@
     var cs = H().clubs || [];
     if (!cs.length) return [bot('You haven’t joined any clubs in Trojan Hub yet.', aSrc(), [go('Browse clubs', 'clubs')])];
     return [bot('**Your clubs:**\n' + list(cs.map(function (c) { var full = TH.clubById ? TH.clubById(c.id) : null, ev = full ? clubEvs(full)[0] : null; return '**' + c.name + '**' + (ev ? ' · next: ' + ev.title + ' (' + evWhen(ev) + ')' : ''); })), aSrc().concat([SRC.engage]), [go('Clubs', 'clubs')])];
-  }, /\b(what clubs am i (in|a member of)|my clubs|clubs i joined|clubs im in)\b/);
+  }, /\b(what clubs am i (in|a member of)|my clubs|clubs i joined|clubs im in)\b/, /\b(news|newsletters?|dues|events?|meeting|chat|budget|members?)\b/);
 
   mine('my.calendar', 'Events the student saved to their Trojan Hub calendar. "what events did i save", "my saved events", "what’s on my calendar this week".', ['day'], function (a) {
     var cal = (H().calendar || []).filter(function (c) { return !c.end || new Date(c.end) >= now(); }).sort(function (x, y) { return x.start < y.start ? -1 : 1; });
@@ -1276,12 +1279,12 @@
   // ---- places
   F('place.search', 'Find campus places by what they offer, from their descriptions and features: gluten free, vegan, boba, smoothies, printing, pool, quiet study, microwaves, 24-hour. "where can i get boba", "gluten free food on campus". what',
     ['what'], function (a) {
-      var tw = words(a.what).filter(function (w) { return w.length > 2 && !/^(where|can|get|find|campus|usc|the|place|places|food|near|any|some|there|with)$/.test(w); });
+      var tw = words(String(a.what || '').replace(/gluten.?free/i, 'gluten').replace(/dairy.?free/i, 'dairy')).filter(function (w) { return w.length > 2 && !/^(where|can|get|find|campus|usc|the|place|places|food|near|any|some|there|with|options|free)$/.test(w); });
       if (!tw.length) return [bot('What are you looking for? For example “boba”, “gluten free” or “printing”.')];
       var hits = (TH.PLACES || []).filter(function (p) { var h = norm(p.name + ' ' + (p.desc || '') + ' ' + (p.tags || []).join(' ') + ' ' + (p.features || []).join(' ') + ' ' + (p.services || []).join(' ')); return tw.every(function (w) { return h.indexOf(w.replace(/s$/, '')) >= 0; }); });
       if (!hits.length) return [bot('None of the campus places I carry mention **' + a.what + '**.', [SRC.hours])];
       return [bot('Places that mention **' + a.what + '**:\n' + list(hits.map(function (p) { return '**' + p.name + '**' + (p.hours ? ' · ' + (TH.status(p, now()).open ? 'open now' : 'closed now') : ''); }), 10), pSrc(hits[0]), [go('Open the map', 'map', hits[0].id)])];
-    }, function (t) { var m = /^where (?:can i|do i|to) (?:get|find|buy) (boba|smoothies?|juice|tea|gluten.?free (?:food)?|vegan (?:food)?|vegetarian (?:food)?|halal (?:food)?|pizza|tacos|burgers?|sushi|coffee)(?: on campus)?$/.exec(t); return m ? { what: m[1] } : null; });
+    }, function (t) { var m = /^where (?:can i|do i|to) (?:get|find|buy) (boba|smoothies?|juice|tea|gluten.?free(?: food| options)?|vegan(?: food| options)?|vegetarian(?: food| options)?|halal(?: food| options)?|pizza|tacos|burgers?|sushi|coffee)(?: on campus)?$/.exec(t); return m ? { what: m[1] } : null; });
 
   function lateList(c, d) {
     return (TH.PLACES || []).filter(function (p) { return inCat(p, c) && p.hours; }).map(function (p) { var r = hoursOn(p, d); if (!r || !r.length) return null; var close = Math.max.apply(null, r.map(function (x) { return x[1]; })); return { p: p, close: close }; }).filter(Boolean).sort(function (x, y) { return y.close - x.close; });
@@ -1509,7 +1512,8 @@
     return full && full.n.trim().split(' ').length >= 2 ? { club: full.c.name } : null;
   });
   setMatch('events.search', function (t) {
-    var m = /^(?:any|are there any|are there) (.{3,25}?) (?:events? )?(?:coming up|soon|this week|this month|happening)$/.exec(t); if (!m || /\b(my|club|clubs)\b/.test(t)) return null;
+    var m = /^(?:any|are there any|are there) (.{3,25}?) (?:events? )?(?:coming up|soon|this week|this month|happening)$/.exec(t); if (!m || /\b(my|club|clubs|exams?|quiz\w*|midterms?|finals?|homework|hw|assignments?|due|deadlines?|class|classes|tests?|labs?|papers?|essays?|projects?)\b/.test(t)) return null;
+    if (!/\b(events?|hackathons?|workshops?|fairs?|concerts?|screenings?|talks?|lectures?|mixers?|parties|party|games?|tournaments?|info sessions?|meetups?|festivals?|markets?|shows?|performances?|panels?|socials?|networking|career|speakers?|exhibits?|tours?|volunteer\w*|service|yoga|meditation|movie|film)\b/.test(m[1])) return null;
     return { q: m[1].replace(/s$/, ''), days: /week/.test(t) ? '7' : '30' };
   });
   // a few older read commands claimed wording that belongs to a Part 7 family: let the family answer instead
