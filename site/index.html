@@ -20530,7 +20530,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       var sent = Array.isArray(m.sentToAI) ? m.sentToAI : null;   // null: not known (then nothing is claimed)
       var data = !!(sent && (sent.indexOf('answer') >= 0 || sent.indexOf('search') >= 0));
       var lock = data ? 'Claude saw your words + public data' : viaAI || (sent && sent.length) ? 'Claude saw your words only' : sent ? 'nothing sent to AI' : '';
-      var d = document.createElement('div'); d.className = 'ta-script' + (viaAI ? ' ai' : ' device');
+      var d = document.createElement('div'); d.className = 'ta-script' + (viaAI ? ' ai' : ' ondevice');   // not 'device': that is the phone frame (css/app.css .device)
       d.innerHTML = '<span class="ta-script-tag">' + (viaAI ? 'Claude Haiku · ran on your phone' : 'Tommy · on your phone') + '</span>' + (showLine ? '<code>' + esc(m.script.line) + '</code>' : '') +
         (lock ? '<span class="ta-script-lock" aria-label="What the AI saw">' + lock + '</span>' : '');
       d.title = data ? (viaAI ? 'Claude Haiku picked this campus tool from your words, and it ran on your phone. ' : 'Tommy answered this on your phone. ') + 'Claude Haiku also saw your question and this public USC data, to write an answer that wasn’t used.'
@@ -20601,7 +20601,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     '.ta-ai-tag small{flex-basis:100%;padding-left:20px;font:500 11px/1.3 var(--f-body,sans-serif);letter-spacing:0;text-transform:none;color:var(--muted)}',
     '.ta-ai-note{display:flex;gap:7px;align-items:flex-start;margin-top:9px;font-size:12.5px;line-height:1.4;color:var(--warn);background:var(--warn-bg);border-radius:10px;padding:6px 9px}',
     '.ta-ai-note svg{width:15px;height:15px;flex:none;margin-top:1px}',
-    '.ta-script.device .ta-script-tag{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}',
+    '.ta-script.ondevice .ta-script-tag{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}',
     // the tag row: the small print about what the AI saw never gets cut; when the row is full it moves to a second line
     '.ta-script{max-width:100%;flex-wrap:wrap;row-gap:2px}.ta-script code{flex:1 1 0;min-width:40px}',
     '.ta-typing-note{font-size:12.5px;color:var(--muted)}',
@@ -24119,9 +24119,16 @@ window.TA_FAQ = [{"id":"reg1","t":"How to register for classes in Web","q":["how
       if (TA.Search && (TA.Search.ready || TA.Search.worker || TA.Search.started)) return resolve();
       var start = function () { try { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) { TA.Search.init(TA_BLOBS['ta-kb']); delete TA_BLOBS['ta-kb']; } else if (!TA.Search.ready) TA.Search.failed = 'Knowledge base missing'; } catch (e) { console.error(e); TA.Search.failed = 'Knowledge base failed to load'; } resolve(); };
       if (window.TA_BLOBS && TA_BLOBS['ta-kb']) return start();
-      var s = document.createElement('script'); s.src = src || 'js/ta/blob-kb.js'; s.async = true;
-      s.onload = start; s.onerror = function () { TA.Search.failed = 'Couldn’t load the USC knowledge base'; try { TA.emit('kb-failed', TA.Search.failed); } catch (e) { } resolve(); };
-      document.head.appendChild(s);
+      // The single-file page carries the knowledge base as its LAST script. Opening #assistant directly, or a slow
+      // connection, gets here before that script has arrived: wait until the page has finished parsing (every inline
+      // script has run by DOMContentLoaded) instead of asking for a separate file the website doesn't have.
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) start(); else fetchFile(); }, { once: true }); return; }
+      fetchFile();
+      function fetchFile() {
+        var s = document.createElement('script'); s.src = src || 'js/ta/blob-kb.js'; s.async = true;
+        s.onload = start; s.onerror = function () { TA.Search.failed = 'Couldn’t load the USC knowledge base'; try { TA.emit('kb-failed', TA.Search.failed); } catch (e) { } resolve(); };
+        document.head.appendChild(s);
+      }
     });
     return kbLoading;
   };
