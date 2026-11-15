@@ -180,18 +180,128 @@
     TH.sheet(`<div class="stack p7-tommy"><div class="sheet-head"><div><span class="eyebrow">${icon('sparkle')} Tommy</span><h2>${esc(o.title)}</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
       <div class="x-ai" id="p7-tm"><p style="white-space:pre-line">${esc(o.text)}</p></div>
       ${o.acts && o.acts.length ? `<div class="p7-acts">${o.acts.map((a, i) => `<button class="btn ${i ? 'line' : ''} block" data-p7ta="${i}">${icon(a.icon || 'chev')} ${esc(a.label)}</button>`).join('')}</div>` : ''}
-      <div class="p7-tm-foot"><button class="linkbtn" id="p7-tm-ai">${icon('sparkle')} Rewrite with AI</button><button class="linkbtn" id="p7-tm-more">Ask a follow-up</button></div>
+      <div class="p7-tm-foot"><span class="muted tiny">${icon('lock')} Worked out on this device</span><button class="linkbtn" id="p7-tm-more">Ask a follow-up</button></div>
       ${sim(`Simulated. Tommy reads ${esc(XO().cur().name)}’s sample numbers in this demo, not the club’s real records.`)}</div>`, w => {
       $$('[data-p7ta]', w).forEach(b => b.onclick = () => { const a = o.acts[+b.dataset.p7ta]; TH.closeSheet(); a.fn(); });
-      $('#p7-tm-ai', w).onclick = () => ai($('#p7-tm', w), `You are Tommy, the USC campus assistant, talking with an officer of the student club ${XO().cur().name}. Rewrite this in 2 to 4 friendly sentences. Use ONLY these facts. Plain text.\n\nFACTS: ${o.text}`, o.text);
       $('#p7-tm-more', w).onclick = () => { TH.closeSheet(); TH.go('orgtommy', { arg: o.q }); };
     });
   }
+  // =====================================================================
+  // REAL AI DRAFTING through TA.AI.draft(kind, payload) → Promise<{text, model, sources?} | null> (js/ta/ai-api.js).
+  // Payloads carry ONLY club/event info and aggregate request titles + votes: never member names, emails, dues or paid status.
+  // null / undefined / error / timeout → the on-device template, labeled as such.
+  // =====================================================================
+  function aiDraft(kind, payload) {
+    let p;
+    try { p = window.TA && TA.AI && typeof TA.AI.draft === 'function' ? TA.AI.draft(kind, payload) : null; } catch (e) { p = null; }
+    if (!p || typeof p.then !== 'function') return Promise.resolve(null);
+    return Promise.race([p.then(r => r && typeof r.text === 'string' && r.text.trim() ? r : null, () => null), new Promise(res => setTimeout(() => res(null), 25000))]);
+  }
+  const modelName = m => { const t = String(m || '').toLowerCase(); return /haiku/.test(t) ? 'Claude Haiku' : /sonnet/.test(t) ? 'Claude Sonnet' : /opus/.test(t) ? 'Claude Opus' : 'Claude'; };
+  const TEMPLATE_TAG = 'Template · AI writing works on the live site';
+  function announcePayload(org, ev) {
+    const s = evStart(ev), p = P(org), lk = ev.luma || p.luma.url, out = { club: org.name, title: ev.title, when: s ? `${TH.fmtDate(s, true)} at ${TH.fmtTime(s)}` : '', where: ev.where || '', desc: ev.desc || '' };
+    if (lk) out.rsvpUrl = lk; return out;
+  }
+  const summaryPayload = org => ({ club: org.name, requests: openReqs(org).slice(0, 12).map(r => ({ title: r.title, votes: r.votes, type: r.type, preferred: r.when })) });
+  function summaryTemplate(org) {
+    const txt = textOf('orgreq', '#rq-ai > span', 1), top = openReqs(org)[0];
+    return txt || (top ? `The most wanted is “${top.title}” with ${top.votes} votes.` : 'No open requests yet.');
+  }
+  const srcHTML = res => res && Array.isArray(res.sources) && res.sources.length ? `<div class="p7-src">Sources: ${res.sources.slice(0, 4).map(x => typeof x === 'string' ? esc(x) : x && x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title || TH.ui.srcName(x.url))}</a>` : esc((x && x.title) || '')).join(' · ')}</div>` : '';
+  // one sheet for both kinds: "Claude is writing…" → editable text with its tag → Regenerate / Use this / Send (simulated)
+  function draftSheet(o) {
+    TH.sheet(`<div class="stack p7-form p7-draft"><div class="sheet-head"><div><span class="eyebrow">${icon('sparkle')} ${esc(o.eyebrow)}</span><h2>${esc(o.title)}</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
+      <div class="p7-dbox" id="p7dr-box" aria-live="polite"></div>
+      <div class="p7-dacts"><button class="btn line sm" id="p7dr-re">${icon('refresh')} Regenerate</button><button class="btn line sm" id="p7dr-use">${icon('check')} ${esc(o.useLabel || 'Use this')}</button><button class="btn sm" id="p7dr-send">${icon('send')} ${esc(o.sendLabel || 'Send')} <span class="p7-simtag">Simulated</span></button></div>
+      ${o.extra || ''}
+      ${sim(o.note)}</div>`, w => {
+      const box = $('#p7dr-box', w), btns = ['#p7dr-re', '#p7dr-use', '#p7dr-send'].map(q => $(q, w));
+      let cur = { text: '', tag: '' };
+      const run = async () => {
+        btns.forEach(b => { b.disabled = true; });
+        box.innerHTML = `<div class="p7-writing"><span class="p7-dots" aria-hidden="true"><i></i><i></i><i></i></span>Claude is writing…</div>`;
+        const res = await o.run();
+        if (!w.isConnected) return;
+        cur = res ? { text: res.text.trim(), tag: `Written by ${modelName(res.model)} · ${o.from}`, ai: true } : { text: o.template(), tag: TEMPLATE_TAG, ai: false };
+        box.innerHTML = `<label class="sr" for="p7dr-txt">${esc(o.title)}</label><textarea id="p7dr-txt" rows="${o.rows || 8}" maxlength="3000">${esc(cur.text)}</textarea>
+          <span class="p7-aitag ${cur.ai ? 'ai' : ''}">${icon(cur.ai ? 'sparkle' : 'info')}${esc(cur.tag)}</span>${srcHTML(res)}`;
+        btns.forEach(b => { b.disabled = false; });
+      };
+      const text = () => { const t = $('#p7dr-txt', w); return t ? t.value.trim() : ''; };
+      btns[0].onclick = run;
+      btns[1].onclick = () => { const t = text(); if (t.length < 5) return TH.toast('Nothing to use yet', 'alert'); TH.closeSheet(); o.onUse(t, cur.tag); };
+      btns[2].onclick = () => { const t = text(); if (t.length < 5) return TH.toast('Nothing to send yet', 'alert'); TH.closeSheet(); o.onSend(t, cur.tag); };
+      run();
+    });
+  }
   function tommyWants(org) {
-    const txt = textOf('orgreq', '#rq-ai > span', 1);
-    const rq = openReqs(org), top = rq[0];
-    const text = txt || (top ? `The most wanted is “${top.title}” with ${top.votes} votes.` : 'No open requests yet.');
-    tommySheet({ title: 'What members want', q: 'What do our members want?', text, acts: top ? [{ label: `Schedule “${top.title}”`, icon: 'calendar', fn: () => openSchedule(org, { req: top }) }, { label: 'See every request', icon: 'megaphone', fn: () => TH.go('orgreq') }] : [] });
+    const rq = openReqs(org), top = rq[0], n = rq.length;
+    if (!n) return TH.toast('No open requests to summarize yet', 'megaphone');
+    draftSheet({
+      eyebrow: 'Tommy · members summary', title: 'What members want', from: `from ${plural(n, 'member request')}`, rows: 6,
+      run: () => aiDraft('members-summary', summaryPayload(org)), template: () => summaryTemplate(org),
+      useLabel: 'Pin to Plan', sendLabel: 'Send to officers',
+      onUse: (t, tag) => { P(org).pinned = { text: t, tag, at: Date.now() }; TH.commit(`Pinned a members summary to ${org.name}’s Plan`); TH.state.p7stage = 'requested'; TH.go('orgplan'); TH.toast('Pinned above your requests', 'check'); },
+      onSend: (t) => { const off = roster(org).filter(m => m.role && m.role !== 'Member' && !m.you); P(org).msgs.unshift({ to: off.map(m => m.name), text: t, at: Date.now(), kind: 'summary' }); TH.commit(`Shared a members summary with ${plural(off.length, 'officer')} of ${org.name} (simulated)`); TH.toast(`Sent to ${plural(off.length, 'officer')} (simulated)`, 'send'); if (TH.state.route === 'orgpeople') TH.render(true); },
+      extra: top ? `<button class="btn ghost block sm" id="p7dr-x">${icon('calendar')} Schedule “${esc(top.title)}”</button>` : '',
+      note: `Only request titles, types, preferred times and vote totals are sent to write this (${plural(n, 'request')}). No member names, emails or dues.`,
+    });
+    const x = $('#p7dr-x'); if (x) x.onclick = () => openSchedule(org, { req: top });
+  }
+  function announceDraftSheet(org, ev) {
+    const d = announceDraft(org, ev);
+    draftSheet({
+      eyebrow: 'Tommy · announcement', title: ev.title, from: 'from your event details', rows: 8,
+      run: () => aiDraft('announcement', announcePayload(org, ev)), template: () => d.body,
+      useLabel: 'Use this', sendLabel: 'Send to members',
+      onUse: (t, tag) => announceSheet(org, ev, { text: t, tag }),
+      onSend: (t) => postAnnouncement(org, ev, d.subject, t, 'all'),
+      note: 'Only the club name and this event’s title, date, place, details and RSVP link are sent to write this. Sending is simulated on this device.',
+    });
+  }
+
+  // =====================================================================
+  // "TOMMY IS LEARNING": AI-proposed tools from TA.AI.learning() → Promise<{items:[{name, why, examples, count, last}]} | null>
+  // Examples are AI paraphrases, never raw student messages. Approve / Dismiss is simulated and saved in TH.H().x.p7learn.
+  // =====================================================================
+  const LV = () => { const x = X(); if (!x.p7learn || typeof x.p7learn !== 'object') x.p7learn = {}; return x.p7learn; };
+  function aiLearning() {
+    let p; try { p = window.TA && TA.AI && typeof TA.AI.learning === 'function' ? TA.AI.learning() : null; } catch (e) { p = null; }
+    if (!p || typeof p.then !== 'function') return Promise.resolve(null);
+    return Promise.race([p.then(r => r && Array.isArray(r.items) ? r : null, () => null), new Promise(res => setTimeout(() => res(null), 20000))]);
+  }
+  const lastTxt = v => { const t = typeof v === 'number' ? v : Date.parse(v); return isFinite(t) ? ago(t) : (v ? String(v) : ''); };
+  function learnRow(it) {
+    const st = LV()[it.name], ex = (Array.isArray(it.examples) ? it.examples : []).slice(0, 2);
+    return `<div class="p7-lrn ${st ? 'st-' + st : ''}"><div class="p7-lrn-h"><span class="p7-lrn-ic">${icon('sparkle')}</span><span class="p7-lrn-m"><b>${esc(it.name)}</b><small>Asked ${plural(+it.count || 0, 'time')}${it.last ? ' · last ' + esc(lastTxt(it.last)) : ''}</small></span></div>
+      ${it.why ? `<p>${esc(it.why)}</p>` : ''}
+      ${ex.length ? `<div class="p7-lrn-ex"><span>Students ask things like <em>(AI paraphrase)</em></span>${ex.map(e => `<q>${esc(e)}</q>`).join('')}</div>` : ''}
+      <div class="p7-lrn-a">${st ? `<span class="pill ${st === 'approved' ? 'ok' : 'mute'}">${st === 'approved' ? 'Approved' : 'Dismissed'}</span><button class="linkbtn" data-p7lu="${esc(it.name)}">Undo</button>` : `<button class="btn sm" data-p7la="${esc(it.name)}">${icon('check')} Approve</button><button class="btn sm line" data-p7ld="${esc(it.name)}">Dismiss</button>`}</div></div>`;
+  }
+  const learnShell = () => `<div class="p7-learn card" id="p7-learn"><div class="p7-learn-h"><span class="eyebrow">${icon('sparkle')} Tommy is learning</span><span class="muted tiny">Tools Tommy proposes from questions it couldn’t answer</span></div><div class="p7-learn-b"><div class="p7-writing"><span class="p7-dots" aria-hidden="true"><i></i><i></i><i></i></span>Checking for proposals…</div></div></div>`;
+  function fillLearning(root) {
+    const card = root && $('#p7-learn', root); if (!card) return;
+    const body = $('.p7-learn-b', card);
+    aiLearning().then(res => {
+      if (!card.isConnected) return;
+      const items = res ? res.items.filter(it => it && it.name) : null;
+      body.innerHTML = !items ? `<p class="p7-learn-empty">${icon('info')}<span>Proposals appear here on the live site when Tommy can’t answer something.</span></p>`
+        : !items.length ? `<p class="p7-learn-empty">${icon('check')}<span>No proposals right now. Tommy hasn’t hit a gap worth a new tool.</span></p>`
+        : items.map(learnRow).join('') + `<span class="muted tiny">Approve and Dismiss are simulated on the demo account. Examples are AI paraphrases, never students’ own messages.</span>`;
+      body.onclick = e => {
+        const a = e.target.closest('[data-p7la]'), d = e.target.closest('[data-p7ld]'), u = e.target.closest('[data-p7lu]'); if (!a && !d && !u) return;
+        const name = (a || d || u).dataset[a ? 'p7la' : d ? 'p7ld' : 'p7lu'], L = LV();
+        if (u) delete L[name]; else L[name] = a ? 'approved' : 'dismissed';
+        TH.commit(u ? `Reopened Tommy proposal “${name}”` : `${a ? 'Approved' : 'Dismissed'} Tommy proposal “${name}” (simulated)`);
+        const it = items.find(x => x.name === name), row = (a || d || u).closest('.p7-lrn'); if (it && row) row.outerHTML = learnRow(it);
+        if (!u) TH.toast(a ? `Approved “${name}” (simulated)` : `Dismissed “${name}”`, a ? 'check' : 'x');
+      };
+    });
+  }
+  function learningSheet() {
+    const w = TH.sheet(`<div class="stack"><div class="sheet-head"><h2>Tommy is learning</h2><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>${learnShell()}</div>`);
+    fillLearning(w);
   }
   function tommyUnpaid(org) {
     const ms = roster(org), tt = totals(org), o = XO().O(org), un = tt.un, vp = venmoPending(org);
@@ -247,6 +357,7 @@
         ${club ? `<div class="section"><div class="section-head"><h2>Event pipeline</h2><button data-go="orgplan">Open Plan</button></div>
           <div class="p7-flow">${STAGES.map(([k, l, ic]) => `<button class="p7-fstep" data-p7stage="${k}">${icon(ic)}<b>${counts[k]}</b><span>${l}</span></button>`).join('<i aria-hidden="true"></i>')}</div></div>
         ${next ? `<div class="section"><div class="section-head"><h2>Next up</h2></div>${evCard(org, next)}</div>` : ''}` : ''}
+        ${club ? '' : learnShell()}
         ${sim(club ? `You run ${esc(org.name)} in this demo. Requests, members, dues and costs are sample data and simulated actions on this device, not the club’s real records.` : 'Staff view on the demo account. Student data shown is what students chose to send.')}`);
     },
     mount(host) {
@@ -258,6 +369,7 @@
         else if (t) { const it = D[+t.dataset.p7dt]; if (it && it.tm) it.tm.fn(); }
       });
       bindEvCards(host);
+      fillLearning(host);
     },
   };
 
@@ -299,7 +411,7 @@
       const s = e.target.closest('[data-p7sched]'), a = e.target.closest('[data-p7ann]'), d = e.target.closest('[data-p7done]'), u = e.target.closest('[data-p7dup]'), rm = e.target.closest('[data-p7room]'), dr = e.target.closest('[data-p7draft]');
       if (s) { const r = X().evreqs.find(q => q.id === s.dataset.p7sched); if (r) openSchedule(org, { req: r }); }
       else if (a) { const ev = find(a.dataset.p7ann); if (ev) announceSheet(org, ev); }
-      else if (dr) { const ev = find(dr.dataset.p7draft); if (ev) announceSheet(org, ev, true); }
+      else if (dr) { const ev = find(dr.dataset.p7draft); if (ev) announceDraftSheet(org, ev); }
       else if (d) { const ev = find(d.dataset.p7done); if (ev) doneSheet(org, ev); }
       else if (u) { const ev = find(u.dataset.p7dup); if (ev) openSchedule(org, { from: ev }); }
       else if (rm) { const ev = find(rm.dataset.p7room); if (ev) roomSheet(org, ev); }
@@ -312,7 +424,7 @@
       const f = TH.state.p7stage || 'all', rq = openReqs(org), evs = myEvents(org), last = evs.slice().sort((a, b) => evStart(b) - evStart(a))[0];
       const by = k => k === 'requested' ? rq : evs.filter(e => stageOf(e) === k);
       const real = XO().upcoming(org).slice(0, 4);
-      const sec = k => { const l = by(k), s = STAGES.find(x => x[0] === k); if (!l.length) return ''; return `<div class="section"><div class="section-head"><h2 class="p7-sh">${icon(s[2])} ${s[1]} <span class="muted">${l.length}</span></h2></div>${k === 'requested' ? `<button class="p7-tbtn" id="p7-wants">${icon('sparkle')}Summarize what members want</button>` : ''}<div class="p7-evs">${(k === 'requested' ? l.slice(0, f === 'requested' ? 99 : 3) : l).map(x => k === 'requested' ? reqCard(org, x) : evCard(org, x)).join('')}</div>${k === 'requested' && l.length > 3 && f !== 'requested' ? `<button class="btn ghost block sm" data-p7f="requested">See all ${l.length} requests</button>` : ''}</div>`; };
+      const sec = k => { const l = by(k), s = STAGES.find(x => x[0] === k); if (!l.length) return ''; return `<div class="section"><div class="section-head"><h2 class="p7-sh">${icon(s[2])} ${s[1]} <span class="muted">${l.length}</span></h2></div>${k === 'requested' ? `<button class="p7-tbtn" id="p7-wants">${icon('sparkle')}Summarize what members want</button>${P(org).pinned ? `<div class="p7-pin"><span class="p7-aitag ${/^Written by/.test(P(org).pinned.tag) ? 'ai' : ''}">${icon('star')}Pinned · ${esc(P(org).pinned.tag)}</span><p>${esc(P(org).pinned.text)}</p><button class="linkbtn" id="p7-unpin">Unpin</button></div>` : ''}` : ''}<div class="p7-evs">${(k === 'requested' ? l.slice(0, f === 'requested' ? 99 : 3) : l).map(x => k === 'requested' ? reqCard(org, x) : evCard(org, x)).join('')}</div>${k === 'requested' && l.length > 3 && f !== 'requested' ? `<button class="btn ghost block sm" data-p7f="requested">See all ${l.length} requests</button>` : ''}</div>`; };
       return shell('orgplan', `
         <div class="p7-chips scroll" role="group" aria-label="Show stage"><button data-p7f="all" aria-pressed="${f === 'all'}">All</button>${STAGES.map(([k, l]) => `<button data-p7f="${k}" aria-pressed="${f === k}">${l}<b>${by(k).length}</b></button>`).join('')}</div>
         <div class="p7-row2"><button class="btn block sm" id="p7-new">${icon('plus')} New event</button>${last ? `<button class="btn line block sm" id="p7-dup">${icon('copy')} Duplicate last event</button>` : ''}</div>
@@ -326,6 +438,7 @@
       const n = $('#p7-new', host); if (n) n.onclick = () => openSchedule(org, {});
       const d = $('#p7-dup', host); if (d) d.onclick = () => { const l = myEvents(org).sort((a, b) => evStart(b) - evStart(a))[0]; if (l) openSchedule(org, { from: l }); };
       const w = $('#p7-wants', host); if (w) w.onclick = () => tommyWants(org);
+      const up = $('#p7-unpin', host); if (up) up.onclick = () => { delete P(org).pinned; save(); TH.render(true); };
       bindEvCards(host);
     },
   };
@@ -388,33 +501,38 @@
     const r = reqOf(ev), s = evStart(ev), p = P(org), lk = ev.luma || p.luma.url;
     return { subject: `${ev.title} · ${TH.fmtDate(s)}`, body: `Hi everyone!\n\n${ev.title} is on ${TH.fmtDate(s, true)} at ${TH.fmtTime(s)}${ev.where ? `, ${ev.where}` : ''}.${ev.desc ? `\n\n${ev.desc}` : ''}${r ? `\n\n${r.votes} of you asked for this one, so requesters get first RSVP.` : ''}\n\nRSVP in Trojan Hub${lk ? ` or on Luma: ${lk}` : ''}.\n\nFight on,\n${TH.student().first}` };
   }
-  function announceSheet(org, ev, autoAI) {
-    const ms = roster(org), r = reqOf(ev), d = announceDraft(org, ev), p = P(org);
+  function postAnnouncement(org, ev, subject, body, to) {
+    const ms = roster(org), n = ms.filter(m => to === 'all' || m.paid).length, x = X();
+    XO().O(org).sent.unshift({ id: uid(), subject: (subject || '').trim() || ev.title, body, at: Date.now(), count: n, emailed: x.conn.gmail, org: org.name, ev: ev.id });
+    ev.annAt = Date.now(); if (ev.rsvp == null) ev.rsvp = rsvps(org, ev); if (TH.state.p7stage && TH.state.p7stage !== 'all') TH.state.p7stage = 'announced';
+    TH.commit(`Announced ${ev.title} to ${plural(n, 'member')} of ${org.name} (simulated)`);
+    note('news', `New from ${org.name}`, `${ev.title}: an announcement from the club’s officers.`, 'news');
+    TH.closeSheet(); TH.render(true); TH.toast(`Announced to ${plural(n, 'member')} (simulated)`, 'send');
+  }
+  function announceSheet(org, ev, preset) {
+    const ms = roster(org), d = announceDraft(org, ev), p = P(org);
+    if (preset && preset.text) d.body = preset.text;
     TH.sheet(`<div class="stack p7-form"><div class="sheet-head"><div><span class="eyebrow">${icon('send')} Announce</span><h2>${esc(ev.title)}</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
-      <div class="field"><div class="p7-lrow"><label for="p7a-sub">Subject</label><button type="button" class="p7-tbtn" id="p7a-ai">${icon('sparkle')}Draft with Tommy</button></div><input id="p7a-sub" maxlength="90" value="${esc(d.subject)}"></div>
-      <div class="field"><label for="p7a-body">Message</label><textarea id="p7a-body" rows="7" maxlength="3000">${esc(d.body)}</textarea><span class="muted tiny" id="p7a-src">Drafted from the event card.</span></div>
+      <div class="field"><div class="p7-lrow"><label for="p7a-sub">Subject</label><button type="button" class="p7-tbtn" id="p7a-ai">${icon('sparkle')}${preset && preset.text ? 'Draft again' : 'Draft with Claude'}</button></div><input id="p7a-sub" maxlength="90" value="${esc(d.subject)}"></div>
+      <div class="field"><label for="p7a-body">Message</label><textarea id="p7a-body" rows="7" maxlength="3000">${esc(d.body)}</textarea><span class="p7-aitag ${preset && /^Written by/.test(preset.tag || '') ? 'ai' : ''}" id="p7a-src">${icon(preset && /^Written by/.test(preset.tag || '') ? 'sparkle' : 'info')}${esc(preset && preset.tag ? preset.tag : 'Template from the event card')}</span></div>
       <div class="field"><label for="p7a-to">Send to</label><select id="p7a-to"><option value="all">All ${ms.length} members</option><option value="paid">${ms.filter(m => m.paid).length} paid members</option></select></div>
       <button class="btn block" id="p7a-ok">${icon('send')} Post announcement</button>
       <div class="p7-row2"><button class="btn line block sm" id="p7a-nl">${icon('mail')} Edit in Newsletter</button>${p.luma.url ? `<button class="btn line block sm" id="p7a-luma">${icon('external')} Add to Luma</button>` : `<button class="btn line block sm" data-go="orgpromote">${icon('link')} Link Luma</button>`}</div>
       ${sim(`Simulated: posts to #announcements and members’ Club Newsletters on this device${X().conn.gmail ? ', and would email them through Gmail' : ''}. Nothing leaves this device.`)}</div>`, w => {
       const sub = $('#p7a-sub', w), body = $('#p7a-body', w);
       const drafted = async () => {
-        const b = $('#p7a-ai', w); b.disabled = true; b.innerHTML = `${icon('sparkle')}Drafting…`; let txt = null;
-        try { const s = window.claude && window.claude.use ? await window.claude.use('sample') : null; if (s) { const res = await s(`Write a short, upbeat event announcement from a USC student club officer named ${TH.student().first} to club members. Under 110 words, plain text, no subject line, no placeholders. Use only these facts:\n\n${d.body}`, { modelTier: 'quick' }); txt = res && res.text; } } catch (e) { txt = null; }
-        if (!w.isConnected) return; if (txt) body.value = txt; b.disabled = false; b.innerHTML = `${icon('sparkle')}Draft again`;
-        $('#p7a-src', w).textContent = txt ? 'Written by AI from the event details only. Edit before posting.' : 'Tommy drafted this on this device from the event details (AI writing isn’t available in this view).';
+        const b = $('#p7a-ai', w), src = $('#p7a-src', w); b.disabled = true; body.disabled = true; src.className = 'p7-aitag'; src.innerHTML = `<span class="p7-dots" aria-hidden="true"><i></i><i></i><i></i></span>Claude is writing…`;
+        const res = await aiDraft('announcement', announcePayload(org, ev));
+        if (!w.isConnected) return; body.disabled = false; b.disabled = false; b.innerHTML = `${icon('sparkle')}Draft again`;
+        if (res) { body.value = res.text.trim(); src.className = 'p7-aitag ai'; src.innerHTML = `${icon('sparkle')}${esc('Written by ' + modelName(res.model) + ' · from your event details')}`; }
+        else { body.value = announceDraft(org, ev).body; src.innerHTML = `${icon('info')}${esc(TEMPLATE_TAG)}`; }
       };
-      $('#p7a-ai', w).onclick = drafted; if (autoAI) drafted();
+      $('#p7a-ai', w).onclick = drafted;
       $('#p7a-nl', w).onclick = () => { const su = sub.value, bo = body.value; TH.state.p7annFor = { org: org.id, ev: ev.id }; TH.closeSheet(); TH.go('orgnews'); const s1 = $('#nl-sub'), b1 = $('#nl-body'); if (s1 && b1) { s1.value = su; b1.value = bo; s1.dispatchEvent(new Event('input')); b1.dispatchEvent(new Event('input')); } TH.toast('Draft moved to the newsletter. Sending it marks the event announced.', 'mail'); };
       const lb = $('#p7a-luma', w); if (lb) lb.onclick = () => addToLuma(org, ev, sub.value, body.value);
       $('#p7a-ok', w).onclick = () => {
         if (body.value.trim().length < 10) return TH.toast('Write a message first', 'alert');
-        const to = $('#p7a-to', w).value, n = ms.filter(m => to === 'all' || m.paid).length, x = X();
-        XO().O(org).sent.unshift({ id: uid(), subject: sub.value.trim() || ev.title, body: body.value, at: Date.now(), count: n, emailed: x.conn.gmail, org: org.name, ev: ev.id });
-        ev.annAt = Date.now(); if (ev.rsvp == null) ev.rsvp = rsvps(org, ev); if (TH.state.p7stage && TH.state.p7stage !== 'all') TH.state.p7stage = 'announced';
-        TH.commit(`Announced ${ev.title} to ${plural(n, 'member')} of ${org.name} (simulated)`);
-        note('news', `New from ${org.name}`, `${ev.title}: an announcement from the club’s officers.`, 'news');
-        TH.closeSheet(); TH.render(true); TH.toast(`Announced to ${plural(n, 'member')} (simulated)`, 'send');
+        postAnnouncement(org, ev, sub.value, body.value, $('#p7a-to', w).value);
       };
     });
   }
@@ -762,6 +880,7 @@
         <div class="rows">
           ${R('data-go="home"', 'swap', 'Switch to student view', 'Your classes, My Day, clubs you joined', 'var(--cardinal)')}
           ${R('data-go="profile"', 'user', 'Account', `${esc(st.full)} · profile and sharing settings`, 'var(--c-fitness)')}
+          ${R('id="p7-learnrow"', 'sparkle', 'Tommy is learning', 'Tools Tommy proposes from questions it couldn’t answer', 'var(--c-study)')}
           ${R('id="p7-help"', 'info', 'Help', 'How the club view works · ask Tommy', 'var(--gold-ink)')}
         </div>
         ${sim('Club settings here are simulated on the demo account.')}</div></div>`;
@@ -772,6 +891,7 @@
       const d = $('#p7-set-dues', host); if (d) d.onclick = () => duesSheet(org);
       const v = $('#p7-set-venmo', host); if (v) v.onclick = () => venmoSheet(org);
       const l = $('#p7-set-luma', host); if (l) l.onclick = () => lumaSheet(org);
+      $('#p7-learnrow', host).onclick = learningSheet;
       $('#p7-help', host).onclick = () => TH.sheet(`<div class="stack"><div class="sheet-head"><h2>How the club view works</h2><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
         <div class="p7-help">${[['grid', 'Today', 'The three things that need a decision, each with its next step.'], ['calendar', 'Plan', 'Every event moves Requested → Scheduled → Announced → Done. Requests, rooms and attendee insights live here too.'], ['users', 'People', 'Your roster: filter, search, select, then remind or message in one go. Members chat is here.'], ['megaphone', 'Promote', 'Announce events, write the newsletter, link your Luma calendar.'], ['dollar', 'Money', 'Dues, Venmo matching, event costs and the budget.']].map(([ic, t, s]) => `<div>${icon(ic)}<span><b>${t}</b>${s}</span></div>`).join('')}</div>
         <p class="muted" style="font-size:13px;margin:0">Look for the ${icon('sparkle')} Tommy buttons where the work is. Everything here runs on sample data and is simulated on the demo account.</p>
@@ -798,5 +918,5 @@
   }
 
   // let other files (and tests) reach the redesign
-  TH.p7 = { JOBS, JOB_OF, decisions, openSchedule, announceSheet, doneSheet, venmoCheck, remindSheet, messageSheet, lumaSheet, myEvents, stageOf, P };
+  TH.p7 = { aiDraft, aiLearning, announcePayload, summaryPayload, JOBS, JOB_OF, decisions, openSchedule, announceSheet, doneSheet, venmoCheck, remindSheet, messageSheet, lumaSheet, myEvents, stageOf, P };
 })(window.TH = window.TH || {});

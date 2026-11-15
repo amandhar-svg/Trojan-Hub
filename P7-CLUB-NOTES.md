@@ -33,3 +33,15 @@ Tab bar (club side): **Today · Plan · People · Promote · Money**. Club menu 
 
 ## Tests
 `python3 scripts/build.py /tmp/th.html; node scripts/smoke.cjs /tmp/th.html` → NO ERRORS (new routes are picked up automatically from `TH.screens`). `node scripts/safety-suite.cjs /tmp/th.html SAFETY-PHRASES.json` → FAILS: 0.
+
+## Part 7b: real AI drafting + "Tommy is learning"
+- `aiDraft(kind, payload)` calls `TA.AI.draft` (guarded: undefined, a throw, a rejection, empty text, or a 25 s timeout all count as `null`).
+  - `'announcement'`: `{club, title, when, where, desc, rsvpUrl?}` (rsvpUrl = the event's or club's Luma link). Used by "Draft the announcement" (event card, Promote) and "Draft with Claude" in the Announce sheet.
+  - `'members-summary'`: `{club, requests:[{title, votes, type, preferred}]}` (open requests, at most 12). Used by "What do members want?" (Today) and "Summarize what members want" (Plan).
+  - Payloads never include member names, emails, dues or paid status (verified with a stub that records payloads).
+- The draft sheet shows "Claude is writing…", then an editable box tagged `Written by Claude Haiku · from your event details` / `· from N member requests` (the model name comes from `res.model`; it says "Claude" if the id isn't recognized). Actions: Regenerate / Use this / Send (Simulated). On null the template is shown and tagged `Template · AI writing works on the live site`. `res.sources` is shown if present.
+  - Announcement: Use this → Announce sheet prefilled; Send → posts the announcement (simulated).
+  - Members summary: Use this → pins it above Plan › Requested; Send → shares it with officers (simulated, on device).
+- "Who hasn't paid?" and the budget answers stay on the device: the old "Rewrite with AI" button was removed from those sheets.
+- `TA.AI.learning()` feeds the "Tommy is learning" card on the USC-office Today screen and a "Tommy is learning" row in the club ☰ menu. Rows show name, why, up to 2 examples (labeled AI paraphrase), "Asked N times · last …", Approve / Dismiss (simulated, saved in `TH.H().x.p7learn`, with Undo). On null: "Proposals appear here on the live site when Tommy can't answer something."
+- Exposed for tests: `TH.p7.aiDraft`, `TH.p7.aiLearning`, `TH.p7.announcePayload`, `TH.p7.summaryPayload`.
