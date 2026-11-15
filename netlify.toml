@@ -1,0 +1,9 @@
+# Trojan Hub on Netlify.
+# The app is prebuilt (site/index.html). Ask Tommy's AI translator runs in netlify/functions/tommy.mjs
+# and reads the Claude API key from the site's ANTHROPIC_API_KEY environment variable.
+[build]
+  publish = "site"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
