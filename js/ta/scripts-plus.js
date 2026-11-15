@@ -419,6 +419,12 @@
     return best.map(P).filter(Boolean);
   }
   X.findPlaces = findPlaces;
+  // the text names a place itself (an alias phrase or the place's full name), not just a word like "coffee"
+  function namedPlace(q) {
+    var t = ' ' + norm(q) + ' ';
+    if (Object.keys(ALIAS).some(function (id) { return ALIAS[id].some(function (al) { return !/^(pool|swim|clinic|doctor|pharmacy|target|seeds|coffee|library|gym)$/.test(al) && t.indexOf(' ' + al + ' ') >= 0; }); })) return true;
+    return (TH.PLACES || []).some(function (p) { var n = norm(String(p.name).replace(/\(.*?\)/g, '')); return n.length > 4 && t.indexOf(' ' + n + ' ') >= 0; });
+  }
   function pSrc(p) { var s = []; if (p.url) s.push(srcOf(p.url, p.name)); (p.sources || []).slice(0, 2).forEach(function (u) { if (typeof u === 'string' && u !== p.url) s.push(srcOf(u)); }); return s.slice(0, 2); }
   function rangesTxt(r) { return r == null ? 'not published' : !r.length ? 'closed' : TH.rangesText(r); }
   function hoursOn(p, d) { return TH.hoursHelpers.dayRanges(p, d); }
@@ -445,9 +451,11 @@
     }, function (t, raw) {
       if (!PLACE_Q.test(t) || /\b(registration|register|enroll|webreg|portal|application|deadline|class|course|seats?|parking permit|account|office hours of|professor|prof|ta)\b/.test(t)) return null;
       var ps = findPlaces(raw); if (!ps.length) return null;
+      // "is there any coffee open" is a list question for open.now, not Coffee Bean: only a named place counts here
+      if (/\b(any|anything|anywhere|something|somewhere|is there|are there)\b/.test(t) && !namedPlace(raw)) return null;
       var day = /\b(tomorrow|tmrw|tonight|today|this weekend|weekend|thanksgiving|veterans day|black friday|christmas eve|christmas|new years|game day|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun)\b/.exec(t);
       if (/\b(this week|weekly|all week|every day)\b/.test(t)) return null;
-      return day ? { place: ps.map(function (p) { return p.id; })[0] === ps[0].id && ps.length > 1 && /\bgym|library|dining hall/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id, day: day[1] } : { place: ps.length > 1 && /\b(gym|library|librar|dining halls?)\b/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id };
+      return day ? { place: ps.map(function (p) { return p.id; })[0] === ps[0].id && ps.length > 1 && /\bgym|library|dining hall/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id, day: day[1] } : { place: ps.length > 1 && /\b(gym|gyms|librar\w*|dining halls?)\b/.test(t) ? (/\bgym\b/.test(t) ? 'gym' : /\blibrar/.test(t) ? 'library' : 'dining hall') : ps[0].id };
     });
 
   F('place.week', 'Full weekly hours of a campus place plus upcoming holiday/special hours. "evk hours this week", "lyon center weekly schedule", "thanksgiving hours for the village gym". place',
@@ -486,7 +494,7 @@
       return [bot(md + '\n\n_Posted USC hours; specials and holidays can differ._', c === 'fitness' ? [SRC.rec] : c === 'study' ? [SRC.lib] : [SRC.hours], [go('Open the map', 'map')])];
     }, function (t, raw) {
       if (!/\b(open|still open|opened)\b/.test(t) || !/\b(what|whats|where|anything|anywhere|any|is there|somewhere|places?)\b/.test(t)) return null;
-      if (/\b(registration|enroll|class|course|seats?|section|apply|application|portal|house|position|spots?)\b/.test(t) || findPlaces(raw).length && !/\b(what|anything|any)\b/.test(t)) return null;
+      if (/\b(registration|enroll|class|course|seats?|section|apply|application|portal|house|position|spots?)\b/.test(t) || namedPlace(raw) && !/\b(what|anything|any)\b/.test(t)) return null;
       var c = catOf(t); if (!c) return null;
       var at = /\b(at|after|around|by) (\d{1,2}(:\d{2})? ?(am|pm)?|midnight|noon)\b/.exec(t), d = /\b(tomorrow|saturday|sunday|monday|tuesday|wednesday|thursday|friday)\b/.exec(t);
       var o = { cat: c }; if (at) o.at = at[2]; if (d) o.day = d[1]; if (/\b(late|tonight|late night|after 10)\b/.test(t) && !o.at) o.at = '10pm';
