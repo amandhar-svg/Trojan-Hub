@@ -1229,7 +1229,7 @@ details.ta-course summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
       <li><b>USC Lyft, buses, Metro</b><span>real hours and schedules</span></li>
       <li><b>Mobile order &amp; Trojan Pass</b><span>virtual lines, return times</span></li>
       <li><b>Grades &amp; homework calendar</b><span>due dates, midterms, breaks</span></li>
-      <li><b>Ask Tommy, powered by Claude</b><span>Claude understands you; answers come from verified USC data</span></li>
+      <li><b>Ask Tommy, powered by Claude</b><span>answers from USC data with sources, fact-checked</span></li>
       <li><b>Netflix-style recommendations</b><span>Thumbs up/down, hashtags, multi-day calendar</span></li>
       <li><b>Club hashtag AI generator</b><span>Clubs tag events; matching students get recommended</span></li>
       <li><b>Gates, zones, bike racks</b><span>fence, DPS and free Lyft zones</span></li>
@@ -17392,6 +17392,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     'Reply with a single line of JSON and nothing else: {"cmd":"<name>","args":{...}}',
     'Pick the command from COMMANDS. Use only argument names listed for it; omit arguments the student did not give. Never invent names, dates, amounts, course codes or places.',
     'If the student wants something DONE that is not a listed command, use {"cmd":"do","args":{"action":"<id from ACTIONS>","request":"<one plain imperative sentence with every detail the student gave>"}}.',
+    'If the student wants something DONE for them that no command and no ACTION can do (for example something no USC office or campus service handles), use {"cmd":"unsupported","args":{"feature":"<what they wanted done, at most 8 words, with no names, numbers or personal details>"}}. Use it only for requests to do something, never for questions.',
     'If it is a question about USC (policies, deadlines, offices, costs, places, hours), use {"cmd":"ask","args":{"q":"<the question rewritten as a short, clear, standalone question in plain words>"}}.',
     'If it has nothing to do with USC or student life, or you cannot tell what they want, use {"cmd":"none","args":{}}.',
     'Requests to plan, organize or fill a day, evening, weekend or week ("help me figure out my Thursday", "what\'s the move tonight", "map out my weekend") use plan.day or plan.week; requests for trips, outings, hikes, beach days or getting off campus use plan.outings. Questions about HOW to plan something at USC (semester schedules, club trip policies) are ask.',
@@ -17429,7 +17430,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var avail = !st.checked ? 'Checking whether Claude is available…' : st.off ? 'Claude was declined or isn’t available for this account, so Tommy answers with its built-in campus tools.' : st.available ? 'Claude is available in this view.' : 'Claude isn’t available in this view (it works on the Trojan Hub website), so Tommy answers with its built-in campus tools.';
     return '<div class="ta-sheet-h"><h2>Settings</h2><button type="button" class="ta-icon" data-close aria-label="Close">' + ICONS.close + '</button></div>' +
       '<section class="ta-set"><h3>' + ICONS.spark + ' How Tommy works</h3>' +
-      '<p class="ta-fine"><strong>Claude Haiku understands your words.</strong> When Tommy’s campus tools can’t read a message, Claude picks the right tool for it. Answers come from verified USC data.</p>' +
+      '<p class="ta-fine"><strong>Claude Haiku plans and answers.</strong> For public campus questions (hours, courses, events, places), Claude picks Tommy’s campus tools, writes the answer only from what they return and from USC’s own pages, shows that data with its sources, and a fact check runs before you see it.</p>' +
       '<p class="ta-fine"><strong>Your account stays on your phone.</strong> For grades, bookings, passes and other actions, Claude only reads your words and picks the campus tool; it runs on this device after you confirm.</p>' +
       '<label class="ta-check"><input type="checkbox" id="ta-claude-on"' + (on ? ' checked' : '') + '> Use Claude Haiku (AI)</label>' +
       '<p class="ta-fine">Claude has no access to your account and <strong>never sees your results</strong>. It runs on your own claude.ai account. Crisis and safety messages are always handled on this device.</p>' +
@@ -17446,38 +17447,317 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       TA.settings.claude = !!(on && on.checked); TA.settings.showScript = !!(sh && sh.checked);
       try { TA.saveSettings(); } catch (er) { /* storage may be blocked */ }
       UI.renderMode(); UI.closeSheet(); if (UI.renderAll) UI.renderAll();
-      UI.push([{ role: 'bot', md: TA.settings.claude ? (AI.enabled() ? '**Claude Haiku on.** It picks the right campus tool when mine can’t read your message. It never sees your account or your results.' : 'Claude Haiku is switched on, but it isn’t available in this view, so I’ll answer with my built-in campus tools.') : '**Claude Haiku off.** I’ll answer with my built-in campus tools.' }]);
+      UI.push([{ role: 'bot', md: TA.settings.claude ? (AI.enabled() ? '**Claude Haiku on.** It plans which campus tools to use and writes answers to public campus questions from verified USC data. It never sees your account or your results.' : 'Claude Haiku is switched on, but it isn’t available in this view, so I’ll answer with my built-in campus tools.') : '**Claude Haiku off.** I’ll answer with my built-in campus tools.' }]);
       return;
     }
     return sheetClick0.call(UI, e);
   };
 })();
 </script><script>/* js/ta/ai-api.js */
-/* js/ta/ai-api.js — Ask Tommy's AI translator through THIS SITE's own server (Netlify Function at /api/tommy).
+/* js/ta/ai-api.js — Ask Tommy's AI (Claude Haiku) through THIS SITE's own server (Netlify Function at /api/tommy).
  *
- * Used only when the page is NOT inside claude.ai (there, ai-sample.js runs the translator on the viewer's own
- * claude.ai account) and the site answers GET /api/tommy with {"ok": true}. Opened as a file (file://) it stays off
- * and Tommy runs on scripts alone, exactly as before.
+ * AI-first for PUBLIC questions (tommy-api/AI-FIRST-SPEC.md). Routing lives in js/ta/script.js (scripts/patch_ai_route.py);
+ * the rendering in js/ta/ai-answer-ui.js. This file is the only code that talks to the server:
+ *   AI.translate(text, ctx)                the student's words -> ONE Tommy command {cmd, args} (the plan step). The
+ *                                          command runs on this device; the AI never sees what it returns.
+ *   AI.composeContext(question, items, o)  THE PRIVACY BOUNDARY: the one function that builds what a composed answer
+ *                                          may send. Only PUBLIC command output and Trojan Assist's USC knowledge-base
+ *                                          answer get in (asserted, fails closed). Returns a sealed context or null.
+ *   AI.answer(question, ctx)               POST {mode:'answer'} -> {status:'ok'|'insufficient', answer_md, cites} | null.
+ *                                          Sends only a context that AI.composeContext issued. 15 s, never throws.
+ *   AI.factCheck(answerMd, contextText)    deterministic: every time, date, number/price/percent, course code, phone,
+ *                                          email and capitalized place/proper name in the answer must be in the context.
+ *   AI.sanitizeAnswer(md, sources)         strips HTML; only links to the provided source URLs survive.
+ *   AI.uscSearch(q, original)              Haiku + web search on usc.edu only -> [bot message] | [] (nothing found) | null.
+ *   AI.flag({question, line, missing, reason})  "new script needed" / "missing feature" / "factcheck". Fire and forget.
+ *   AI.can('translate'|'answer'|'search'|'flag'|'judge')  what this view offers.
  *
- * Same contract as ai-sample.js: the browser sends ONLY the student's words (plus the last few message → command
- * pairs, never results); the server owns the instructions, calls Claude with the API key it keeps secret, and
- * returns ONE Tommy command {cmd, args}. The key never reaches the browser. Crisis, safety and personal messages are
- * filtered in script.js before AI.translate is ever called, so they never leave the device.
- * Load right after ai-sample.js (it wraps AI.translate / AI.enabled / AI.sampleState and the Settings sheet). */
+ * Privacy: the browser sends the student's words, and for a composed answer only the PUBLIC data the boundary let
+ * through. Never account data or results (grades, balances, schedules, bookings). Crisis, safety, personal and
+ * help/need messages never get here (script.js keeps them on the device; this file checks the words again).
+ * Every call has a timeout and never throws (null = Tommy's own answer stands).
+ *
+ * Where it runs: this site's own server (http/https and GET /api/tommy says {"ok": true}); inside claude.ai only the
+ * translator (and the old answer checker) run on the viewer's account; opened as a file (file://): off.
+ * Load right after ai-sample.js. The fact check and link sanitizer are plain functions: in Node,
+ * require('js/ta/ai-api.js') returns them (unit tests). */
 (function () {
   'use strict';
+
+  // ===================================================================================================================
+  // PART 1 — plain functions (no page needed): fact check and link sanitizing
+  // ===================================================================================================================
+  var F = {};
+  var MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+  // months are matched capitalized ("May 5", never "you may 5"); "May" on its own is never a month
+  var MONTH = '(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)';
+  var DAYN = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+  // full day names in any case, abbreviations only capitalized ("Sat", never "i sat down")
+  var DAY = '((?:[Ss]un|[Mm]on|[Tt]ues|[Ww]ednes|[Tt]hurs|[Ff]ri|[Ss]atur)days?|Sun|Mon|Tues?|Weds?|Thu(?:rs?)?|Fri|Sat)';
+  var AMPM = '([AaPp])\\.?\\s?[Mm]\\.?(?![A-Za-z])';
+  var RX = {
+    email: /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g,
+    url: /\b(?:https?|ftp):\/\/[^\s<>()\]"']+/gi,
+    host: /(^|[^@\w.\/-])((?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:edu|com|org|net|gov|io|us|info|co|ly|me|app|dev)(?:\/[^\s<>()"']*[^\s<>()"'.,;:!?])?)/gi,
+    phone: /(?:\+?1[\s.-]?)?\(?\b(\d{3})\)?[\s.-]?(\d{3})[\s.-](\d{4})\b/g,
+    iso: /\b(\d{4})-(\d{1,2})-(\d{1,2})\b/g,
+    tRange: new RegExp('\\b(\\d{1,2})(?::([0-5]\\d))?\\s*(?:-|to|until|till|til|through|thru)\\s*(\\d{1,2})(?::([0-5]\\d))?\\s*' + AMPM, 'g'),
+    tOne: new RegExp('\\b(\\d{1,2})(?::([0-5]\\d))?\\s*' + AMPM, 'g'),
+    tWord: /\b(noon|midday|midnight)\b/gi,
+    t24: /\b([01]?\d|2[0-3]):([0-5]\d)\b/g,
+    dMD: new RegExp('\\b' + MONTH + '\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?![\\d:])(?:,?\\s+(\\d{4}))?(?:\\s*(?:-|to|through|thru|until)\\s*(?:' + MONTH + '\\.?\\s+)?(\\d{1,2})(?:st|nd|rd|th)?(?![\\d:]))?(?:,?\\s+(\\d{4}))?', 'g'),
+    dDM: new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?' + MONTH + '\\b\\.?(?:,?\\s+(\\d{4}))?', 'g'),
+    dNum: /\b(1[0-2]|0?[1-9])\/(3[01]|[12]\d|0?[1-9])(?:\/(\d{4}|\d{2}))?\b/g,
+    price: /\$\s?(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?(?!\d)/g,
+    priceW: /\b(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?\s?(?:dollars?|usd)\b/gi,
+    pct: /\b(\d+(?:\.\d+)?)\s?(?:%|percent\b|per cent\b)/gi,
+    code: /\b([A-Z]{2,5})[ -]?(\d{3}[A-Za-z]?)(?![\w-])/g,
+    codeI: /\b([A-Za-z]{2,5})[ -]?(\d{3}[A-Za-z]?)(?![\w-])/g,
+    dayRange: new RegExp('\\b' + DAY + '\\.?\\s*(?:-|to|through|thru|until|till)\\s*' + DAY + '\\.?(?![A-Za-z])', 'g'),
+    day: new RegExp('\\b' + DAY + '\\.?(?![A-Za-z])', 'g'),
+    month: /\b(January|February|March|April|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\b\.?/g,
+    num: /(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d+))?(?:st|nd|rd|th)?/g
+  };
+  var HOLD = ' § ';
+  function monthNum(s) { return MON[String(s || '').slice(0, 3).toLowerCase()] || 0; }
+  function dayNum(s) { var k = String(s || '').slice(0, 3).toLowerCase(); return k in DAYN ? DAYN[k] : -1; }
+  function mins(h, m, ap) {
+    h = +h; m = +(m || 0);
+    if (!(h >= 1 && h <= 12) || !(m >= 0 && m < 60)) return null;
+    return ((h % 12) + (/^p/i.test(ap) ? 12 : 0)) * 60 + m;
+  }
+  function numKey(intPart, dec) { var v = parseFloat(String(intPart).replace(/,/g, '') + (dec ? '.' + dec : '')); return isFinite(v) ? String(v) : ''; }
+  function dateKey(m, d) { return m && d ? m + '-' + d : ''; }
+  function dateSpan(m1, d1, m2, d2) {
+    var out = [], a = new Date(2026, m1 - 1, d1), b = new Date(m2 < m1 ? 2027 : 2026, m2 - 1, d2);
+    if (isNaN(a) || isNaN(b) || b < a || (b - a) / 864e5 > 62) return [dateKey(m1, d1), dateKey(m2, d2)];
+    for (var t = a; t <= b; t = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1)) out.push(dateKey(t.getMonth() + 1, t.getDate()));
+    return out;
+  }
+  function daySpan(a, b) { var out = [], i = a; for (var k = 0; k < 7; k++) { out.push(i); if (i === b) break; i = (i + 1) % 7; } return out; }
+  // markdown and typography out of the way; the same normalization for the answer and the context
+  function prep(s) {
+    return String(s == null ? '' : s).replace(/\r/g, '')
+      .replace(/[‐-―−﹘﹣－]/g, '-')
+      .replace(/[‘’ʼ′]/g, "'").replace(/[“”″]/g, '"')
+      .replace(/[     ]/g, ' ').replace(/[​-‍﻿]/g, '')
+      .replace(/!?\[([^\]\n]*)\]\([^)\n]*\)/g, '$1')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\[(?:S|s|source\s*)?\d+(?:\s*[,-]\s*(?:S|s)?\d+)*\]/g, ' ')
+      .replace(/\*\*|__|\*|`|~~/g, '')
+      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gm, '$1$2')
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/\b24\s*\/\s*7\b/g, '24 hours');
+  }
+  // words that may start a sentence without being a name; titles; words that are always fine (the app's own names)
+  var COMMON = {};
+  ('a an the and or but nor so yet if then than that thats this these those there theres here heres it its i im ive id me my mine we us our you your yours ' +
+   'he she they them their his her him is are was were be been being am do does did done doing dont doesnt didnt have has had get gets got can cant could ' +
+   'would should will wont shall may might must need want like look find show tell give know let lets help please thanks thank hey hi hello what whats ' +
+   'which who whos when where why how of to in on at by for with without from about into onto over under near nearby next last first second third also too ' +
+   'even still again ever never not no yes ok okay well just only both each every either neither most many much more less some any all none several few ' +
+   'one two three four five six seven eight nine ten other another same such sure great good nice best top fun free open opens opened closed closes ' +
+   'closing hours hour check try bring visit head walk take call email book reserve plan note tip tips remember keep make go use ask see choose pick ' +
+   'consider start stop join meet attend enjoy grab explore follow contact reach learn read register sign apply submit order pay drop add expect plus ' +
+   'unfortunately however otherwise currently right today tomorrow tonight now soon later early late daily weekly weekdays weekends weekend because since ' +
+   'while after before during until though although unless whether as per via based according yesterday here there students student staff faculty ' +
+   'visitors guests everyone anyone someone people lecture lectures lab labs section sections seats seat class classes course courses library libraries ' +
+   'events event clubs club location locations address phone price prices cost costs fee fees parking dining food meals options option answer note ' +
+   'heads good great looks sounds seems overall in short basically generally usually typically often sometimes always available upcoming regular ' +
+   'special current posted listed shown here sorry absolutely definitely certainly perhaps maybe also then thus hence instead meanwhile otherwise ' +
+   'est simulated verified official public private online in-person weekday ' +
+   // everyday campus nouns that can start a sentence ("Menus change daily.", "Seating is limited.")
+   'menu menus seating seat desks desk rooms room spaces space lockers locker printers printer printing outlets outlet wifi coffee snacks drinks ' +
+   'tickets ticket reservations reservation appointments appointment sessions session hall halls building buildings floor floors entrance entrances ' +
+   'gate gates doors door lines line wait waits waiting food dinner lunch breakfast meal brunch study studying quiet group groups tutoring ' +
+   'workshops workshop meetings meeting programs program services service office offices center centers info information details detail ' +
+   'deadlines deadline dates date times time schedule schedules registration enrollment applications application forms form steps step ' +
+   'questions question rules rule policy policies requirements requirement units unit credits credit grades grade exams exam finals final ' +
+   'midterms midterm homework assignments assignment instructors professors teachers advisors advisor tutors tutor peers peer classmates ' +
+   'friends friend guest visitor buses bus shuttles shuttle rides ride trains train bikes bike cars car spots spot views view gardens garden ' +
+   'trees tree lawns lawn courtyards courtyard parks park art music shows show games game sports sport teams team members member').split(/\s+/).forEach(function (w) { if (w) COMMON[w] = 1; });
+  var TITLES = { professor: 1, prof: 1, dr: 1, mr: 1, ms: 1, mrs: 1, mx: 1, dean: 1, instructor: 1, lecturer: 1, ta: 1, am: 1, pm: 1 };
+  var ALWAYS = { usc: 1, trojan: 1, trojans: 1, tommy: 1, hub: 1, claude: 1, haiku: 1 };
+  function stem(w) {
+    w = String(w || '');
+    if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + 'y';
+    if (w.length > 4 && /(?:ss|sh|ch|x|z)es$/.test(w)) return w.slice(0, -2);
+    if (w.length > 3 && /[^s]s$/.test(w)) return w.slice(0, -1);
+    return w;
+  }
+  function cleanWord(t) {
+    return String(t || '').replace(/n't$/i, '').replace(/'(?:s|re|ve|ll|d|m|t)$/i, '').replace(/'$/, '').replace(/^[-.&']+|[-.&']+$/g, '');
+  }
+  // every fact in a text. ctx = true builds lookup sets for the context; false lists the answer's facts to check.
+  function facts(text, ctx) {
+    var s = prep(text), L = [], S = { times: {}, dates: {}, months: {}, days: {}, prices: {}, pcts: {}, codes: {}, phones: {}, emails: {}, nums: {}, words: {} };
+    var add = function (t, raw, keys, all) { L.push({ type: t, text: String(raw).trim().slice(0, 40), keys: keys.filter(function (k) { return k !== '' && k != null; }), all: !!all }); };
+    var put = function (set, keys) { keys.forEach(function (k) { if (k !== '' && k != null) S[set][k] = 1; }); };
+    var rec = ctx ? function (set, raw, keys) { put(set, keys); } : function (set, raw, keys, all) { add(set, raw, keys, all); };
+    if (ctx) {
+      // every number written anywhere in the context counts as "in the context" (times, dates, prices are also typed below)
+      s.replace(RX.num, function (m, i, d) { var k = numKey(i, d); if (k) S.nums[k] = 1; return m; });
+      s.split(/[^A-Za-z'&.-]+/).forEach(function (w) {
+        String(w).split(/[-&]/).forEach(function (p) { p = cleanWord(p).replace(/\./g, '').toLowerCase(); if (p) { S.words[p] = 1; S.words[stem(p)] = 1; } });
+      });
+    }
+    s = s.replace(RX.email, function (m) { rec('emails', m, [m.toLowerCase()]); return HOLD; });
+    s = s.replace(RX.url, function () { return HOLD; });
+    s = s.replace(RX.host, function (m, pre) { return pre + HOLD; });
+    s = s.replace(RX.phone, function (m, a, b, c) { rec('phones', m, [a + b + c]); return HOLD; });
+    s = s.replace(RX.iso, function (m, y, mo, d) { rec('dates', m, [dateKey(+mo, +d)]); if (ctx) put('nums', [String(+y)]); return HOLD; });
+    // times: "9-11 PM" (the first takes the meridiem that makes a forward range), "9 PM", "9:00 p.m.", noon/midnight, 21:00
+    s = s.replace(RX.tRange, function (m, h1, m1, h2, m2, ap) {
+      var t2 = mins(h2, m2, ap), same = mins(h1, m1, ap), other = mins(h1, m1, /^a/i.test(ap) ? 'p' : 'a');
+      if (t2 == null || same == null) return m;
+      var pick = (+h1 % 12) <= (+h2 % 12) ? same : other;
+      if (ctx) put('times', [pick, t2]); else { add('times', m.replace(/\s*(?:-|to|until|till|til|through|thru)\s*\d.*$/i, ''), [same, other]); add('times', String(h2) + (m2 ? ':' + m2 : '') + ' ' + ap.toUpperCase() + 'M', [t2]); }
+      return HOLD;
+    });
+    s = s.replace(RX.tOne, function (m, h, mm, ap) { var t = mins(h, mm, ap); if (t == null) return m; rec('times', m, [t]); return HOLD; });
+    s = s.replace(RX.tWord, function (m, w) { rec('times', m, [/mid(?:night)?$/i.test(w) && /night/i.test(w) ? 0 : 720]); return HOLD; });
+    s = s.replace(RX.t24, function (m, h, mm) {
+      h = +h; mm = +mm;
+      var keys = h === 0 || h >= 13 || /^0/.test(m) ? [h * 60 + mm] : [(h % 12) * 60 + mm, ((h % 12) + 12) * 60 + mm];
+      rec('times', m, keys); return HOLD;
+    });
+    // dates: "Nov 25 – 29", "November 26, 2026", "26 November", "11/26", ISO above; a range covers every day in it
+    s = s.replace(RX.dMD, function (m, mo1, d1, y1, mo2, d2, y2) {
+      var a = monthNum(mo1), b = mo2 ? monthNum(mo2) : a, keys = d2 ? dateSpan(a, +d1, b, +d2) : [dateKey(a, +d1)], ys = [y1, y2].filter(Boolean).map(function (y) { return String(+y); });
+      if (ctx) { put('dates', keys); put('months', [a, b]); put('nums', [String(+d1)].concat(d2 ? [String(+d2)] : [], ys)); }
+      else { add('dates', m, keys, true); ys.forEach(function (y) { add('numbers', y, [y]); }); }
+      return HOLD;
+    });
+    s = s.replace(RX.dDM, function (m, d, mo, y) {
+      var a = monthNum(mo);
+      if (ctx) { put('dates', [dateKey(a, +d)]); put('months', [a]); put('nums', [String(+d)].concat(y ? [String(+y)] : [])); }
+      else { add('dates', m, [dateKey(a, +d)]); if (y) add('numbers', y, [String(+y)]); }
+      return HOLD;
+    });
+    s = s.replace(RX.dNum, function (m, mo, d, y) {
+      if (ctx) { put('dates', [dateKey(+mo, +d)]); put('months', [+mo]); } else add('dates', m, [dateKey(+mo, +d)]);
+      if (y && y.length === 4) rec('numbers', y, [String(+y)]);
+      return HOLD;
+    });
+    s = s.replace(RX.price, function (m, i, d) { rec('prices', m, [numKey(i, d)]); return HOLD; });
+    s = s.replace(RX.priceW, function (m, i, d) { rec('prices', m, [numKey(i, d)]); return HOLD; });
+    s = s.replace(RX.pct, function (m, v) { rec('pcts', m, [String(parseFloat(v))]); return HOLD; });
+    s = s.replace(ctx ? RX.codeI : RX.code, function (m, p, n) {
+      if (/^(?:am|pm)$/i.test(p)) return m;
+      rec('codes', m, [p.toUpperCase() + n.toUpperCase()]); return HOLD;
+    });
+    s = s.replace(RX.dayRange, function (m, a, b) {
+      var x = dayNum(a), y = dayNum(b); if (x < 0 || y < 0) return m;
+      if (ctx) put('days', daySpan(x, y)); else add('days', m, daySpan(x, y), true);
+      return HOLD;
+    });
+    s = s.replace(RX.day, function (m, a) { var x = dayNum(a); if (x < 0) return m; rec('days', m, [x]); return HOLD; });
+    s = s.replace(RX.month, function (m, a) { rec('months', m, [monthNum(a)]); return HOLD; });
+    if (!ctx) {
+      s = s.replace(RX.num, function (m, i, d) { var k = numKey(i, d); if (k) add('numbers', m, [k]); return HOLD; });
+      // capitalized words: a place or a person must be named in the context (sentence starts may be ordinary words)
+      s.split(/(?:[.!?;:]+(?=\s|$)|\n+|\s[-–—]\s|^\s*[-*•]\s|\(|\))/).forEach(function (seg) {
+        var toks = String(seg || '').match(/[A-Za-z][A-Za-z'&.-]*/g) || [];
+        toks.forEach(function (tok, i) {
+          var w = cleanWord(tok);
+          if (!/^[A-Z]/.test(w)) return;
+          w.split(/[-&]/).forEach(function (part, pi) {
+            var p = part.replace(/\./g, ''), lw = p.toLowerCase();
+            if (p.length < 2 || !/^[A-Z]/.test(p) || TITLES[lw] || ALWAYS[lw] || lw === 'may') return;
+            var initial = i === 0 && pi === 0;
+            if (initial && (COMMON[lw] || COMMON[stem(lw)] || (lw.length >= 5 && /(?:ing|ly|ed|tion|tions|ment|ments|ness|ity|ies|ful|less|able|ible|ous|ive)$/.test(lw)))) return;
+            add('names', p, [lw, stem(lw)]);
+          });
+        });
+      });
+    }
+    return ctx ? S : L;
+  }
+  var SETS = { times: 'times', dates: 'dates', months: 'months', days: 'days', prices: 'prices', pcts: 'pcts', codes: 'codes', phones: 'phones', emails: 'emails', numbers: 'nums', names: 'words' };
+  // -> {ok, missing: [{type, text}], checked}
+  F.factCheck = function (answer, context) {
+    var C = facts(context, true), list = facts(answer, false), missing = [];
+    list.forEach(function (f) {
+      var set = C[SETS[f.type]] || {};
+      if (!f.keys.length) return;
+      var ok = f.all ? f.keys.every(function (k) { return set[k]; }) : f.keys.some(function (k) { return set[k]; });
+      if (!ok && f.type === 'names') ok = f.keys.some(function (k) { return C.words[k]; });
+      if (!ok) missing.push({ type: f.type, text: f.text });
+    });
+    return { ok: missing.length === 0, missing: missing, checked: list.length };
+  };
+  F.facts = function (text, ctx) { return facts(text, !!ctx); };
+
+  // ---- links: only links to the provided source URLs survive; no HTML, no images, no other schemes ----
+  F.normUrl = function (u) {
+    try {
+      var x = new URL(String(u || '').trim());
+      if (!/^https?:$/.test(x.protocol)) return '';
+      return (x.hostname.replace(/^www\./, '') + x.pathname.replace(/\/+$/, '') + (x.search || '')).toLowerCase();
+    } catch (e) { return ''; }
+  };
+  F.isUsc = function (u) { try { var x = new URL(String(u || '')); var h = x.hostname.toLowerCase(); return /^https?:$/.test(x.protocol) && (h === 'usc.edu' || /\.usc\.edu$/.test(h)); } catch (e) { return false; } };
+  F.sanitizeAnswer = function (md, sources) {
+    var allow = {}, removed = 0;
+    (sources || []).forEach(function (x) { var k = F.normUrl(x && x.url); if (k) allow[k] = 1; });
+    var ok = function (u) { var k = F.normUrl(u); return !!(k && allow[k]); };
+    var s = String(md == null ? '' : md).replace(/\r/g, '').replace(/\u0000/g, '');
+    s = s.replace(/<((?:https?|ftp):\/\/[^>\s]+)>/gi, function (m, u) { if (ok(u)) return u; removed++; return ''; });
+    s = s.replace(/<!--[\s\S]*?(?:-->|$)/g, function () { removed++; return ''; });
+    s = s.replace(/<\/?[A-Za-z][^>]*>?/g, function () { removed++; return ''; });
+    s = s.replace(/!\[([^\]\n]{0,200})\]\(([^)\n]{0,800})\)/g, function (m, alt) { removed++; return alt; });
+    s = s.replace(/\[([^\]\n]{0,200})\]\(\s*<?([^)\s>]{0,800})>?(?:\s+"[^"\n]*")?\s*\)/g, function (m, txt, u) { if (ok(u)) return '[' + txt + '](' + u + ')'; removed++; return txt; });
+    s = s.replace(/^[ \t]*\[[^\]\n]+\]:[ \t]*\S+.*$/gm, function () { removed++; return ''; });
+    s = s.replace(/\b(?:https?|ftp):\/\/[^\s<>()\]"']+/gi, function (u, off, all) {
+      var t = u.replace(/[.,;:!?]+$/, ''), tail = u.slice(t.length);
+      if (ok(t) && all.charAt(off - 1) !== '"') return u;
+      if (ok(t) && /\]\($/.test(all.slice(Math.max(0, off - 2), off))) return u;
+      removed++; return tail;
+    });
+    s = s.replace(/\b(?:javascript|data|vbscript|file|mailto|tel|sms|blob):[^\s)\]]*/gi, function () { removed++; return ''; });
+    s = s.replace(RX.host, function (m, pre, host, off, all) {
+      if (/\]\($/.test(all.slice(Math.max(0, off + pre.length - 2), off + pre.length))) return m;
+      if (ok('https://' + host)) return m;
+      removed++; return pre;
+    });
+    s = s.replace(/\s?\[(?:S|s|source\s*)?\d+(?:\s*[,-]\s*(?:S|s)?\d+)*\]/g, '');
+    // a lead-in left pointing at nothing once its link was removed ("Details:", "More here:")
+    if (removed) s = s.replace(/(^|[.!?]\s+|\n)[^.!?\n:]{1,40}:\s*$/, '$1');
+    s = s.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').replace(/ +([.,;:!?])/g, '$1').replace(/\(\s*\)/g, '').trim();
+    if (s.length > 1600) { var cut = s.slice(0, 1600); s = cut.slice(0, Math.max(cut.lastIndexOf('\n'), cut.lastIndexOf('. ') + 1, 1200)).trim() + ' …'; }
+    return { md: s, removed: removed };
+  };
+
+  if (typeof module === 'object' && module && module.exports) module.exports = F;   // Node unit tests
+  if (typeof window === 'undefined') return;
+
+  // ===================================================================================================================
+  // PART 2 — the browser client
+  // ===================================================================================================================
   var TA = window.TA, AI = TA && TA.AI, UI = TA && TA.UI;
   if (!AI || typeof AI.translate !== 'function') return;
   var ENDPOINT = (typeof window.TOMMY_API_URL === 'string' && window.TOMMY_API_URL) || '/api/tommy';
   var base = { translate: AI.translate, enabled: AI.enabled, sampleState: AI.sampleState, sampleReady: AI.sampleReady, stop: AI.stop };
-  var A = { checked: false, ok: false, off: false, ctl: null, probe: null };
+  var A = { checked: false, ok: false, off: false, features: null, ctls: [], probe: null, sample: null };
+  var MS = { translate: 25000, judge: 12000, answer: 15000, search: 25000, flag: 8000 };
+  AI.factCheck = F.factCheck;
+  AI.sanitizeAnswer = F.sanitizeAnswer;
+  AI.normUrl = F.normUrl;
 
   function inClaude() { return !!(window.claude && typeof window.claude.use === 'function'); }
   function canTry() { return !inClaude() && (/^https?:$/.test(location.protocol) || !!window.TOMMY_API_URL); }
   function apiMode() { return A.ok && !A.off && !inClaude(); }
+  function on() { return TA.settings.claude !== false; }
   function mode() { try { if (UI && UI.renderMode) UI.renderMode(); } catch (e) { /* UI not mounted yet */ } }
+  // GET /api/tommy -> {ok, model, features: {translate, judge, search, flags, answer}}. An older server sends no features: translate only.
+  function feat(name) {
+    if (!apiMode()) return false;
+    var f = A.features;
+    if (!f || typeof f !== 'object') return name === 'translate';
+    return f[name] === true || (name === 'translate' && f[name] !== false);
+  }
 
-  // One GET per page load: is this site's translator configured?
+  // One GET per page load: is this site's AI configured, and what does it offer?
   function check() {
     if (A.probe) return A.probe;
     if (!canTry() || typeof fetch !== 'function') { A.checked = true; A.probe = Promise.resolve(false); return A.probe; }
@@ -17485,78 +17765,462 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var t = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
     A.probe = fetch(ENDPOINT, { method: 'GET', headers: { accept: 'application/json' }, cache: 'no-store', signal: ctl ? ctl.signal : undefined })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) { A.ok = !!(j && j.ok === true); })
+      .then(function (j) { A.ok = !!(j && j.ok === true); A.features = j && j.features && typeof j.features === 'object' ? j.features : null; })
       .catch(function () { A.ok = false; })
       .then(function () { clearTimeout(t); A.checked = true; mode(); return A.ok; });
     return A.probe;
   }
 
+  // What this message sent: every POST of the current turn is logged by mode (translate / answer / search / flag), so the
+  // tag under the answer can say exactly what reached the AI (js/ta/ai-answer-ui.js starts a turn per sent message).
+  var TURN = [];
+  AI.beginTurn = function () { TURN = []; };
+  AI.turnCalls = function () { return TURN.slice(); };
+  // POST to this site's function. Resolves to the JSON reply or null (offline, timeout, stopped, error). Never throws.
+  function post(body, ms, keepalive) {
+    TURN.push(String((body && body.mode) || 'translate'));
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctl) A.ctls.push(ctl);
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, ms);
+    var done = function () { clearTimeout(t); A.ctls = A.ctls.filter(function (c) { return c !== ctl; }); };
+    var init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', signal: ctl ? ctl.signal : undefined };
+    if (keepalive) init.keepalive = true;
+    try {
+      return fetch(ENDPOINT, init)
+        .then(function (r) {
+          if (r.status === 503) { A.off = true; mode(); return null; } // the site has no API key set
+          return r.ok ? r.json().catch(function () { return null; }) : null;
+        })
+        .catch(function () { return null; })
+        .then(function (j) { done(); return j && typeof j === 'object' ? j : null; });
+    } catch (e) { done(); return Promise.resolve(null); }
+  }
+
   AI.sampleReady = function () { return Promise.all([base.sampleReady ? base.sampleReady() : null, check()]); };
-  AI.enabled = function () { return apiMode() ? TA.settings.claude !== false : base.enabled(); };
+  AI.enabled = function () { return apiMode() ? on() : base.enabled(); };
   AI.sampleState = function () {
-    if (canTry() && (apiMode() || !A.checked)) return { available: apiMode(), off: A.off, why: '', checked: A.checked, via: 'api' };
+    if (canTry() && (apiMode() || !A.checked)) return { available: apiMode(), off: A.off, why: '', checked: A.checked, via: 'api', features: A.features };
     return base.sampleState();
   };
-  AI.stop = function () { if (A.ctl) A.ctl.abort(); if (base.stop) base.stop(); };
-  // On this site's own translator, Tommy asks the AI first for wording that isn't an exact command (script.js TS.handle).
-  AI.firstPass = function () { return apiMode() && TA.settings.claude !== false; };
+  AI.stop = function () { A.ctls.slice().forEach(function (c) { try { c.abort(); } catch (e) { /* already done */ } }); A.ctls = []; if (base.stop) base.stop(); };
+  AI.can = function (what) {
+    if (!on()) return false;
+    if (apiMode()) return feat(what === 'flag' ? 'flags' : what);
+    if (inClaude()) return (what === 'translate' || what === 'judge') && !!(base.enabled && base.enabled());
+    return false;
+  };
 
-  // Earlier messages go along only to resolve "it"/"that one". Leave out any that were crisis, emergency or
+  // ---- what may leave the device: the student's words ----
+  // Earlier messages go along only to resolve "it"/"that one". Leave out any that were crisis, emergency, sensitive or
   // personal (the same check script.js uses before calling the AI), so they never leave the device later either.
+  var PERSONAL0 = /\b(pregnan\w*|abortion|contracepti\w*|plan b|birth control|stds?|stis?|hiv|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|therap\w*|counsel\w*|psychiatr\w*|medicat\w*|prescription\w*|eating disorder|self.?harm|suicid\w*|overdos\w*|addict\w*|drugs?|disabilit\w*|immigra\w*|undocumented|daca|visa|deport\w*|lgbt\w*|gay|lesbian|transgender|ssn|social security)\b/;
   function privateText(t) {
     try {
-      var s = String(t || ''), n = TA.NLU.parse(s), P = TA.Script && TA.Script.PERSONAL;
-      return !!(n.crisis || n.emergency || (TA.Brain && TA.Brain.sensitive && TA.Brain.sensitive(n)) || (P && P.test(s.toLowerCase())));
+      var s = String(t || ''); if (!s.trim()) return false;
+      var TS = TA.Script;
+      if (TS && typeof TS.personal === 'function') return !!TS.personal(s);
+      var n = TA.NLU.parse(s), P = (TS && TS.PERSONAL) || PERSONAL0;
+      return !!(n.crisis || n.emergency || n.distress || (TA.Brain && TA.Brain.sensitive && TA.Brain.sensitive(n)) || P.test(s.toLowerCase()));
     } catch (e) { return true; }
   }
+  function words(s) { return String(s || '').toLowerCase().replace(/[’']/g, '').split(/[^a-z0-9]+/).filter(Boolean); }
+  // "grades.show course="MATH 226"" for "what's my grade in math": the course code was resolved from the student's own
+  // enrollment, so only argument values made of words the student typed go along (an action id names a command, not data).
+  function safeLine(line, text) {
+    var m = /^\s*(\S+)(.*)$/.exec(String(line || '')); if (!m) return '';
+    var tw = words(text), out = m[1], re = /\s+([\w.-]+)=("((?:[^"\\]|\\.)*)"|\S+)/g, x;
+    while ((x = re.exec(m[2]))) {
+      var v = x[3] != null ? x[3].replace(/\\"/g, '"') : x[2], vw = words(v);
+      if (x[1] === 'action' || (vw.length && vw.every(function (w) { return tw.indexOf(w) >= 0; }))) out += x[0];
+    }
+    return out.slice(0, 200);
+  }
   function safeEarlier(list) {
-    return (list || []).filter(function (e) { return e && !privateText(e.text) && !privateText(e.line); });
+    return (list || []).filter(function (e) { return e && !privateText(e.text) && !privateText(e.line); })
+      .map(function (e) { return { text: String(e.text || '').slice(0, 200), line: safeLine(e.line, e.text) }; });
+  }
+  function nowText() {
+    try { return TA.fmtLongDate(TA.today()) + ', ' + TA.now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; }
   }
 
-  // text -> {cmd, args} | null (null = let the scripts' own best answer stand)
+  // ---- AI.translate (the plan step): text -> {cmd, args} | null (null = let the scripts' own best answer stand) ----
+  // ctx.hint = Tommy's own guess (a public command line), so the planner can keep it or pick a better tool
   AI.translate = async function (text, ctx) {
     await check();
     ctx = Object.assign({}, ctx || {}, { earlier: safeEarlier(ctx && ctx.earlier) });
     if (!apiMode()) return base.translate(text, ctx);
-    if (TA.settings.claude === false) return null;
-    var body = {
-      text: String(text == null ? '' : text).slice(0, 1000),
-      now: String(ctx.now || '').slice(0, 80),
-      earlier: (ctx.earlier || []).slice(-6).map(function (e) { return { text: String((e && e.text) || '').slice(0, 200), line: String((e && e.line) || '').slice(0, 200) }; })
-    };
-    A.ctl = typeof AbortController === 'function' ? new AbortController() : null;
-    var t = setTimeout(function () { if (A.ctl) A.ctl.abort(); }, 25000);
-    try {
-      var r = await fetch(ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', signal: A.ctl ? A.ctl.signal : undefined });
-      if (r.status === 503) { A.off = true; mode(); return null; } // the site has no API key set
-      if (!r.ok) return null;
-      var j = await r.json();
-      if (!j || typeof j.cmd !== 'string' || !j.cmd.trim()) return null;
-      return { cmd: j.cmd.trim(), args: j.args && typeof j.args === 'object' && !Array.isArray(j.args) ? j.args : {} };
-    } catch (e) {
-      return null; // offline, timeout or stopped: Tommy keeps the scripts' answer
-    } finally { clearTimeout(t); A.ctl = null; }
+    if (!on()) return null;
+    var body = { text: String(text == null ? '' : text).slice(0, 1000), now: String(ctx.now || '').slice(0, 80), earlier: (ctx.earlier || []).slice(-6) };
+    var hint = ctx.hint ? safeLine(ctx.hint, text) : '';
+    if (hint) body.hint = hint;
+    var j = await post(body, MS.translate);
+    if (!j || typeof j.cmd !== 'string' || !j.cmd.trim()) return null;
+    return { cmd: j.cmd.trim(), args: j.args && typeof j.args === 'object' && !Array.isArray(j.args) ? j.args : {} };
   };
 
-  // Settings sheet: say where the AI runs when it is this site's server
+  // ===================================================================================================================
+  // THE PRIVACY BOUNDARY (AI-FIRST-SPEC "code-enforced privacy boundary"). AI.composeContext is the ONE function that
+  // builds what a composed answer may send, and AI.answer sends nothing else. Only two kinds of text can get in:
+  //   - the output of a PUBLIC Tommy command (TA.Script.isPublicCmd: commands marked public: true, which includes the
+  //     built-in public set), exactly as that command's run produced it (registered by TS.run before anything else
+  //     touched it: the script tag, notes, an intent's "for you" lines);
+  //   - Trojan Assist's USC knowledge-base answer (B.answer: curated 'c', askUSC 'f' or page 'p' content) for the
+  //     student's own question, exactly as B.answer returned it.
+  // Anything else (account commands, actions and their cards, Trojan Assist's intents, faq fallbacks the brain made, text
+  // edited later) has no registration, and the assertion fails closed: no AI call, Tommy's own on-device answer stands.
+  // Registrations live in WeakMaps only this file can write; nothing on a message object can fake them.
+  // ===================================================================================================================
+  var PUB = new WeakMap(), KB = new WeakMap(), PRIV = new WeakSet(), ISSUED = new WeakSet();
+  function PrivacyError(msg) { this.name = 'PrivacyError'; this.message = String(msg); }
+  function assert(cond, why) { if (!cond) throw new PrivacyError(why); }
+  function isBot(m) { return !!(m && typeof m === 'object' && m.role === 'bot'); }
+  function srcCopy(list) {
+    return (Array.isArray(list) ? list : []).filter(function (x) { return x && typeof x.url === 'string'; }).slice(0, 8)
+      .map(function (x) { return { url: String(x.url).slice(0, 500), title: String(x.title || '').replace(/\s+/g, ' ').trim().slice(0, 160) }; });
+  }
+  function publicCmd(name) {
+    try { var TS = TA.Script; return !!(TS && typeof TS.isPublicCmd === 'function' && TS.cmds && TS.cmds[name] && TS.isPublicCmd(name)); } catch (e) { return false; }
+  }
+  // TS.run reports every command run here (installed by patch_ai_route.py): a public command's messages are registered
+  // with a snapshot of their text; everything else is registered as private.
+  AI.noteRun = function (name, out) {
+    try {
+      if (out && typeof out.then === 'function') { out.then(function (r) { AI.noteRun(name, r); }, function () { }); return; }
+      var pub = publicCmd(String(name || ''));
+      (Array.isArray(out) ? out : []).forEach(function (m) {
+        if (!m || typeof m !== 'object') return;
+        if (pub && isBot(m) && !m.card && typeof m.md === 'string') PUB.set(m, { cmd: String(name), md: m.md, sources: srcCopy(m.sources) });
+        else PRIV.add(m);
+      });
+    } catch (e) { /* unregistered output is private */ }
+  };
+  AI.notePrivate = function (out) { try { (Array.isArray(out) ? out : [out]).forEach(function (m) { if (m && typeof m === 'object' && !KB.has(m) && !PUB.has(m)) PRIV.add(m); }); } catch (e) { /* default deny anyway */ } };
+  AI.kbInfo = function (m) { var k = m && typeof m === 'object' ? KB.get(m) : null; return k ? { q: k.q, kind: k.kind, conf: k.conf } : null; };
+  AI.isPublicOutput = function (m, name) { var s = m && typeof m === 'object' ? PUB.get(m) : null; return !!(s && (!name || s.cmd === name)); };
+
+  // Trojan Assist's knowledge-base answers, marked as B.answer returns them (before any intent adds to them)
+  var B = TA.Brain;
+  if (B && typeof B.answer === 'function' && !B.answer._aiKB) {
+    var answer0 = B.answer;
+    B.answer = async function (q0) {
+      var m = await answer0.apply(this, arguments);
+      try {
+        if (m && typeof m === 'object' && !m.card && typeof m.md === 'string' && m.md && /^(?:c|f|p)$/.test(String(m.kind))) {
+          KB.set(m, { q: String(q0 == null ? '' : q0).slice(0, 500), kind: m.kind, conf: String(m.confidence || ''), md: m.md, sources: srcCopy(m.sources) });
+        }
+      } catch (e) { /* unmarked = private */ }
+      return m;
+    };
+    B.answer._aiKB = true;
+  }
+  // actions (confirm cards) are private, always
+  if (B && typeof B.start === 'function' && !B.start._aiPriv) {
+    var start0 = B.start;
+    B.start = function () { var out = start0.apply(this, arguments); AI.notePrivate(out); return out; };
+    B.start._aiPriv = true;
+  }
+
+  // personal lines and clauses a public command can still carry (match scores from your thumbs, walk times from where
+  // you are, "you're inside the zone"): never sent
+  var PERSONAL_LINE = /% Match\b|\bRanked by your\b|^\W*_?Your record\b|^\W*_?For you\b|\byour (?:thumbs|ratings?|interests?|clubs?|record|account|balance|grades?|gpa|schedule|classes|calendar|plans?|profile|location|preferences?|major|minor)\b|\b(?:you(?:’|')re|you are) (?:inside|outside|in|near|at)\b|\b(?:nearest|closest)\b[^\n]*\b(?:from you|away|to you|min walk)\b/i;
+  var WALK = /,?\s*(?:about|around|roughly|~)\s*(?:an?\s+)?\**~?\d+\s*(?:min(?:ute)?s?)\**(?:\s+walk)?\**\s+(?:from you|away)\b\.?/gi;
+  function publicText(md) {
+    // whole lines first ("Nearest open entrance: X, about 4 min away."), then walk-time clauses left inside other lines
+    var x = String(md || '').split('\n').filter(function (l) { return !PERSONAL_LINE.test(l); }).join('\n').replace(WALK, '.');
+    x = x.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]\n]*)\]\(([^)\s]*)\)/g, '$1').replace(/<[^>]*>/g, '')
+      .replace(/\.\./g, '.').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+    return x;
+  }
+  // the student's own identity never leaves (name, NetID, email, USC ID, phone, room)
+  function identityHit(x) {
+    try {
+      var d = (TA.State && TA.State.d) || {}, pr = d.profile || {}, st = (window.TH && TH.student && TH.student()) || {}, low = String(x || '').toLowerCase();
+      return [pr.netid, pr.email, pr.uscid, pr.phone, pr.emergency, st.full, st.email, st.uscid, pr.first && pr.last ? pr.first + ' ' + pr.last : '', d.housing && d.housing.room]
+        .some(function (v) { v = String(v || '').toLowerCase().trim(); return v.length >= 4 && low.indexOf(v) >= 0; });
+    } catch (e) { return true; }
+  }
+  function sameQ(a, b) { var n = function (s) { return String(s || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }; return !!n(a) && n(a) === n(b); }
+  var QSTOP = /^(?:a|an|the|and|or|of|to|in|on|at|for|is|are|do|does|i|me|my|you|it|what|whats|when|where|how|which|who|can|about|with|usc)$/;
+  // a knowledge-base query made only of the student's own words (this message, earlier ones, Trojan Assist's follow-up rewrite)
+  function fromStudentWords(q, question) {
+    var pool = {};
+    var feed = function (s) { words(s).forEach(function (w) { pool[w] = 1; }); };
+    feed(question);
+    try { (TA.Script && TA.Script.history || []).forEach(function (e) { if (e && !privateText(e.text)) feed(e.text); }); } catch (e) { /* no history */ }
+    try { if (B && B.ctx && B.ctx.lastUserQ && !privateText(B.ctx.lastUserQ)) feed(B.ctx.lastUserQ); } catch (e) { /* no context */ }
+    var qw = words(q).filter(function (w) { return !QSTOP.test(w); });
+    return qw.length > 0 && qw.every(function (w) { return pool[w]; });
+  }
+  function utf8Len(x) { try { return typeof TextEncoder === 'function' ? new TextEncoder().encode(x).length : unescape(encodeURIComponent(x)).length; } catch (e) { return String(x).length * 3; } }
+  // cut long text at a line end (or a sentence end, or a word) so no fact is half there ("until 10" from "until 10 PM");
+  // the same rule as the server's capText
+  function capText(t, max) {
+    t = String(t == null ? '' : t);
+    if (t.length <= max) return t;
+    var cut = t.slice(0, max), nl = cut.lastIndexOf('\n');
+    if (nl >= max * 0.5) return cut.slice(0, nl).replace(/\s+$/, '');
+    var stop = -1, re = /[.!?](?=\s)/g, mm;
+    while ((mm = re.exec(cut))) stop = mm.index + 1;
+    if (stop >= max * 0.5) return cut.slice(0, stop);
+    var sp = cut.search(/\s\S*$/), kept = (sp > 0 ? cut.slice(0, sp) : cut).replace(/\s+$/, '');
+    if (/\S*\d\S*$/.test(kept) && /\s/.test(kept)) kept = kept.replace(/\s+\S*\d\S*$/, ''); // "until 10" without its "PM": drop the number too
+    return kept + ' …';
+  }
+  var MAX_BODY = 19000; // bytes; the server refuses more than 20 KB
+  function safeSource(u) { try { var x = new URL(String(u || '')); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch (e) { return ''; } }
+
+  // items: [{type: 'tool', cmd: {cmd, args}, out: [messages]} | {type: 'kb', msg: message}]
+  // opts: {q: the planner's rewritten question, today: 'Monday, November 9, 2026'}
+  // -> a sealed {question, text, sources, tools} that AI.answer will send, or null (refused: nothing is sent)
+  AI.composeContext = function (question, items, opts) {
+    try {
+      opts = opts || {};
+      var TS = TA.Script, q = String(question == null ? '' : question).replace(/\s+/g, ' ').trim().slice(0, 500);
+      assert(TS && typeof TS.isPublicCmd === 'function', 'no public command list');
+      assert(q && !privateText(q), 'the question itself stays on this device');
+      var blocks = [], sources = [], seen = {}, tools = 0, names = [];
+      (Array.isArray(items) ? items : []).forEach(function (it) {
+        assert(it && (it.type === 'tool' || it.type === 'kb'), 'unknown kind of context');
+        var snaps, label;
+        if (it.type === 'tool') {
+          var name = it.cmd && typeof it.cmd.cmd === 'string' ? it.cmd.cmd : '';
+          assert(name && TS.cmds && TS.cmds[name] && TS.isPublicCmd(name), 'not a public command: ' + name);
+          var msgs = (Array.isArray(it.out) ? it.out : []).filter(isBot);
+          assert(msgs.length, 'no output');
+          snaps = msgs.map(function (m) {
+            var s = PUB.get(m);
+            assert(s && s.cmd === name && !PRIV.has(m) && !m.card, 'output that ' + name + ' did not produce');
+            return s;
+          });
+          label = 'Campus tool: ' + name;
+          if (names.indexOf(name) < 0) names.push(name);
+        } else {
+          var k = it.msg && typeof it.msg === 'object' ? KB.get(it.msg) : null;
+          assert(k && /^(?:c|f|p)$/.test(k.kind) && !PRIV.has(it.msg), 'not a USC knowledge-base answer');
+          assert(sameQ(k.q, q) || (opts.q && sameQ(k.q, opts.q)) || fromStudentWords(k.q, q), 'a knowledge-base answer for another question');
+          snaps = [k];
+          label = 'Tommy’s USC pages (knowledge base)';
+          if (names.indexOf('ask') < 0) names.push('ask');
+        }
+        var text = capText(snaps.map(function (s) { return publicText(s.md); }).filter(Boolean).join('\n\n'), 3000);
+        assert(!identityHit(text), 'the student’s identity is in the text');
+        if (!text) return;
+        var mine = [];
+        snaps.forEach(function (s) {
+          (s.sources || []).forEach(function (x) {
+            var u = safeSource(x.url); if (!u) return;
+            if (seen[u] == null) { seen[u] = sources.length; sources.push({ url: u, title: x.title || u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') }); }
+            if (mine.indexOf(seen[u]) < 0) mine.push(seen[u]);
+          });
+        });
+        tools++;
+        blocks.push('[' + tools + '] ' + label + '\n' + text + (mine.length ? '\nSources: ' + mine.map(function (i) { return '[S' + (i + 1) + '] ' + sources[i].title; }).join('; ') : ''));
+      });
+      assert(blocks.length, 'nothing public to answer from');
+      var today = String(opts.today || '').replace(/[^\w ,]/g, '').slice(0, 60);
+      var text = (today ? 'Today: ' + today + '\n\n' : '') + blocks.join('\n\n');
+      assert(!identityHit(text), 'the student’s identity is in the context');
+      // the server reads at most 10,000 characters of context and takes at most 20 KB per request: the context is cut at
+      // a line end until the whole request fits in 19 KB (what is sent is exactly what the fact check reads)
+      var srcs = sources.slice(0, 10), nm = names.slice(0, 20);
+      var size = function (x) { return utf8Len(JSON.stringify({ mode: 'answer', question: q, context: x, sources: srcs, tools: nm })); };
+      text = capText(text, 9500);
+      for (var guard = 0; size(text) > MAX_BODY && text.length > 200 && guard < 40; guard++) text = capText(text, Math.floor(text.length * 0.85));
+      assert(size(text) <= MAX_BODY, 'the request would be too big');
+      var ctx = { question: q, text: text, sources: srcs.map(function (s) { return Object.freeze(s); }), tools: tools, names: Object.freeze(nm) };
+      Object.freeze(ctx.sources); Object.freeze(ctx);
+      ISSUED.add(ctx);
+      return ctx;
+    } catch (e) {
+      AI.lastRefusal = e && e.message ? String(e.message) : 'error';
+      if (e instanceof PrivacyError) { try { console.warn('[Ask Tommy] privacy boundary: nothing sent (' + e.message + ')'); } catch (x) { /* no console */ } }
+      return null;
+    }
+  };
+
+  // ---- AI.answer: Haiku writes the answer from the sealed context only ----
+  function cleanAnswerReply(j, n) {
+    if (!j || typeof j !== 'object') return null;
+    var st = String(j.status || '').toLowerCase();
+    if (st !== 'ok' && st !== 'insufficient') return null;
+    var md = typeof j.answer_md === 'string' ? j.answer_md.replace(/\u0000/g, '').trim().slice(0, 2400) : '';
+    if (st === 'ok' && !md) return null;
+    var cites = [];
+    (Array.isArray(j.cites) ? j.cites : []).forEach(function (i) { i = Number(i); if (Math.floor(i) === i && i >= 0 && i < n && cites.indexOf(i) < 0) cites.push(i); });
+    return { status: st, answer_md: st === 'ok' ? md : '', cites: cites };
+  }
+  AI.answer = async function (question, ctx, sources) {
+    try {
+      if (!ctx || !ISSUED.has(ctx)) return null;                  // only a context the privacy boundary sealed
+      if (!on()) return null;
+      await check();
+      if (!apiMode() || !feat('answer')) return null;
+      var q = String(question == null ? '' : question).replace(/\s+/g, ' ').trim().slice(0, 500);
+      if (!q || q !== ctx.question || privateText(q)) return null;
+      var src = ctx.sources;
+      if (Array.isArray(sources) && sources.length) src = src.filter(function (s) { return sources.some(function (x) { return x && F.normUrl(x.url) === F.normUrl(s.url); }); });
+      // tools: the commands the context came from, so the server can refuse a private one too (a second check)
+      var j = await post({ mode: 'answer', question: q, context: ctx.text, sources: src.map(function (s) { return { url: s.url, title: s.title }; }), tools: ctx.names.slice() }, MS.answer);
+      return cleanAnswerReply(j, src.length);
+    } catch (e) { return null; }
+  };
+
+  // ---- AI.judge (QUALITY-SPEC answer checker; the AI-first routing doesn't call it, kept for older routes) ----
+  function cleanVerdict(j) {
+    if (!j || typeof j !== 'object') return null;
+    var v = String(j.verdict || '').toLowerCase().trim();
+    if (v !== 'good' && v !== 'better' && v !== 'search') return null;
+    var missing = (Array.isArray(j.missing) ? j.missing : []).filter(function (x) { return typeof x === 'string' && x.trim(); })
+      .slice(0, 8).map(function (x) { return x.trim().slice(0, 40); });
+    var nx = j.next && typeof j.next === 'object' && !Array.isArray(j.next) && typeof j.next.cmd === 'string' && j.next.cmd.trim()
+      ? { cmd: j.next.cmd.trim(), args: j.next.args && typeof j.next.args === 'object' && !Array.isArray(j.next.args) ? j.next.args : {} } : null;
+    var q = typeof j.q === 'string' && j.q.trim() ? j.q.replace(/\s+/g, ' ').trim().slice(0, 200) : null;
+    return { verdict: v, missing: missing, next: nx, q: q };
+  }
+  var JUDGE = [
+    'You check ONE answer that Trojan Hub (a USC student app) showed a student. You never answer the student yourself.',
+    'Reply with a single line of JSON and nothing else: {"verdict":"good|better|search","missing":["..."],"next":{"cmd":"...","args":{}} or null,"q":"..." or null}',
+    '"good": the answer gives what the student asked for, including every specific thing they asked about (a quality such as quiet, old, green, beautiful, cheap or open late; a place, time, course or person). Most answers that do this are good.',
+    '"better": one command from COMMANDS would answer the question fully. Put it in next, with only its listed argument names. Never invent names, dates, places or course codes.',
+    '"search": no command fits and the answer misses part of the question. Put one short standalone search question in q (at most 200 characters) that keeps every detail the student asked for.',
+    'missing: up to 8 short words for what the answer lacks (empty when good).'
+  ].join('\n');
+  function sampleFn() {
+    if (!A.sample) A.sample = Promise.resolve().then(function () { return window.claude.use('sample'); }).catch(function () { return null; });
+    return A.sample;
+  }
+  async function sampleJudge(q, ans, ln) {
+    var fn = await sampleFn(); if (typeof fn !== 'function') return null;
+    var TS = TA.Script, cat = TS && TS.catalog ? TS.catalog() : '';
+    var prompt = JUDGE + '\n\nCOMMANDS\n' + cat + '\nask {q} — look the question up in the USC knowledge base\n\nNOW: ' + nowText() +
+      '\n\nSTUDENT QUESTION\n' + q + '\n\nSCRIPT THAT ANSWERED\n' + (ln || '(none)') + '\n\nANSWER THE STUDENT SAW (public text)\n' + ans;
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctl) A.ctls.push(ctl);
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, MS.judge);
+    try {
+      var out = await fn([{ role: 'user', content: prompt }], { modelTier: 'quick', signal: ctl ? ctl.signal : undefined });
+      var raw = String((out && out.text) || ''), a = raw.indexOf('{'), b = raw.lastIndexOf('}');
+      return a < 0 || b <= a ? null : JSON.parse(raw.slice(a, b + 1));
+    } catch (e) { return null; } finally { clearTimeout(t); A.ctls = A.ctls.filter(function (c) { return c !== ctl; }); }
+  }
+  // up to n short strings (words of the student's own question), for the checker's and the team's hints
+  function wordsOnly(list, n) {
+    return (Array.isArray(list) ? list : []).filter(function (x) { return typeof x === 'string' && x.trim(); })
+      .slice(0, n).map(function (x) { return x.replace(/\s+/g, ' ').trim().slice(0, 24); });
+  }
+  AI.judge = async function (question, answerText, line, uncovered) {
+    try {
+      if (!on()) return null;
+      await check();
+      var q = String(question == null ? '' : question).slice(0, 1000), ans = String(answerText == null ? '' : answerText).slice(0, 2500), ln = String(line == null ? '' : line).slice(0, 300);
+      if (!q.trim() || !ans.trim() || privateText(q)) return null;
+      if (apiMode()) {
+        if (!feat('judge')) return null;
+        var jb = { mode: 'judge', question: q, answer: ans, line: ln, now: nowText().slice(0, 80) }, unc = wordsOnly(uncovered, 10);
+        if (unc.length) jb.uncovered = unc;
+        return cleanVerdict(await post(jb, MS.judge));
+      }
+      if (inClaude() && base.enabled && base.enabled()) return cleanVerdict(await sampleJudge(q, ans, ln));
+      return null;
+    } catch (e) { return null; }
+  };
+
+  // ---- AI.uscSearch: Haiku + web search restricted to usc.edu ----
+  // -> [bot message] (found), [] (searched: USC's websites don't answer it; the server already flagged it), null (no search)
+  function cleanSources(list) {
+    var seen = {}, out = [];
+    (Array.isArray(list) ? list : []).forEach(function (s) {
+      var u = s && F.isUsc(s.url) ? safeSource(s.url) : ''; if (!u || !/^https:/.test(u) || seen[u]) return; seen[u] = 1;
+      var title = String((s && s.title) || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+      out.push({ url: u, title: title || u.replace(/^https:\/\//, '').replace(/\/$/, '') });
+    });
+    return out.slice(0, 6);
+  }
+  AI.uscSearch = async function (q, originalText, why) {
+    try {
+      if (!on()) return null;
+      await check();
+      if (!apiMode() || !feat('search')) return null;
+      var question = String(q == null ? '' : q).replace(/\s+/g, ' ').trim().slice(0, 500);
+      if (!question || privateText(question) || (originalText != null && privateText(originalText))) return null;
+      var orig = String(originalText == null ? '' : originalText).replace(/\s+/g, ' ').trim().slice(0, 500);
+      var body = { mode: 'search', question: question };
+      if (orig && orig !== question) body.original = orig; // the student's own wording, so the team's "script needed" alert can name it
+      if (why && why.reason === 'inaccurate') {
+        body.reason = 'inaccurate';
+        if (why.line && !privateText(why.line)) body.line = String(why.line).slice(0, 200);
+        var mw = wordsOnly(why.missing, 10); if (mw.length) body.missing = mw;
+      }
+      var j = await post(body, MS.search);
+      if (!j) return null;
+      if (j.found === false || typeof j.answer !== 'string' || !j.answer.trim()) return [];
+      var sources = cleanSources(j.sources), san = F.sanitizeAnswer(j.answer, sources);
+      if (!sources.length || !san.md) return []; // an answer no USC page backs up is never shown
+      return [{
+        role: 'bot', kind: 'c', md: san.md, sources: sources, chips: [],
+        ai: { kind: 'search', model: 'Claude Haiku', searches: Math.max(0, +j.searches || 0) },
+        search: { q: question, searches: Math.max(0, +j.searches || 0) },
+        script: { line: 'search q="' + (question.length > 120 ? question.slice(0, 119) + '…' : question).replace(/"/g, '\\"') + '"', via: 'search', badge: 'Claude Haiku · searched USC websites' }
+      }];
+    } catch (e) { return null; }
+  };
+
+  // ---- AI.flag: tell the Trojan Hub team. 'inaccurate' (a script answered, but not accurately), 'no-script', 'factcheck'
+  //      (Haiku's answer named something the verified data doesn't say), or 'missing-feature' (Part B: only the
+  //      translator's short feature description is sent, never the student's own message). True when it was sent. ----
+  var REASONS = { inaccurate: 1, 'no-script': 1, 'missing-feature': 1, factcheck: 1 };
+  AI.flag = function (o) {
+    try {
+      if (!o || !on() || !apiMode() || !feat('flags')) return false;
+      var reason = REASONS[o.reason] ? o.reason : 'inaccurate';
+      var question = String(o.question || '').replace(/\s+/g, ' ').trim().slice(0, reason === 'missing-feature' ? 80 : 300);
+      if (!question || privateText(question)) return false;
+      var line = reason === 'missing-feature' || privateText(o.line) ? '' : String(o.line || '').slice(0, 200);
+      post({ mode: 'flag', question: question, line: line, missing: reason === 'missing-feature' ? [] : wordsOnly(o.missing, 10), reason: reason }, MS.flag, true);
+      return true;
+    } catch (e) { return false; /* never in the way of an answer */ }
+  };
+
+  // ---- Settings sheet and the "saved" note: say what the AI does now ----
   if (UI && UI.sheets && typeof UI.sheets.settings === 'function') {
     var sheet0 = UI.sheets.settings;
     UI.sheets.settings = function () {
       var h = sheet0.apply(this, arguments);
-      if (!canTry()) return h;
-      if (apiMode()) {
-        return h.replace('Use AI when a script can’t read my message', 'Use AI to read messages that aren’t exact commands')
-          .replace('It runs on your own claude.ai account.', 'It runs on Claude through this site’s server, which keeps the API key; your account data never leaves this device.');
+      if (AI.can('answer')) {
+        h = h.replace('Use AI when a script can’t read my message', 'Use Claude Haiku (AI) for public campus questions')
+          .replace('The AI only rewrites your words into a script command.', 'For public campus questions (hours, courses, events, places), Claude Haiku writes the answer from the verified data Tommy’s own tools return, shows that data under its answer with the USC sources, and a fact check runs before you see it. For your own account and for actions, it only turns your words into a campus tool that runs on your phone.')
+          .replace('<strong>never sees what the script returns</strong>.', '<strong>never sees your account, your results or personal questions</strong>. If Tommy’s data has nothing, it searches USC websites (usc.edu only).');
       }
+      if (!canTry()) return h;
+      if (apiMode()) return h.replace('It runs on your own claude.ai account.', 'It runs on Claude through this site’s server, which keeps the API key; your account data never leaves this device.');
       if (A.checked) {
         return h.replace('It runs on your own claude.ai account.', 'On this website it runs on Claude through the site’s server, once the site has an API key.')
-          .replace(/(The AI translator isn’t available in this view[^<]*)/, 'The AI translator isn’t set up on this site yet (its server has no API key), so scripts handle everything they can read.');
+          .replace(/(The AI translator isn’t available in this view[^<]*)/, 'The AI isn’t set up on this site yet (its server has no API key), so Tommy answers with its built-in campus tools.');
       }
       return h;
     };
   }
+  if (UI && typeof UI.onSheetClick === 'function') {
+    var click0 = UI.onSheetClick;
+    UI.onSheetClick = function (e) {
+      var b = e && e.target && e.target.closest ? e.target.closest('button') : null;
+      if (!b || !b.hasAttribute('data-save-claude')) return click0.apply(this, arguments);
+      var push0 = UI.push;
+      UI.push = function (list) {
+        try {
+          (list || []).forEach(function (m) {
+            if (m && typeof m.md === 'string' && AI.can('answer')) {
+              m.md = m.md.replace('**AI translator on.** It only turns messages I can’t read into script commands. It never sees your account or my answers.', '**Claude Haiku on.** It writes answers to public campus questions from my verified USC data (fact-checked, with sources) and turns requests into campus tools that run on your phone. It never sees your account, your results or personal questions.');
+            }
+          });
+        } catch (er) { /* the original note stands */ }
+        return push0.apply(this, arguments);
+      };
+      try { return click0.apply(this, arguments); } finally { UI.push = push0; }
+    };
+  }
 
-  // Resolve once in the background after load, so the header shows "Claude" when it's on
+  // Resolve once in the background after load, so the header shows the AI when it's on
   if (canTry()) setTimeout(function () { check(); }, 1200);
 })();
 </script><script>/* js/ta/ai-extras.js */
@@ -17691,6 +18355,32 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   ].join('|') + ')\\b');
   // "find me a hike, i don't want to get lost" is still a request (no lookbehind, so older phone browsers can load this)
   function helpCue(t) { return PLAN_HELP.test(String(t || '').replace(/\b(?:get|getting|gets) lost\b/g, ' ')); }
+  // Day abbreviations as whole words ("map out my sat", "plan fri night", "what should i do on thurs"), but never the
+  // SAT exam ("sat prep", "my sat scores", "the sat", "SAT"), "i sat down", or the sun ("lay out in the sun").
+  var DAY_ABBR = { mon: 'monday', tue: 'tuesday', tues: 'tuesday', wed: 'wednesday', weds: 'wednesday', thu: 'thursday', thur: 'thursday', thurs: 'thursday', fri: 'friday', sat: 'saturday', sun: 'sunday' };
+  var DAY_WORD = /^(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|weds|thu|thur|thurs|fri|sat|sun)$/;
+  var DAY_BEFORE = /^(?:my|this|next|on|for|coming|every|each|last|until|till|til|by|from|thru|through|plan|out|of|is|tomorrow|today|whole|entire|full|free)$/;
+  var DAY_AFTER = /^(?:morning|afternoon|evening|night|nite|plans?|schedule|brunch|lunch|dinner|am|pm|too|then|instead)$/;
+  var SAT_EXAM = /^(?:prep|preparation|prepping|score|scores|scored|test|tests|testing|exam|exams|subject|math|reading|writing|essay|superscore|superscored|superscoring|optional|requirement|requirements|required|policy|policies|tutor|tutors|tutoring|book|books|practice|date|dates|registration|result|results|percentile|percentiles|range|average|cutoff|waiver|section|sections|question|questions|class|classes|course|courses|vocab|vocabulary|program|bootcamp|camp|study|studying|strategy|strategies|tips|retake|act)$/;
+  function expandDays(t, raw) {
+    var r = String(raw || ''), caps = /\bSAT\b/.test(r) && r !== r.toUpperCase();
+    var w = String(t || '').replace(/\b(mon|tues?|weds?|thu|thurs?|fri|sat|sun)\s*[\/&+]\s*(mon|tues?|weds?|thu|thurs?|fri|sat|sun)\b/g, '$1 and $2').split(' ');
+    var clean = function (x) { return String(x || '').replace(/[^a-z0-9]/g, ''); };
+    for (var i = 0; i < w.length; i++) {
+      var m = /^([a-z]+)([.,!?;:]*)$/.exec(w[i]); if (!m || !DAY_ABBR[m[1]]) continue;
+      var ab = m[1], prev = clean(w[i - 1]), prev2 = clean(w[i - 2]), next = clean(w[i + 1]), next2 = clean(w[i + 2]);
+      if (ab === 'sat' && (caps || SAT_EXAM.test(next) || (/^(?:or|and|vs|versus)$/.test(next) && next2 === 'act') ||
+        /^(?:the|psat|act|take|taking|took|retake|retaking|retook|ace|aced|acing|failed|bombed|crushed|digital|official|your|their|his|her)$/.test(prev) ||
+        (prev === 'for' && /^(?:study|studying|prep|prepping|prepare|preparing|ready|register|registered|registering|signed|sign|practice|practicing|cram|cramming|tutor|tutoring)$/.test(prev2)))) continue;
+      if (ab === 'sun' && (/^(?:the|in|under|into|of|a)$/.test(prev) || /^(?:tan|burn|screen|glasses|set|rise|light|shine|block|bathing|bathe|dial|beam|beams|ray|rays|devil|dried|kissed)$/.test(next))) continue;
+      if (ab === 'wed' && /^(?:get|got|getting|be|been|was|were|to)$/.test(prev)) continue;
+      var lead = i === 0 && !/^(?:down|in|on|at|with|next|through|there|here|around|outside|by|up|back|for|beside)$/.test(next);
+      if (lead || DAY_BEFORE.test(prev) || DAY_AFTER.test(next) || DAY_WORD.test(prev) || (/^(?:and|or|n|to)$/.test(prev) && DAY_WORD.test(prev2))) w[i] = DAY_ABBR[ab] + m[2];
+    }
+    return w.join(' ');
+  }
+  // "plan my saturday and sunday" is the weekend (plan.week), not one day
+  function satSun(t) { return /\bsaturday\b/.test(t) && /\bsunday\b/.test(t) && !/\b(monday|tuesday|wednesday|thursday|friday)\b/.test(t); }
   function planDay(t, raw) {
     if (/\btomorrow\b/.test(t)) return 'tomorrow';
     if (/\b(today|tonight|this (morning|afternoon|evening))\b/.test(t)) return 'today';
@@ -17704,6 +18394,8 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     args: ['day', 'focus'],
     match: function (t, raw) {
       if (PLAN_NO.test(t) || PLAN_INTENT_NOT.test(t) || helpCue(t)) return null;
+      t = expandDays(t, raw);
+      if (satSun(t) && !/\b(tonight|evening|afternoon|morning)\b/.test(t)) return null; // plan.week (the weekend)
       // ("what should I do right now" is not a planning request: it is how people ask for help, so it is not a trigger)
       var tonight = /\bwhat (should|can|could|do) (i|we) do (tonight|this evening|later tonight|after class(es)?|today|this afternoon|tomorrow|this weekend|on (mon|tues|wednes|thurs|fri|satur|sun)day)\b|\bwhat to do (tonight|today|this evening|tomorrow)\b|\b(i am|im) bored( (tonight|today|right now))?$|\banything (fun )?to do (tonight|today|this evening)\b|\bwhats (fun|good|happening) (for me )?tonight\b|\bplans? for tonight\b/.test(t);
       var DAYW = '(day|today|tomorrow|tonight|evening|afternoon|morning|(mon|tues|wednes|thurs|fri|satur|sun)day)';
@@ -17723,12 +18415,14 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   def('plan.week', {
     about: 'Tommy PLANS the student’s week (or weekend): the best events per day, their club meetings, free food, exams and deadlines, and real off-campus outings, with a link to plan any single day. Use for "plan my week", "plan my weekend", "what should I do this week", "plan next week". start (optional): "today" | "next" (next Monday) | "weekend".',
     args: ['start'],
-    match: function (t) {
+    match: function (t, raw) {
       if (PLAN_NO.test(t) || PLAN_INTENT_NOT.test(t) || helpCue(t)) return null;
-      var hit = /\b(plan|planning|map out|organi[sz]e|sort out|lay out|schedule|line up|figure out)\b( out)?( (my|the|this|next|a))? (week|weekend)\b/.test(t) || /\b(week|weekly) plan\b|\bplan for (this|next|the) (week|weekend)\b|\bwhat (should|can) (i|we) do this (week|weekend)\b|\bwhat to do this (week|weekend)\b|\bplans? for (the|this) weekend\b|^plan (my )?week(end)?$/.test(t);
+      t = expandDays(t, raw);
+      var both = satSun(t);
+      var hit = (both && /\b(plan|planning|map out|organi[sz]e|sort out|lay out|schedule|line up|figure out|fill)\b|\bwhat (should|can|could|do) (i|we) do\b/.test(t)) || /\b(plan|planning|map out|organi[sz]e|sort out|lay out|schedule|line up|figure out)\b( out)?( (my|the|this|next|a))? (week|weekend)\b/.test(t) || /\b(week|weekly) plan\b|\bplan for (this|next|the) (week|weekend)\b|\bwhat (should|can) (i|we) do this (week|weekend)\b|\bwhat to do this (week|weekend)\b|\bplans? for (the|this) weekend\b|^plan (my )?week(end)?$/.test(t);
       if (!hit) return null;
       if (PLAN_Q.test(t) && !/\bmy\b/.test(t)) return null;
-      return { start: /\bweekend\b/.test(t) ? 'weekend' : /\bnext week\b/.test(t) ? 'next' : undefined };
+      return { start: /\bweekend\b/.test(t) || both ? 'weekend' : /\bnext week\b/.test(t) ? 'next' : undefined };
     },
     run: function (a) { return TH.plan && TH.plan.chatWeek ? TH.plan.chatWeek(a) : [bot('The planner is still loading. Try again in a moment.', [go('Open My Day', 'plans', 'week')])]; }
   });
@@ -18332,7 +19026,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
           line: TS.line(cmd),
           via: via,
           accurate: true,
-          badge: 'Verified public USC data (accurate, not modeled)'
+          badge: via === 'ai' ? 'Claude Haiku · ran on your phone (Claude picked this campus tool from your words)' : 'Tommy · on your phone'
         };
       }
     }
@@ -18372,41 +19066,523 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       if (side) { var so = await runCmd(side, text, 'script'), pa = TA.Actions.get(p.aid); return so.concat([{ role: 'bot', md: '_Your request' + (pa ? ' to ' + pa.title.charAt(0).toLowerCase() + pa.title.slice(1) : '') + ' is still waiting above. Answer it there, or say cancel._' }]); }
     }
     if (flagged(n, text) || p || n.undo || n.signin || n.signout || n.yes || n.no || n.cancel || n.greet || n.thanks || n.bye || /^@/.test(text)) return B.handle(text);
-    // 1) Tommy's own scripts: exact commands run on this device
-    var c = TS.compile(text), out;
-    if (c) return runCmd(c, text, 'script');
-    // 2) Tommy's own on-device answers (intents, actions, curated USC answers)
-    out = await brain(text, 'script');
-    if (!TS.weak(out) || B.pending) return out;
-    // 3) The scripts couldn't recognize it accurately: only now may the AI turn the words into ONE script command.
-    //    Personal topics and help/need wording stay on this device (Tommy's own answer stands).
-    var PERSONAL = TS.PERSONAL || (TS.PERSONAL = /\b(pregnan\w*|abortion|contracepti\w*|plan b|birth control|stds?|stis?|hiv|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|therap\w*|counsel\w*|psychiatr\w*|medicat\w*|prescription\w*|eating disorder|anorexi\w*|bulimi\w*|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|disabilit\w*|immigra\w*|undocumented|daca|visa status|deport\w*|lgbt\w*|gay|lesbian|transgender|coming out|ssn|social security number)\b/);
-    var tn = (TA.NLU.normalize ? TA.NLU.normalize(String(text)) : String(text).toLowerCase()).replace(/[\u2019']/g, '');
-    var needsHelp = typeof helpCue === 'function' && helpCue(tn);
-    if (!AI || !AI.translate || !AI.enabled() || (B.sensitive && B.sensitive(n)) || PERSONAL.test(String(text).toLowerCase()) || needsHelp) return out;
-    var tr = null;
-    try { tr = await AI.translate(text, { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC', actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }); } catch (e) { tr = null; }
-    var out2 = null;
-    if (tr && tr.cmd !== 'none' && (TS.cmds[tr.cmd] || tr.cmd === 'do' || tr.cmd === 'ask') &&
-        !(tr.cmd === 'ask' && TA.NLU.normalize && TA.NLU.normalize(String(tr.args.q || '')) === TA.NLU.normalize(text))) {
-      try { out2 = await runCmd(tr, text, 'ai'); } catch (e) { console.error(e); out2 = null; }
-      if (out2 && !TS.weak(out2)) return out2;
+    /* ask-tommy-route v3 ai-first */
+    // AI-first for public questions (tommy-api/AI-FIRST-SPEC.md). Everything above stays on this device.
+    return TS.routeAIFirst(text, n);
+  };
+
+  // ===================================================================================================
+  // AI-FIRST ROUTING (scripts/patch_ai_route.py). The AI never sees an account result: private commands, actions and
+  // Trojan Assist's intents run and show here. Public data reaches it only through AI.composeContext (js/ta/ai-api.js).
+  // ===================================================================================================
+  TS.routeAIFirst = async function (text, n) {
+    var R = TS.route = { text: String(text).slice(0, 300), steps: [], ai: [] };
+    var step = function (x) { R.steps.push(x); };
+    markBuiltins();
+    // 1) personal topics, help/need wording, B.sensitive: Tommy's own answer on this device, nothing is sent
+    if (TS.personal(text, n)) {
+      step('1 personal or help wording -> Tommy on this device, nothing sent');
+      var c1 = TS.compile(text);
+      return c1 ? runSafe(c1, text, 'script') : brain(text, 'script');
     }
-    // 4) No script fits: search USC websites only (when this site provides it) and record that a script is needed.
-    if (AI.uscSearch) {
-      var q = tr && tr.cmd === 'ask' && tr.args && tr.args.q ? String(tr.args.q) : String(text);
+    var acct = TS.account(text, n);
+    // 2) Tommy's own scripts
+    var c = TS.compile(text), out = null, guess = null;
+    if (c) {
+      // a private command with a PUBLIC twin that reads no position (place.find), for a question that isn't about where
+      // the student is: the twin answers, so the AI may write from it
+      if (!TS.isPublicCmd(c.cmd)) { var tw = await twinFor(c, text); if (tw) { step('2 PRIVATE ' + TS.line(c) + ' -> its public twin ' + tw.cmd + ' (no position)'); c = tw; } }
+      out = await runSafe(c, text, 'script');
+      if (B.pending || hasCard(out)) { step('2 ' + TS.line(c) + ' started a request -> on this device'); return out; }
+      if (!TS.isPublicCmd(c.cmd)) { step('2 PRIVATE ' + TS.line(c) + ' -> on this device, no AI'); return out; }
+      // a public command whose answer also says where the student is (gates.status: "nearest open entrance, 4 min away"),
+      // asked about distance from the student: that line never leaves the device, so the answer stays here
+      if (TS.positional(c, text)) { step('2 PUBLIC ' + TS.line(c) + ', asked about where the student is -> on this device, no AI'); return out; }
+      guess = { type: 'tool', cmd: c, out: out };
+      step('2 PUBLIC ' + TS.line(c) + (TS.weak(out, c) ? ' (came up empty)' : ''));
+    } else {
+      out = await brain(text, 'script');
+      if (B.pending || hasCard(out)) { step('2 Trojan Assist started a request -> Part B on this device'); return out; }
+      var fq = faqOf(out);
+      if (fq) {
+        // the FAQ bank's own looser match: the public faq command, run as a command so it is registered as public
+        c = { cmd: 'faq', args: { id: fq } };
+        var oq = await runSafe(c, text, 'script');
+        if (oq && oq.length && !TS.weak(oq, c)) { out = oq; guess = { type: 'tool', cmd: c, out: out }; step('2 FAQ answer ' + TS.line(c)); }
+        else c = null;
+      }
+      if (!guess) {
+        var kbm = kbOf(out, text);
+        if (kbm && !TS.weak(out)) { guess = { type: 'kb', msg: kbm }; step('2 Trojan Assist USC knowledge-base answer ' + TS.describe(out)); }
+        else if (!TS.weak(out)) { if (AI && AI.notePrivate) AI.notePrivate(out); step('2 Trojan Assist answer (not a public USC page) -> on this device, no AI'); return out; }
+        else step('2 no script; Trojan Assist: ' + TS.describe(out) + ' (weak)');
+      }
+    }
+    var weak = TS.weak(out, c);
+    var ai = await aiState();
+    if (!ai.on) { step('AI off -> Tommy on this device'); return out; }
+    // account and task wording (Part B): never composed or searched; the AI may only turn the words into a script.
+    // Trojan Assist answering "how'd i do in math" from its USC pages missed the point: the planner may map the words
+    // to the student's own command (it runs here). A how-to question ("how do i drop my class") keeps its answer.
+    var hint = guess && guess.type === 'tool' ? TS.line(guess.cmd) : null;
+    if (acct && !weak) {
+      if (!(guess && guess.type === 'kb' && !isQ(TS.norm(text)))) { step('account or task wording -> Tommy on this device'); return out; }
+      hint = TS.line({ cmd: 'ask', args: { q: String(text).slice(0, 200) } });
+      step('account wording answered from USC pages -> plan (words only, never composed)');
+    }
+    if (guess && !weak && !acct) {
+      var left = TS.leftover(text, out, guess.type === 'tool' ? guess.cmd : null);
+      if (!left.length) {
+        if (ai.compose) { step('covers the question -> compose (no planning call)'); return compose(text, [guess], out, { q: text }); }
+        step('covers the question; composing is off here -> Tommy on this device'); return out;
+      }
+      if (!hint) hint = TS.line({ cmd: 'ask', args: { q: String(text).slice(0, 200) } });
+      step('coverage gate: not covered [' + left.join(', ') + '] -> plan (hint: ' + hint + ')');
+    }
+    // 3) plan: Haiku picks the campus tool (it sees the words only)
+    TS.progress('plan');
+    R.ai.push('translate');
+    var tr = null;
+    try { tr = await AI.translate(text, routeCtx(hint)); } catch (e) { tr = null; }
+    if (!tr || typeof tr.cmd !== 'string' || !tr.cmd) { step('planner gave nothing -> Tommy on this device'); return out; }
+    tr = { cmd: tr.cmd, args: tr.args && typeof tr.args === 'object' && !Array.isArray(tr.args) ? tr.args : {} };
+    if (tr.cmd === 'unsupported') return TS.unsupported(text, tr);
+    if (tr.cmd === 'none' || !TS.validCmd(tr)) {
+      step('planner -> ' + (tr.cmd === 'none' ? 'none' : 'unknown command ' + String(tr.cmd).slice(0, 40)));
+      return weak ? TS.notUSC(text, out) : out;
+    }
+    if (tr.cmd !== 'do' && tr.cmd !== 'ask' && !TS.isPublicCmd(tr.cmd) && !acct) { var tw3 = await twinFor(tr, text); if (tw3) { step('planner -> ' + TS.line(tr) + ' -> its public twin ' + tw3.cmd + ' (no position)'); tr = tw3; } }
+    // Part B: an account command or an action runs here and shows here; the AI never sees the result
+    if (tr.cmd === 'do' || (tr.cmd !== 'ask' && !TS.isPublicCmd(tr.cmd))) {
+      step('planner -> PRIVATE ' + TS.line(tr) + ' -> runs on this device, never composed');
+      var ob = await runSafe(tr, text, 'ai');
+      if (AI && AI.notePrivate) AI.notePrivate(ob);
+      return ob && ob.length && !missed(ob) ? ob : out;
+    }
+    if (acct) {
+      var oa = tr.cmd === 'ask' ? await brain(String(tr.args.q || text), 'ai') : await runSafe(tr, text, 'ai');
+      step('account or task wording -> ' + TS.line(tr) + ' on this device, never composed');
+      if (AI && AI.notePrivate) AI.notePrivate(oa);
+      return oa && oa.length && !TS.weak(oa, tr.cmd === 'ask' ? null : tr) ? oa : out;
+    }
+    if (TS.positional(tr, text)) {
+      var opn = await runSafe(tr, text, 'ai');
+      step('planner -> PUBLIC ' + TS.line(tr) + ', asked about where the student is -> on this device, never composed');
+      return opn && opn.length && !TS.weak(opn, tr) ? opn : out;
+    }
+    // Part A: the planner's public tool runs here, then Haiku writes the answer from what it returned
+    var items = [], q2 = tr.cmd === 'ask' && String(tr.args.q || '').trim().length > 2 ? String(tr.args.q).replace(/\s+/g, ' ').trim().slice(0, 300) : text;
+    if (tr.cmd !== 'ask') {
+      var same = guess && guess.type === 'tool' && TS.line(guess.cmd) === TS.line(tr);
+      var o2 = same ? out : await runSafe(tr, text, 'ai');
+      if (B.pending || hasCard(o2)) { step('planner command started a request -> on this device'); return o2; }
+      if (o2 && o2.length && !TS.weak(o2, tr)) items.push({ type: 'tool', cmd: same ? guess.cmd : tr, out: o2 });
+      step('planner -> PUBLIC ' + TS.line(tr) + (items.length ? '' : ' (came up empty)'));
+    } else step('planner -> ask "' + q2.slice(0, 80) + '"');
+    if (guess && !weak && !(guess.type === 'tool' && items.some(function (x) { return x.type === 'tool' && TS.line(x.cmd) === TS.line(guess.cmd); }))) items.push(guess); // Tommy's own answer stays in the context
+    return compose(text, items, guess && !weak ? out : null, { q: q2, planned: true });
+  };
+
+  // 4) compose: the public data -> Haiku's answer -> fact check -> one message (ai-answer-ui.js renders it)
+  async function compose(text, items, fallback, opts) {
+    var R = TS.route, step = function (x) { R.steps.push(x); };
+    var ai = await aiState(), q = String(opts.q || text);
+    items = (items || []).slice();
+    // Tommy's built-in USC page answer for the (rewritten) question, when it isn't weak
+    if (!items.some(function (x) { return x.type === 'kb'; })) { var kb = await kbItem(q); if (kb) items.push(kb); }
+    if (!items.length) { step('4 nothing public answers it'); return search(text, q, { tools: 0 }); }
+    if (!ai.compose) { step('4 composing is off here -> verified data on this device'); return verifiedOnly(items, fallback); }
+    var ctx = AI.composeContext(text, items, { q: q, today: TA.fmtLongDate(TA.today()) });
+    if (!ctx) { step('4 privacy boundary refused the context (' + (AI.lastRefusal || '') + ') -> Tommy on this device'); return verifiedOnly(items, fallback); }
+    // every composed answer cites USC sources: data without one (a building code from the map) stays Tommy's own answer
+    if (!ctx.sources.some(function (x) { return /^https?:\/\/([a-z0-9-]+\.)*usc\.edu(\/|$)/i.test(x.url); })) { step('4 no USC source to cite -> Tommy on this device'); return verifiedOnly(items, fallback); }
+    TS.progress('compose');
+    R.ai.push('answer');
+    var res = null;
+    try { res = await AI.answer(text, ctx); } catch (e) { res = null; }
+    if (!res) { step('4 compose failed -> verified data on this device'); return verifiedOnly(items, fallback); }
+    if (res.status === 'insufficient') { step('4 compose -> insufficient (' + ctx.tools + ' campus tools)'); return search(text, q, { tools: ctx.tools, insufficient: true }); }
+    var san = AI.sanitizeAnswer(res.answer_md, ctx.sources), fc = AI.factCheck(san.md, ctx.text);
+    if (!san.md) { step('4 empty answer -> verified data on this device'); return verifiedOnly(items, fallback); }
+    if (!fc.ok) {
+      var miss = fc.missing.map(function (f) { return f.text; }).slice(0, 10);
+      step('4 fact check failed [' + miss.join(', ') + '] -> verified data, flagged');
+      if (AI.flag) { R.ai.push('flag'); AI.flag({ question: text, line: lineOf(items), missing: miss, reason: 'factcheck' }); }
+      return verifiedOnly(items, fallback, { kind: 'factcheck', missing: miss });
+    }
+    var cited = [];
+    res.cites.forEach(function (i) { var x = ctx.sources[i]; if (x && cited.indexOf(x) < 0) cited.push(x); });
+    // a provided source the answer links to is cited too (the sanitizer kept only links to provided sources)
+    (san.md.match(/\]\((https?:\/\/[^)\s]+)\)/g) || []).forEach(function (l) {
+      var u = AI.normUrl(l.slice(2, -1)), x = ctx.sources.filter(function (y) { return AI.normUrl(y.url) === u; })[0];
+      if (x && cited.indexOf(x) < 0) cited.push(x);
+    });
+    if (!cited.length) cited = ctx.sources.slice();
+    step('4 composed from ' + ctx.tools + ' campus tool(s), ' + cited.length + ' source(s)' + (san.removed ? ', ' + san.removed + ' link(s) removed' : ''));
+    var tool = items.filter(function (x) { return x.type === 'tool'; })[0];
+    var verified = items.map(function (it) {
+      var msgs = it.type === 'kb' ? [it.msg] : (it.out || []).filter(function (m) { return m && m.role === 'bot'; });
+      return { line: it.type === 'tool' ? TS.line(it.cmd) : 'Tommy’s USC pages', kb: it.type === 'kb', md: msgs.map(function (m) { return String(m.md || ''); }).filter(Boolean).join('\n\n') };
+    });
+    var chips = tool ? (((tool.out || []).filter(function (m) { return m && m.role === 'bot'; })[0] || {}).chips || []).slice(0, 3) : [];
+    var usc = cited.filter(function (x) { return /^https?:\/\/([a-z0-9-]+\.)*usc\.edu(\/|$)/i.test(x.url); }).length;
+    var m = { role: 'bot', kind: 'c', md: san.md, chips: chips, sources: cited.map(function (x) { return { url: x.url, title: x.title }; }),
+      ai: { kind: 'compose', model: 'Claude Haiku', tools: ctx.tools, sources: cited.length, usc: usc, linksRemoved: san.removed, verified: verified },
+      script: { line: tool ? TS.line(tool.cmd) : TS.line({ cmd: 'ask', args: { q: q.slice(0, 200) } }), via: 'compose', accurate: true, badge: 'Claude Haiku · ' + plural(ctx.tools, 'campus tool') + ' · ' + plural(cited.length, usc === cited.length ? 'USC source' : 'source') } };
+    try { B.ctx.offer = null; B.ctx.lastChips = chips.map(function (x) { return [TA.NLU.normalize(x.label).replace(/[.!?]+$/, ''), x.value]; }); if (B.persist) B.persist(); } catch (e) { /* context is best-effort */ }
+    return [m];
+  }
+  // 5) USC websites only. The server flags "new script needed" for every search.
+  async function search(text, q, o) {
+    var R = TS.route, step = function (x) { R.steps.push(x); }, ai = await aiState();
+    if (ai.search) {
+      TS.progress('search');
+      R.ai.push('search');
       var found = null;
       try { found = await AI.uscSearch(q, text); } catch (e) { found = null; }
-      if (found && found.length) return found;
+      if (found && found.length) {
+        step('5 USC search -> answer with ' + ((found[0] && found[0].sources) || []).length + ' source(s)');
+        remember(text, { cmd: 'ask', args: { q: String(q).slice(0, 200) } });
+        try { B.ctx.offer = null; B.ctx.lastChips = []; if (B.persist) B.persist(); } catch (e) { /* best-effort */ }
+        return found;
+      }
+      if (found) { step('5 USC search found nothing (the server flagged it) -> honest note'); return TS.notFound(text, q, { searched: true, flagged: true, tools: o.tools }); }
+      step('5 USC search unavailable or failed');
     }
-    // The AI read it as a USC question: never answer with the "I can only help with questions about USC" refusal;
-    // the USC pages closest to the AI's clearer question are more useful.
-    var offTopic = (out || []).some(function (m) { return m && m.kind === 'off'; });
-    if (offTopic && out2 && out2.length && !(out2 || []).some(function (m) { return m && m.kind === 'off'; })) return out2;
+    var fl = false;
+    if (AI && AI.flag) { R.ai.push('flag'); fl = AI.flag({ question: text, line: '', missing: [], reason: 'no-script' }) !== false; }
+    step('5 no USC search -> honest note' + (fl ? ', flagged' : ''));
+    return TS.notFound(text, q, { searched: false, flagged: fl, tools: o.tools });
+  }
+  // the verified tool answer itself (on this device): the AI's text is not shown
+  function verifiedOnly(items, fallback, note) {
+    var tool = (items || []).filter(function (x) { return x.type === 'tool'; })[0], out = null;
+    if (tool) out = tool.out;
+    else if (fallback && fallback.length) out = fallback;
+    else if (items && items[0] && items[0].type === 'kb') {
+      var km = items[0].msg;
+      if (!km.script) km.script = { line: TS.line({ cmd: 'ask', args: { q: String(TS.route && TS.route.text || '').slice(0, 200) } }), via: 'script', accurate: true, badge: 'Tommy · on your phone' };
+      out = [km];
+    } else out = fallback || [];
+    if (note && out && out.length) { var b0 = out.filter(function (m) { return m && m.role === 'bot'; })[0]; if (b0) b0.aiNote = note; }
     return out;
+  }
+  function lineOf(items) { return (items || []).map(function (x) { return x.type === 'tool' ? TS.line(x.cmd) : 'ask'; }).join(' + ').slice(0, 200); }
+  function plural(nn, w) { return nn + ' ' + w + (nn === 1 ? '' : 's'); }
+  function hasCard(out) { return (out || []).some(function (m) { return m && m.card; }); }
+  async function runSafe(c, text, via) { try { return await runCmd(c, text, via); } catch (e) { console.error(e); return null; } }
+  // the public twin of a private command, only when the AI writes answers here (otherwise the private command runs as before)
+  async function twinFor(c, text) { var t = TS.publicTwin(c, text); return t && (await aiState()).compose ? t : null; }
+  // the FAQ bank's fallback answer that Trojan Assist's brain returned (js/ta/faq.js)
+  function faqOf(out) {
+    var b = (out || []).filter(function (m) { return m && m.role === 'bot'; });
+    return b.length === 1 && b[0].faq && b[0].faq.id && TS.cmds.faq ? String(b[0].faq.id) : null;
+  }
+  // a brain answer that is Trojan Assist's USC knowledge base for this question (B.answer, marked by ai-api.js)
+  function kbOf(out, text) {
+    var b = (out || []).filter(function (m) { return m && m.role === 'bot'; });
+    if (b.length !== 1 || !AI || !AI.kbInfo) return null;
+    var k = AI.kbInfo(b[0]);
+    return k && /^(?:c|f|p)$/.test(k.kind) ? b[0] : null;
+  }
+  async function kbItem(q) {
+    if (!B.answer || !TA.Search || !TA.Search.ready) return null;
+    var m = null;
+    try { m = await B.answer(q, TA.NLU.parse(q), { quiet: true }); } catch (e) { m = null; }
+    return m && !TS.weak([m]) && AI && AI.kbInfo && AI.kbInfo(m) ? { type: 'kb', msg: m } : null;
+  }
+  async function aiState() {
+    try { if (AI && AI.sampleReady) await AI.sampleReady(); } catch (e) { /* stays off */ }
+    var on = !!(AI && typeof AI.translate === 'function' && AI.enabled && AI.enabled());
+    var can = function (k) { try { return !!(AI.can && AI.can(k)); } catch (e) { return false; } };
+    return { on: on, compose: on && can('answer') && typeof AI.answer === 'function' && typeof AI.composeContext === 'function', search: on && can('search') && typeof AI.uscSearch === 'function' };
+  }
+  function routeCtx(hint) {
+    var c = { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC' +
+        '\nunsupported {feature} — the student wants something DONE that no command and no ACTION can do; feature = what they wanted done, at most 8 words, no names, numbers or personal details',
+      actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) };
+    if (hint) c.hint = hint;
+    return c;
+  }
+  // typing indicator text while the AI works (js/ta/ai-answer-ui.js keeps the dots up)
+  var PHASE = { plan: 'Claude Haiku is reading your question…', compose: 'Writing from Tommy’s verified USC data…', search: 'Searching USC websites…' };
+  TS.progress = function (k) { try { if (UI.typingNote) UI.typingNote(PHASE[k] || String(k || '')); } catch (e) { /* the dots stay */ } };
+
+  // Part B: "This isn't a feature yet." The team hears about it through a missing-feature flag that carries the
+  // translator's short feature description only (never the student's words). Without a flag, the reply doesn't claim one.
+  TS.UNSUPPORTED_MD = "This isn't a feature yet. We've flagged it for the Trojan Hub team so it can be added.";
+  TS.unsupported = function (text, tr) {
+    var feat = String((tr && tr.args && tr.args.feature) || '').replace(/\s+/g, ' ').trim().slice(0, 80), sent = false;
+    if (feat && !TS.personal(feat) && AI && AI.flag && AI.can && AI.can('flag')) { if (TS.route) TS.route.ai.push('flag'); sent = AI.flag({ question: feat, reason: 'missing-feature' }) !== false; }
+    var cmd = { cmd: 'unsupported', args: feat ? { feature: feat } : {} };
+    var m = { role: 'bot', kind: 'c', chips: [], md: sent ? TS.UNSUPPORTED_MD : "This isn't a feature yet, so I can't do that for you here." };
+    m.script = { line: TS.line(cmd), via: 'ai', accurate: true, badge: 'Claude Haiku · read your words (no command or action does this yet)' };
+    remember(text, cmd);
+    if (TS.route) TS.route.steps.push('3 planner -> unsupported' + (feat ? ' (' + feat + ')' : '') + ' -> "not a feature yet"' + (sent ? ', flagged missing-feature' : ', not flagged'));
+    return [m];
   };
-  // an answer that didn't really answer: nothing, "couldn't find", an off-topic refusal or a closest-match guess
-  TS.weak = function (out) { return missed(out) || !!(B.r4Unanswered && B.r4Unanswered(out) && !(out || []).some(function (m) { return m && m.card; })); };
+  // the honest "couldn't find": never Tommy's unrelated closest-match guess once the AI judged it insufficient
+  TS.notFound = function (text, q, o) {
+    var md = o.searched ? "I couldn't find this on USC's pages or websites." : "I couldn't find this in the USC pages I carry.";
+    if (o.flagged) md += " I've flagged it for the Trojan Hub team.";
+    remember(text, { cmd: 'ask', args: { q: String(q || text).slice(0, 200) } });
+    try { B.ctx.offer = null; B.ctx.lastChips = []; if (B.persist) B.persist(); } catch (e) { /* best-effort */ }
+    return [{ role: 'bot', kind: 'c', md: md, chips: [], ai: { kind: 'notfound', model: 'Claude Haiku', searched: !!o.searched, tools: o.tools || 0 },
+      script: { line: (o.searched ? 'search q="' : 'ask q="') + String(q || text).slice(0, 120).replace(/"/g, '\\"') + '"', via: o.searched ? 'search' : 'compose', accurate: true, badge: o.searched ? 'Claude Haiku · searched USC websites' : 'Claude Haiku' } }];
+  };
+  // the planner says it isn't about USC and Tommy's own answer is a guess: a polite note instead
+  TS.notUSC = function (text, out) {
+    if ((out || []).some(function (m) { return m && m.kind === 'off'; })) return out;
+    var m = { role: 'bot', kind: 'off', md: 'I can only help with USC and campus life, so I can’t answer that one. Try asking about classes, places and hours, events, clubs, or your own account.', chips: (B.starterChips ? B.starterChips(!!(TA.State && TA.State.d && TA.State.d.signedIn)) : []).slice(0, 3) };
+    m.script = { line: 'none', via: 'ai', accurate: true, badge: 'Claude Haiku · read your words (not about USC)' };
+    return [m];
+  };
+
+  // ===================================================================================================
+  // PUBLIC vs PRIVATE (code-enforced). TS.isPublic(name) is true ONLY for commands explicitly marked public: true;
+  // everything else is private by default, including every `do` action. The built-in public commands (their output is
+  // public data only) are marked here; these are never public, whatever a flag says.
+  // ===================================================================================================
+  var BUILTIN_PUBLIC = ['hours.check', 'course.who', 'gates.status', 'breaks.next', 'building.find', 'events.find'];
+  // the same list as the server's PRIVATE_RE (netlify/functions/tommy.mjs, scripts/build-netlify.cjs): the student's
+  // account, plans and actions, and anything read from where the student is or what they picked
+  var NEVER_PUBLIC = /^(?:do|ask|none|unsupported|events\.recommend|events\.rate|zone\.check|bikes\.nearest|place\.(?:where|nearest|walk|find)|course\.conflict|club\.recommend|cal\.(?:registration|day)|(?:plan|grades|hw|exams|my|wallet|account|requests|watch|guest|news|report)(?:\.[\w.-]+)?)$/;
+  function markBuiltins() { BUILTIN_PUBLIC.forEach(function (k) { var sp = TS.cmds[k]; if (sp && sp.public == null) sp.public = true; }); addTwins(); }
+  // place.find (js/ta/scripts-plus.js) ranks places by evidence in public data (USC pages, OpenStreetMap, USC history),
+  // but it also adds walking times from where the student is and lists the nearest first, so it is PRIVATE. Its PUBLIC
+  // twin runs the same finder with no position: during the run TH.route is unavailable (no walking times, no
+  // nearest-first) and TH.ME is the campus map's fixed center. The routing uses the twin only when the AI writes answers
+  // here and the question isn't about distance from the student ("near me", "closest", "walk"); it is internal (never
+  // compiled from words, not in the translator's catalogue).
+  var TWINS = { 'place.find': 'place.find.public' };
+  var NEAR_ME = /\b(?:near|nearest|nearby|closest|close (?:to|by)|around (?:here|me)|walk\w*|far|distance|from (?:here|me)|by me|minutes? away|blocks? away)\b/;
+  function noPosition(fn) {
+    var H = window.TH || {}, r0 = H.route, me0 = H.ME;
+    H.route = function () { throw new Error('no position in a public answer'); };
+    H.ME = { x: 0, y: 0, label: 'Campus center', short: 'campus center' };
+    try { return fn(); } finally { H.route = r0; H.ME = me0; }
+  }
+  function addTwins() {
+    Object.keys(TWINS).forEach(function (k) {
+      var sp = TS.cmds[k], tw = TWINS[k];
+      if (!sp || TS.cmds[tw] || typeof sp.run !== 'function') return;
+      TS.cmds[tw] = { name: tw, internal: true, public: true, twinOf: k, args: (sp.args || []).slice(), covers: sp.covers,
+        about: String(sp.about || '') + ' (Public version: no walking times or distances from the student.)',
+        match: function () { return null; },
+        run: function (a) { return noPosition(function () { return TS.cmds[k].run(a); }); } };
+    });
+  }
+  // public commands that also report where the student is (a line publicText in ai-api.js removes before anything is
+  // sent): asked about the student's position, they answer on this device only
+  var POSITIONAL = { 'gates.status': 1 };
+  TS.positional = function (c, text) { return !!(c && POSITIONAL[c.cmd] && NEAR_ME.test(TS.norm(text))); };
+  TS.publicTwin = function (c, text) {
+    var tw = c && TWINS[c.cmd];
+    if (!tw || NEAR_ME.test(TS.norm(text))) return null;
+    addTwins();
+    return TS.cmds[tw] && TS.isPublicCmd(tw) ? { cmd: tw, args: Object.assign({}, c.args || {}) } : null;
+  };
+  // internal commands (the twins) stay out of the translator's catalogue
+  var catalog0 = TS.catalog;
+  TS.catalog = function () { return String(catalog0.apply(this, arguments)).split('\n').filter(function (l) { var sp = TS.cmds[l.split(' ')[0]]; return !(sp && sp.internal); }).join('\n'); };
+  TS.isPublic = function (name) { markBuiltins(); var sp = TS.cmds[String(name || '')]; return !!(sp && sp.public === true); };
+  TS.isPublicCmd = function (name) { name = String(name || ''); return !NEVER_PUBLIC.test(name) && TS.isPublic(name); };
+  TS.BUILTIN_PUBLIC = BUILTIN_PUBLIC.slice();
+  setTimeout(markBuiltins, 0); // once every command file has loaded (course.who is defined in course-info.js)
+  // provenance: every command run is reported, so js/ta/ai-api.js knows which output a public command produced
+  // events.find lists EngageSC's public event listings but names no source: cite EngageSC (shown here and given to the AI)
+  var DEFAULT_SRC = { 'events.find': [{ url: 'https://engage.usc.edu/events', title: 'Events – EngageSC (USC)' }] };
+  var run0 = TS.run;
+  TS.run = function (c) {
+    var res = run0.apply(this, arguments);
+    try {
+      var ds = c && DEFAULT_SRC[c.cmd];
+      if (ds && Array.isArray(res)) res.forEach(function (m) { if (m && m.role === 'bot' && !m.card && !(m.sources || []).length) m.sources = ds.map(function (x) { return { url: x.url, title: x.title }; }); });
+      if (AI && AI.noteRun) AI.noteRun(c && c.cmd, res);
+    } catch (e) { /* unregistered output stays private */ }
+    return res;
+  };
+
+  // ===================================================================================================
+  // ROUTING HELPERS: weak answers, personal wording, account wording, question coverage
+  // ===================================================================================================
+  TS.norm = function (x) { var t = TA.NLU.normalize ? TA.NLU.normalize(String(x == null ? '' : x)) : String(x == null ? '' : x).toLowerCase(); return t.replace(/[’']/g, '').replace(/[?!.]+$/, '').trim(); };
+  // an answer that didn't really answer: nothing, "couldn't find", an off-topic refusal, a closest-match guess, or a public
+  // script's own "I couldn't find ..." (a private script saying so is a true answer about the student's own data)
+  var NOT_FOUND = /^(?:#{1,4}\s*)?(?:I couldn[’']t (?:find|match)\b|I don[’']t have (?:a|an|any) (?:building|place|event|USC FAQ)\b|No upcoming events found\b|The (?:planner|class schedule) is still loading\b)/;
+  TS.weak = function (out, cmd) {
+    if (missed(out)) return true;
+    var list = out || [];
+    if (list.some(function (m) { return m && m.card; })) return false;
+    if (B.r4Unanswered && B.r4Unanswered(list)) return true;
+    if (cmd && TS.cmds[cmd.cmd] && !TS.isPublicCmd(cmd.cmd)) return false;
+    var m = list.filter(function (x) { return x && x.role === 'bot'; })[0];
+    return !!(m && NOT_FOUND.test(String(m.md || '').trim()));
+  };
+  TS.describe = function (out) {
+    var m = (out || []).filter(function (x) { return x && x.role === 'bot'; })[0], k = m && AI && AI.kbInfo ? AI.kbInfo(m) : null;
+    if (!m) return 'nothing';
+    if (m.card) return 'card (' + (m.card.type || 'action') + ')';
+    if (k) return k.kind === 'p' ? 'USC page extract (' + (k.conf || '?') + ')' : k.kind === 'f' ? 'askUSC answer' : 'curated USC answer';
+    return 'answer (' + (m.kind || '?') + ')';
+  };
+  TS.validCmd = function (x) {
+    if (!x || typeof x.cmd !== 'string') return false;
+    if (x.args == null || typeof x.args !== 'object' || Array.isArray(x.args)) x.args = {};
+    if (TS.cmds[x.cmd]) return true;
+    if (x.cmd === 'do') { var id = String(x.args.action || ''); return !!((TA.Actions && TA.Actions.get(id)) || /^proc:[\w.-]+$/.test(id)); }
+    return x.cmd === 'ask';
+  };
+  // the student's own identity (kept for older callers; js/ta/ai-api.js checks it again at the boundary)
+  TS.privateHit = function (x) {
+    try {
+      var d = (TA.State && TA.State.d) || {}, pr = d.profile || {}, st = (TH.student && TH.student()) || {}, low = String(x || '').toLowerCase();
+      return [pr.netid, pr.email, pr.uscid, pr.phone, pr.emergency, st.full, pr.first && pr.last ? pr.first + ' ' + pr.last : '', d.housing && d.housing.room]
+        .some(function (v) { v = String(v || '').toLowerCase().trim(); return v.length >= 4 && low.indexOf(v) >= 0; });
+    } catch (e) { return true; }
+  };
+  // personal topics (health, mental and sexual health, immigration, identity, SSN), personal data the student typed, and
+  // help/need wording: never sent to the AI (Tommy's own on-device answer stands)
+  TS.PERSONAL = /\b(?:pregnan\w*|abortion|contracepti\w*|plan b|birth control|condoms?|stds?|stis?|hiv|herpes|sex|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|ocd|therap\w*|counsel\w*|psychiatr\w*|mental health|medicat\w*|prescription\w*|pills?|meds|eating disorder|anorexi\w*|bulimi\w*|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|weed|alcohol\w*|disabilit\w*|disabled|accommodations?|osas|sick|illness|ill|fever|flu|covid|symptoms?|injur\w*|pain|doctor|nurse|vaccin\w*|allerg\w*|my health|health (?:issue|problem|condition)s?|immigra\w*|undocumented|daca|visas?|deport\w*|green card|citizenship|asylum|refugee|f-?1|j-?1|h-?1b|opt(?![- ]?(?:out|in|into)\b)|cpt|i-?20|ds-?2019|sevis|lgbt\w*|gay|lesbian|bisexual|queer|transgender|trans|nonbinary|non-binary|gender identity|sexual orientation|coming out|pronouns?|preferred name|chosen name|name change|religio\w*|ssn|social security)\b/;
+  TS.PII = /[\w.+-]+@[\w-]+\.[a-z]{2,}|\b\d{3}-\d{2}-\d{4}\b|\(?\b\d{3}\)?[-. ]\d{3}[-. ]\d{4}\b|\b\d{4}-\d{4}-\d{2}\b|\b\d{9,10}\b|\b(?:\d[ -]?){13,19}\b/i;
+  TS.personal = function (text, n) {
+    var raw = String(text == null ? '' : text);
+    try {
+      n = n || TA.NLU.parse(raw);
+      if (n.crisis || n.emergency || n.distress || n.disclose || n.threat || n.threatMe || n.violence || n.hazing || n.medical || n.overdose) return true;
+      if (B.sensitive && B.sensitive(n)) return true;
+    } catch (e) { return true; }
+    if (TS.PERSONAL.test(TS.norm(raw)) || TS.PII.test(raw)) return true; // normalized: "I'll" is "i will", never "ill"
+    return typeof helpCue === 'function' && helpCue(TS.norm(raw));
+  };
+  // account and task wording ("check my grades", "how'd i do in math", "book me a room"): Part B. The AI may turn the
+  // words into a script, but the result is never composed, sent or searched
+  var ACCT_N = '(?:grades?|gpa|scores?|marks?|transcripts?|units?|credits?|class(?:es)?|courses?|schedule|calendar|timetable|homework|hw|assignments?|problem sets?|psets?|exams?|midterms?|finals?|quiz(?:zes)?|tests?|balance|bill|billing|statements?|tuition|fees?|payments?|refunds?|financial aid|aid|scholarships?|loans?|swipes?|meal plan|dining dollars|points|uscard|usc card|usc id|student id|id card|id number|netid|password|login|card|wallet|pass(?:es)?|room|dorm|apartment|housing|roommates?|lease|rent|contract|orders?|reservations?|bookings?|appointments?|guests?|permits?|holds?|registration|enrollment|waitlists?|advisor|adviser|major|minor|standing|requests?|reports?|watch ?list|watches|rsvps?|tickets?|plans?|day|week|weekend|semester|term|(?:mon|tues|wednes|thurs|fri|satur|sun)day|profile|account|email|inbox|mail|packages?|prescriptions?|insurance|records?|progress|degree audit|stars report|clubs?|newsletters?|events?|reminders?|notifications?|alerts?|messages?|info|information|data|address|phone|number)';
+  TS.ACCOUNT = new RegExp('\\b(?:my|mine)\\s+(?:[a-z0-9]+\\s+)?' + ACCT_N + '\\b' +
+    '|\\b(?:check|show|see|view|pull up|look up|open|read)\\s+(?:me\\s+)?my\\b' +
+    '|\\b(?:book|reserve|order|register|enroll|sign|guest|cancel|drop|add|pay|renew|schedule|update|change|edit|switch|swap|withdraw|rsvp|remind|notify|text|email|message|call|ping)\\s+(?:me|my|us)\\b' +
+    '|\\bam i (?:registered|enrolled|signed up|on (?:the|a) waitlist|waitlisted|eligible|cleared|taking|passing|failing|on track|behind|ahead|in)\\b' +
+    '|\\b(?:did|have) i (?:get|got|do|done|pass|passed|fail|failed|make|made|miss|missed|register|registered|enroll|enrolled|pay|paid|submit|submitted|turn|turned|finish|finished|complete|completed|meet|met|sign|signed|book|booked|order|ordered)\\b' +
+    '|\\b(?:how (?:am|did|have) i (?:do|doing|done|been doing)|howd i do|what did i (?:get|make|score)|how much do i owe|do i owe|what do i owe)\\b');
+  TS.account = function (text, n) {
+    if (TS.ACCOUNT.test(TS.norm(text))) return true;
+    try { n = n || TA.NLU.parse(String(text || '')); return !!(TS.isCommand && TS.isCommand(n)); } catch (e) { return false; }
+  };
+
+  // ---- coverage: which words of the question the answer doesn't cover ----
+  var STOP = {}, STOPS = {};
+  ('a an the and or but nor so yet if then than that thats this these those there theres here it its itself i im ive id ill me my mine myself ' +
+   'we us our ours you youre your yours u ur he she they them their his her him is are was were be been being am do does did done doing dont ' +
+   'doesnt didnt have has had having get gets got getting can cant could would should will wont shall may might must need needs want wants wanna ' +
+   'like looking look find show tell give know let lets help please pls plz thanks thank thx hey hi hello yo tommy what whats which who whos whom ' +
+   'whose when whens where wheres why how hows of to in on at by for with without from about into onto over under near nearby nearest closest ' +
+   'around off out up down as just really very much many more most less some any anything something everything nothing someone somebody anyone ' +
+   'anywhere somewhere also too even still again ever never not no yes ok okay well kinda sorta lot lots bunch kind sort type types one ones other ' +
+   'others else another different thing things stuff way ways place places spot spots location locations area areas good best great nice cool ' +
+   'awesome top decent better favorite perfect campus usc university school college trojan trojans student students people go going gonna try ' +
+   'make take put use see recommend recommendation recommendations suggest suggestion suggestions option options list search today now currently ' +
+   'right rn asap soon maybe actually basically literally fr lol tbh ngl idk btw able possible available exist exists pm next upcoming coming').split(' ').forEach(function (w) { STOP[w] = 1; });
+  function toks(x) { return String(x || '').toLowerCase().replace(/[’']/g, '').replace(/&/g, ' and ').replace(/(\d)(am|pm)\b/g, '$1 $2').split(/[^a-z0-9]+/).filter(function (w) { return w.length > 1; }); }
+  function stem(w) {
+    w = String(w || '');
+    if (w.length <= 3 || /\d/.test(w)) return w;
+    if (/ies$/.test(w) && w.length > 4) w = w.slice(0, -3) + 'y';
+    else if (/(?:sses|shes|ches|xes|zes)$/.test(w)) w = w.slice(0, -2);
+    else if (/s$/.test(w) && !/(?:ss|us|is|ys)$/.test(w)) w = w.slice(0, -1);
+    if (/ing$/.test(w) && w.length > 5) { w = w.slice(0, -3); if (/([^aeiouls])\1$/.test(w)) w = w.slice(0, -1); }
+    else if (/ed$/.test(w) && w.length > 4) { w = w.slice(0, -2); if (/([^aeiouls])\1$/.test(w)) w = w.slice(0, -1); else if (/i$/.test(w)) w = w.slice(0, -1) + 'y'; }
+    if (/e$/.test(w) && w.length > 4) w = w.slice(0, -1);
+    return w;
+  }
+  Object.keys(STOP).forEach(function (w) { STOPS[stem(w)] = 1; });
+  // a question word is covered when the answer says it, or one of its synonyms ([question words], [evidence in the answer])
+  var SYN = [
+    [['green', 'greenery', 'garden', 'plant', 'tree', 'nature', 'natural', 'grass', 'grassy', 'lawn', 'park', 'outdoor', 'outdoors', 'outside', 'leafy', 'lush', 'shade', 'shady', 'flower', 'botanical', 'landscaped'],
+      ['green', 'greenery', 'garden', 'tree', /\bparks?\b/, 'lawn', 'courtyard', 'landscaped', 'landscaping', 'plant', 'grass', 'outdoor', 'outdoors', 'patio', 'terrace', 'flower', 'botanical', 'nature', 'shade', 'quad', 'open air', 'alfresco']],
+    [['old', 'older', 'oldest', 'historic', 'historical', 'history', 'ancient', 'vintage', 'classic', 'heritage', 'traditional', 'antique'],
+      ['historic', 'historical', 'oldest', 'older', 'old', 'landmark', 'heritage', /\b1[89]\d\d\b/, /\bbuilt in\b/, /\bdat(?:es|ing) (?:back|from)\b/]],
+    [['beautiful', 'beauty', 'pretty', 'gorgeous', 'stunning', 'scenic', 'aesthetic', 'aesthetically', 'lovely', 'charming', 'picturesque', 'cute', 'instagrammable', 'photogenic', 'majestic', 'grand', 'iconic', 'architecture'],
+      ['beautiful', 'beauty', 'stunning', 'gorgeous', 'scenic', 'ornate', 'grand', 'iconic', 'landmark', 'stained glass', 'murals', 'fresco', 'romanesque', 'renaissance', 'gothic', 'elegant', 'striking', 'lovely', 'charming', 'picturesque', 'majestic', 'rotunda', 'chandelier']],
+    [['cozy', 'cosy', 'comfy', 'comfortable', 'couch', 'couches'], ['cozy', 'cosy', 'comfortable', 'comfy', 'couch', 'armchair', 'sofa', 'lounge', 'soft seating', 'fireplace']],
+    [['quiet', 'silent', 'silence', 'peaceful', 'calm', 'tranquil', 'noise', 'noisy', 'loud', 'distraction'],
+      ['quiet', 'silent', 'silence', 'peaceful', 'calm', 'tranquil', 'soundproof', 'noise', 'pod', 'no talking']],
+    [['late', 'night', 'overnight', 'midnight', 'tonight', 'nighttime', 'evening', '24', '247', 'allnighter'],
+      [/\b24 ?(?:hours?|\/ ?7|-hour)\b/, 'midnight', 'overnight', 'late', 'night', 'nightly', 'evening', 'tonight', /\b(?:9|10|11|12)(?::\d\d)? ?p\.?m\b/, /\b[1-3](?::\d\d)? ?a\.?m\b/]],
+    [['early', 'morning', 'sunrise'], ['morning', 'early', 'breakfast', /\b(?:[5-9]|1[01])(?::\d\d)? ?a\.?m\b/, 'open']],
+    [['cheap', 'affordable', 'inexpensive', 'budget', 'free', 'cost', 'price', 'pricey', 'pricy', 'expensive', 'money'],
+      ['free', 'cost', 'price', 'afford', 'affordable', 'discount', 'fee', 'dollar', /\$\s?\d/, /\b(?:no|free of) charge\b/]],
+    [['close', 'open', 'hour', 'time', 'schedule', 'until'],
+      ['open', 'close', 'hour', 'until', /\b\d{1,2}(?::\d\d)? ?[ap]\.?m\b/, /\b24 ?(?:hours?|\/ ?7)\b/, 'schedule']],
+    [['day', 'daily', 'weekday'], ['today', 'day', 'daily', 'weekday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', /\b(?:mon|tue|wed|thu|fri|sat|sun)\b/]],
+    [['weekend', 'saturday', 'sunday'], ['saturday', 'sunday', 'weekend', /\b(?:sat|sun)\b/]],
+    [['teach', 'taught', 'professor', 'prof', 'instructor', 'lecturer', 'teacher', 'faculty'], ['taught', 'teach', 'instructor', 'professor', 'lecturer', 'faculty', 'section']],
+    [['apply', 'application', 'enroll', 'enrollment', 'signup', 'register', 'registration', 'join'], ['apply', 'application', 'applying', 'enroll', 'enrollment', 'sign up', 'register', 'registration', 'request', 'form', 'submit', 'join', 'portal', /\beligib/]],
+    [['class', 'course', 'lecture', 'section', 'seminar'], ['class', 'course', 'lecture', 'section', 'seminar', 'lab', 'discussion']],
+    [['intro', 'introductory', 'introduction', 'beginner', 'beginning', 'basic', 'basics', 'fundamental'], ['introduction', 'introductory', 'intro', 'fundamental', 'basic', 'beginning', 'principles']],
+    [['study', 'work', 'focus', 'read', 'cram', 'homework', 'laptop'], ['study', 'work', 'desk', 'table', 'seat', 'seating', 'space', 'room', 'library', 'lounge', 'pod', 'carrel', 'quiet', 'reading']],
+    [['eat', 'food', 'hungry', 'meal', 'lunch', 'dinner', 'breakfast', 'snack', 'restaurant', 'grab'], ['dining', 'food', 'eat', 'meal', 'restaurant', 'cafe', 'café', 'kitchen', 'menu', 'grill', 'market', 'marketplace', 'lunch', 'dinner', 'breakfast', 'snack', 'pizza', 'taco', 'burger', 'bowl']],
+    [['coffee', 'latte', 'espresso', 'cafe', 'caffeine', 'matcha', 'tea'], ['coffee', 'latte', 'espresso', 'cafe', 'café', 'starbucks', 'illy', 'tea', 'matcha', 'grounds', 'literatea']],
+    [['boba', 'bubble'], ['boba', 'bubble', 'sharetea', 'milk tea']],
+    [['gym', 'workout', 'exercise', 'fitness', 'lift', 'lifting', 'weight', 'swim', 'pool', 'cardio'], ['gym', 'fitness', 'recreation', 'rec', 'lyon', 'workout', 'exercise', 'pool', 'swim', 'weight', 'aquatic', 'cardio', 'uytengsu']],
+    [['print', 'printer', 'printing', 'scan', 'scanner', 'copy'], ['print', 'printer', 'printing', 'scan', 'scanner', 'copier', 'copy']],
+    [['wifi', 'internet', 'eduroam', 'network'], ['wifi', 'wi fi', 'internet', 'eduroam', 'network', 'wireless']],
+    [['bike', 'bicycle', 'cycle', 'scooter'], ['bike', 'bicycle', 'rack', 'cycling', 'scooter']],
+    [['parking', 'car', 'drive', 'driving'], ['parking', 'park', 'structure', 'permit', 'lot', 'garage']],
+    [['lost', 'lose', 'missing', 'replace', 'replacement', 'stolen'], ['lost', 'lose', 'missing', 'replace', 'replacement', 'freeze', 'found', 'report', 'stolen', 'theft']],
+    [['id', 'uscard', 'card', 'identification'], ['uscard', 'card', 'id', 'identification', 'mycard']],
+    [['event', 'activity', 'happening', 'fun', 'social', 'party'], ['event', 'activity', 'happening', 'workshop', 'meeting', 'social', 'screening', 'talk', 'fair', 'club', 'show', 'concert', 'game', 'mixer', 'party']],
+    [['outlet', 'charge', 'charging', 'plug', 'power'], ['outlet', 'charge', 'charging', 'plug', 'power', 'usb']],
+    [['group', 'team', 'friend', 'collaborate', 'together', 'partner', 'partners'], ['group', 'team', 'collaborate', 'collaboration', 'together', 'reserve', 'booking', 'room', 'partner', 'classmate', 'peer']],
+    [['room', 'space'], ['room', 'space', 'pod', 'lounge', 'hall', 'area']],
+    [['bathroom', 'restroom', 'toilet', 'washroom'], ['restroom', 'bathroom', 'toilet', 'washroom', 'all gender', 'gender neutral']],
+    [['water', 'fountain', 'refill', 'bottle'], ['water', 'fountain', 'refill', 'hydration', 'bottle']],
+    [['microwave', 'fridge', 'kitchen'], ['microwave', 'fridge', 'kitchen', 'refrigerator']],
+    [['nap', 'sleep', 'rest'], ['nap', 'sleep', 'sleeping', 'rest area', 'cot']],
+    [['dog', 'pet', 'cat', 'animal'], ['pet', 'animal', 'dog', 'cat', 'service animal', 'support animal']],
+    [['shuttle', 'bus', 'tram', 'transit', 'metro', 'train'], ['shuttle', 'bus', 'tram', 'transit', 'metro', 'train', 'line', 'station', 'route', 'stop']],
+    [['lyft', 'uber', 'ride', 'rideshare'], ['lyft', 'uber', 'ride', 'rideshare', 'fryft']],
+    [['entrance', 'gate', 'enter', 'entry', 'access'], ['entrance', 'gate', 'enter', 'entry', 'access', 'open', 'closed']]
+  ];
+  var SYNG = SYN.map(function (g) { var q = {}; g[0].forEach(function (w) { q[w] = 1; q[stem(w)] = 1; }); return { q: q, ev: g[1] }; });
+  // what a command's answer covers by its nature ("when does X close" is what hours.check answers)
+  var IMPLIED = {
+    'hours.check': ['open', 'close', 'hour', 'time'], 'gates.status': ['gate', 'entrance', 'open', 'close', 'enter'], 'bikes.nearest': ['bike', 'park', 'parking', 'rack', 'lock'],
+    'building.find': ['building', 'room', 'locate', 'floor', 'map'], 'breaks.next': ['break', 'holiday', 'recess', 'off', 'vacation', 'class'], 'zone.check': ['zone', 'area', 'boundary', 'cover', 'coverage'],
+    'course.who': ['teach', 'professor', 'instructor', 'class', 'course'], 'events.find': ['event'], 'events.recommend': ['event', 'recommend']
+  };
+  var PRETTY_ADV = /\bpretty (?=(?:good|much|quick|quickly|close|far|cheap|quiet|late|sure|soon|easy|hard|busy|full|empty|big|small|fast|chill|cool|nice|great|bad|long|short|early|well|decent|solid|crowded|packed)\b)/g;
+  TS.leftover = function (text, out, cmd) {
+    var q = TS.norm(text).replace(/\bclose (?:to|by)\b/g, 'near').replace(PRETTY_ADV, '');
+    var asked = [], seen = {};
+    toks(q).forEach(function (w) { var st = stem(w); if (STOP[w] || STOPS[st] || seen[st]) return; seen[st] = 1; asked.push([st, w]); });
+    if (!asked.length) return [];
+    var bots = (out || []).filter(function (m) { return m && m.role === 'bot'; });
+    var atext = bots.map(function (m) { return String(m.md || '') + ' ' + (m.sources || []).map(function (x) { return (x && x.title) || ''; }).join(' '); }).join(' ');
+    var araw = atext.toLowerCase(), aflat = ' ' + toks(atext).join(' ') + ' ', aset = {};
+    var add = function (w) { aset[w] = 1; aset[stem(w)] = 1; };
+    toks(atext).forEach(add);
+    var extra = [];
+    bots.forEach(function (m) { if (Array.isArray(m.covers)) extra = extra.concat(m.covers); });
+    if (cmd) {
+      var sp = TS.cmds[cmd.cmd];
+      if (sp && Array.isArray(sp.covers)) extra = extra.concat(sp.covers);
+      if (IMPLIED[cmd.cmd]) extra = extra.concat(IMPLIED[cmd.cmd]);
+      Object.keys(cmd.args || {}).forEach(function (k) { var v = cmd.args[k]; if (v == null || typeof v === 'object') return; var vw = toks(String(v)); if (vw.length && vw.length <= 5) extra = extra.concat(vw); });
+    }
+    extra.forEach(function (w) { toks(String(w)).forEach(add); });
+    var has = function (ev) {
+      if (ev instanceof RegExp) return ev.test(araw);
+      if (/[^a-z0-9]/.test(ev)) return aflat.indexOf(' ' + toks(ev).join(' ') + ' ') >= 0;
+      return !!(aset[ev] || aset[stem(ev)]);
+    };
+    var covered = function (st, w) {
+      if (aset[st] || aset[w]) return true;
+      for (var i = 0; i < SYNG.length; i++) if ((SYNG[i].q[st] || SYNG[i].q[w]) && SYNG[i].ev.some(has)) return true;
+      if (st.length >= 6) for (var k in aset) if (k.length >= 6 && k.slice(0, 6) === st.slice(0, 6)) return true; // "histor-ic/-y", "librar-y/-ian"
+      return false;
+    };
+    return asked.filter(function (a) { return !covered(a[0], a[1]); }).map(function (a) { return a[1]; });
+  };
 
   // ===================================================================================================
   // UI: every message goes through TS.handle; the script line is shown under the answer
@@ -18429,10 +19605,19 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   var renderMsg0 = UI.renderMsg;
   UI.renderMsg = function (m) {
     var el = renderMsg0.call(UI, m);
-    if (m && m.script && m.role !== 'user' && TA.settings.showScript !== false) {
-      var d = document.createElement('div'); d.className = 'ta-script' + (m.script.via === 'ai' ? ' ai' : '');
-      d.innerHTML = '<span class="ta-script-tag">' + (m.script.via === 'ai' ? 'Claude Haiku · ran on your phone' : 'Tommy · on your phone') + '</span><code>' + esc(m.script.line) + '</code><span class="ta-script-lock" aria-label="Result stayed on this device">' + (m.script.via === 'ai' ? 'Claude saw your words only' : 'nothing sent to AI') + '</span>';
-      d.title = m.script.via === 'ai' ? 'Claude Haiku picked this campus tool from your words. It ran on your phone, and Claude never saw the result.' : 'Tommy answered this on your phone. Nothing was sent to an AI.';
+    var sv = m && m.script && m.role !== 'user' ? m.script.via : null;
+    // compose / search answers carry the "Claude Haiku" tag at the bottom instead (js/ta/ai-answer-ui.js)
+    if (sv && sv !== 'compose' && sv !== 'search') {
+      var viaAI = sv === 'ai', showLine = TA.settings.showScript !== false;
+      var sent = Array.isArray(m.sentToAI) ? m.sentToAI : null;   // null: not known (then nothing is claimed)
+      var data = !!(sent && (sent.indexOf('answer') >= 0 || sent.indexOf('search') >= 0));
+      var lock = data ? 'Claude saw your words + public data' : viaAI || (sent && sent.length) ? 'Claude saw your words only' : sent ? 'nothing sent to AI' : '';
+      var d = document.createElement('div'); d.className = 'ta-script' + (viaAI ? ' ai' : ' device');
+      d.innerHTML = '<span class="ta-script-tag">' + (viaAI ? 'Claude Haiku · ran on your phone' : 'Tommy · on your phone') + '</span>' + (showLine ? '<code>' + esc(m.script.line) + '</code>' : '') +
+        (lock ? '<span class="ta-script-lock" aria-label="What the AI saw">' + lock + '</span>' : '');
+      d.title = data ? (viaAI ? 'Claude Haiku picked this campus tool from your words, and it ran on your phone. ' : 'Tommy answered this on your phone. ') + 'Claude Haiku also saw your question and this public USC data, to write an answer that wasn’t used.'
+        : viaAI ? 'Claude Haiku picked this campus tool from your words. It ran on your phone, and Claude never saw the result.'
+        : 'Tommy answered this on your phone.' + (sent && sent.length ? ' Claude saw your words only.' : sent ? ' Nothing was sent to an AI.' : '');
       el.insertBefore(d, el.firstChild);
     }
     return el;
@@ -18451,6 +19636,178 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     if (!signed) return c;
     return [say('Plan my day', 'plan my day'), say('Plan my week', 'plan my week'), say('What are my grades?', 'what are my grades'), say('What’s due this week?', 'what is due this week'), act('Guest a friend in', 'register a guest for tonight'), act('Notify me when…', 'notify me when i can get a free professional headshot')].concat(c.slice(0, 2));
   };
+})();
+</script><script>/* js/ta/ai-answer-ui.js */
+/* js/ta/ai-answer-ui.js — how Ask Tommy shows answers Claude Haiku wrote (AI-FIRST-SPEC "Display" and "Honest tags").
+ *
+ * A composed answer is ONE bot message:
+ *   1. the AI's answer (links: only the provided USC source URLs survive; checked again here after rendering),
+ *   2. "Verified data": the campus tool's own message, untouched, with its Est./Simulated labels,
+ *   3. the cited sources,
+ *   4. the tag "Claude Haiku · N campus tools · M USC sources".
+ * A USC website search answer carries "Claude Haiku · searched USC websites"; the honest "couldn't find" says what ran.
+ * When the fact check rejected the AI's text, the verified answer is shown with a short note saying so.
+ * On-device answers keep their own tag ("Tommy · on your phone", js/ta/script.js); no AI tag appears when no AI ran.
+ * Also keeps the typing indicator up, with a short note, while the AI plans, writes or searches (UI.typingNote).
+ * Load right after js/ta/script.js (messages come from the routing in script.js, scripts/patch_ai_route.py). */
+(function () {
+  'use strict';
+  var TA = window.TA, UI = TA && TA.UI, AI = TA && TA.AI;
+  if (!UI || typeof UI.renderMsg !== 'function' || UI._aiAnswerUI) return;
+  UI._aiAnswerUI = true;
+  var esc = TA.esc || function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var ICON = {
+    check: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".16"/><path d="M7.5 12.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z" fill="currentColor"/><path d="M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor" opacity=".7"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4.5M12 17.2v.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+  };
+
+  // ---- styles (light and dark follow Trojan Hub's tokens) ----
+  var CSS = [
+    '#ta-log .ta-msg.bot.ta-ai .ta-bubble{border-left:3px solid color-mix(in srgb,var(--gold) 75%,transparent)}',
+    '.ta-verified{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ok-bg) 45%,var(--surface-2));padding:8px 10px 6px}',
+    '.ta-verified-h{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;line-height:1.3;color:var(--muted);margin-bottom:4px}',
+    '.ta-verified-h svg{width:16px;height:16px;color:var(--ok);flex:none}',
+    '.ta-verified-h strong{font-weight:750;text-transform:uppercase;letter-spacing:.06em;color:var(--ok)}',
+    '.ta-verified-item{border-top:1px solid var(--line);padding:5px 0 3px}',
+    '.ta-verified-item:first-of-type{border-top:0}',
+    '.ta-verified-item>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);padding:2px 0}',
+    '.ta-verified-item>summary::-webkit-details-marker{display:none}',
+    '.ta-verified-item>summary::before{content:"\\25B8";font-size:10px;transition:transform .15s}',
+    '.ta-verified-item[open]>summary::before{transform:rotate(90deg)}',
+    '.ta-verified-item>summary code{font:500 11px var(--f-mono,monospace);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;background:transparent;border:0;padding:0}',
+    '.ta-verified .ta-md{font-size:13.5px;line-height:1.45;margin-top:4px}',
+    '.ta-ai-tag{display:flex;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:2px;margin-top:9px;font:700 10.5px/1.3 var(--f-mono,monospace);letter-spacing:.05em;text-transform:uppercase;color:var(--gold-ink)}',
+    '.ta-ai-tag svg{width:14px;height:14px;flex:none}',
+    '.ta-ai-tag>span{flex:1 1 0;min-width:0}',
+    '.ta-ai-tag small{flex-basis:100%;padding-left:20px;font:500 11px/1.3 var(--f-body,sans-serif);letter-spacing:0;text-transform:none;color:var(--muted)}',
+    '.ta-ai-note{display:flex;gap:7px;align-items:flex-start;margin-top:9px;font-size:12.5px;line-height:1.4;color:var(--warn);background:var(--warn-bg);border-radius:10px;padding:6px 9px}',
+    '.ta-ai-note svg{width:15px;height:15px;flex:none;margin-top:1px}',
+    '.ta-script.device .ta-script-tag{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}',
+    // the tag row: the small print about what the AI saw never gets cut; when the row is full it moves to a second line
+    '.ta-script{max-width:100%;flex-wrap:wrap;row-gap:2px}.ta-script code{flex:1 1 0;min-width:40px}',
+    '.ta-typing-note{font-size:12.5px;color:var(--muted)}',
+    '@media (prefers-reduced-motion:reduce){.ta-verified-item>summary::before{transition:none}}'
+  ].join('\n');
+  function addCSS() {
+    if (document.getElementById('ta-ai-answer-css')) return;
+    var st = document.createElement('style'); st.id = 'ta-ai-answer-css'; st.textContent = CSS;
+    (document.body || document.head || document.documentElement).appendChild(st); // after the page's own styles, so these win ties
+  }
+  addCSS();
+
+  function plural(n, w) { n = +n || 0; return n + ' ' + w + (n === 1 ? '' : 's'); }
+  function normUrl(u) { try { return AI && AI.normUrl ? AI.normUrl(u) : ''; } catch (e) { return ''; } }
+  // links in the AI's text: only the message's own (provided) source URLs; anything else becomes plain text
+  function onlySourceLinks(root, sources) {
+    if (!root) return;
+    var allow = {};
+    (sources || []).forEach(function (s) { var k = normUrl(s && s.url); if (k) allow[k] = 1; });
+    Array.prototype.slice.call(root.querySelectorAll('a')).forEach(function (a) {
+      var k = normUrl(a.getAttribute('href'));
+      if (k && allow[k]) return;
+      a.parentNode.replaceChild(document.createTextNode(a.textContent), a);
+    });
+  }
+  function tagHTML(m) {
+    var a = m.ai || {}, txt, tip;
+    if (a.kind === 'compose') {
+      txt = 'Claude Haiku · ' + plural(a.tools, 'campus tool') + ' · ' + plural(a.sources, a.usc === a.sources ? 'USC source' : 'source');
+      tip = 'Claude Haiku wrote this from the verified data below (Tommy’s campus tools, run on your phone) and a fact check compared every time, date, number and name with it. It saw your question and that public data, never your account.';
+    } else if (a.kind === 'search' || (a.kind === 'notfound' && a.searched)) {
+      txt = 'Claude Haiku · searched USC websites';
+      tip = 'Claude Haiku searched USC’s own websites (usc.edu only). It saw your question, never your account. Check the linked pages.';
+    } else {
+      txt = 'Claude Haiku' + (a.tools ? ' · checked ' + plural(a.tools, 'campus tool') : '');
+      tip = 'Claude Haiku checked what Tommy’s campus tools returned. It saw your question and that public data, never your account.';
+    }
+    return '<div class="ta-ai-tag" title="' + esc(tip) + '">' + ICON.spark + '<span>' + esc(txt) + '</span>' + (a.kind === 'search' ? '<small>Check the linked pages: a USC website search isn’t checked against Tommy’s data.</small>' : '') + '</div>';
+  }
+  function verifiedHTML(list) {
+    var items = (Array.isArray(list) ? list : []).filter(function (v) { return v && typeof v.md === 'string' && v.md.trim(); });
+    if (!items.length) return '';
+    return '<section class="ta-verified" aria-label="Verified data from Tommy’s campus tools">' +
+      '<div class="ta-verified-h">' + ICON.check + '<strong>Verified data</strong><span>Tommy’s campus tools, unchanged</span></div>' +
+      items.map(function (v, i) {
+        return '<details class="ta-verified-item"' + (i === 0 ? ' open' : '') + '><summary><code>' + esc(v.line || 'campus tool') + '</code></summary><div class="ta-md">' + TA.md(v.md) + '</div></details>';
+      }).join('') + '</section>';
+  }
+  function insertAfter(ref, html, parent) {
+    var tmp = document.createElement('div'); tmp.innerHTML = html;
+    var nodes = Array.prototype.slice.call(tmp.childNodes);
+    nodes.forEach(function (nd) { if (ref && ref.parentNode) { ref.parentNode.insertBefore(nd, ref.nextSibling); ref = nd; } else parent.appendChild(nd); });
+  }
+  function decorate(el, m) {
+    var a = m.ai || {}, bubble = el.querySelector('.ta-bubble');
+    if (!bubble) return;
+    el.classList.add('ta-ai', 'ta-ai-' + String(a.kind || 'x').replace(/[^a-z]/g, ''));
+    var mdEl = bubble.querySelector('.ta-md');
+    if (a.kind === 'compose' || a.kind === 'search') onlySourceLinks(mdEl, m.sources);
+    if (a.kind === 'compose') insertAfter(mdEl, verifiedHTML(a.verified), bubble);
+    var after = bubble.querySelector('.ta-sources') || bubble.querySelector('.ta-verified') || bubble.querySelector('.ta-stale') || mdEl;
+    insertAfter(after, tagHTML(m), bubble);
+  }
+  function noteFor(el, note) {
+    var bubble = el.querySelector('.ta-bubble'); if (!bubble || !note) return;
+    if (note.kind === 'factcheck') {
+      var after = bubble.querySelector('.ta-sources') || bubble.querySelector('.ta-md');
+      insertAfter(after, '<div class="ta-ai-note" role="note">' + ICON.warn + '<span>Claude Haiku’s summary didn’t match this verified data, so you’re seeing the data itself.</span></div>', bubble);
+    }
+  }
+  var render0 = UI.renderMsg;
+  UI.renderMsg = function (m) {
+    // what reached the AI for this message (ai-api.js logs every request of the turn): kept on the message, so the tag
+    // script.js draws ("nothing sent to AI" / "Claude saw your words only" / "...and public USC data") stays true later
+    try { if (m && m.role === 'bot' && m.sentToAI == null && UI.busy && AI && typeof AI.turnCalls === 'function') m.sentToAI = AI.turnCalls(); } catch (e) { /* not known: nothing is claimed */ }
+    var el = render0.apply(UI, arguments);
+    try {
+      if (el && m && m.role === 'bot' && m.ai && typeof m.ai === 'object') decorate(el, m);
+      if (el && m && m.role === 'bot' && m.aiNote) noteFor(el, m.aiNote);
+    } catch (e) { /* the plain message stands */ }
+    return el;
+  };
+
+  // ---- the chat footer: once Claude Haiku writes answers, "accurate, not modeled" is no longer the whole story ----
+  if (typeof UI.renderMode === 'function') {
+    var mode0 = UI.renderMode;
+    UI.renderMode = function () {
+      var r = mode0.apply(this, arguments);
+      try {
+        var foot = document.querySelector('#ta-root .ta-foot');
+        if (foot) {
+          if (!foot.hasAttribute('data-orig')) foot.setAttribute('data-orig', foot.textContent);
+          foot.textContent = AI && AI.can && AI.can('answer') ? 'Answers from verified public USC data · AI-written answers are labeled and fact-checked · account actions simulated' : foot.getAttribute('data-orig');
+        }
+      } catch (e) { /* the footer stays as it was */ }
+      return r;
+    };
+  }
+
+  // ---- the typing indicator stays up (with a short note) while the AI plans, writes or searches ----
+  UI.typingNote = function (text) {
+    try {
+      var log = document.getElementById('ta-log'); if (!log) return;
+      var t = log.querySelector('.ta-msg.typing');
+      if (!t && UI.busy && typeof UI.typing === 'function') t = UI.typing(true);
+      if (!t) return;
+      var b = t.querySelector('.ta-bubble'); if (!b) return;
+      var old = b.querySelector('.ta-loading-note:not(.ta-typing-note)'); if (old) old.parentNode.removeChild(old);
+      var n = b.querySelector('.ta-typing-note');
+      if (!n) { n = document.createElement('span'); n.className = 'ta-typing-note'; b.appendChild(n); }
+      n.textContent = String(text || '');
+      t.setAttribute('aria-label', 'Tommy is typing' + (text ? ': ' + text : ''));
+      if (UI.scroll) UI.scroll();
+    } catch (e) { /* the dots stay */ }
+  };
+  if (typeof UI.send === 'function') {
+    var send0 = UI.send;
+    UI.send = async function () {
+      try { if (!UI.busy && AI && typeof AI.beginTurn === 'function') AI.beginTurn(); } catch (e) { /* no log: nothing is claimed */ }
+      try { return await send0.apply(this, arguments); } finally {
+        if (!UI.busy) { try { document.querySelectorAll('#ta-log .ta-msg.typing').forEach(function (x) { x.parentNode.removeChild(x); }); } catch (e) { /* nothing to tidy */ } }
+      }
+    };
+  }
 })();
 </script><script>/* js/ta/course-info.js */
 /* js/ta/course-info.js — Tommy answers "who teaches …?" from the real USC Schedule of Classes it already carries
@@ -20134,7 +21491,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     }, function (t) { return /\b(where do you get (your )?(info|information|data|answers)|how accurate are you|is (this|your) data (live|real|current|up to date))\b/.test(t) ? {} : null; });
 
   F('tommy.privacy', 'What the AI translator sees (only your words, never your account or results) and what stays on the device. "does the ai see my grades", "is my data private". (no args)',
-    [], function () { return [bot('**Privacy in Ask Tommy**\n' + list(['Your message is turned into a script command. When the AI translator is on, it sees **only your words** (and your last few commands), never your account or any result.', 'The command runs **on this device**, which is where your account data lives.', 'Crisis, safety, health and other personal messages are **never sent to the AI**.', 'Settings can turn the AI translator off and hide the script line.']), [SRC.soc], [{ label: 'Settings', value: '@go:assistant', kind: '' }])]; },
+    [], function () { return [bot('**Privacy in Ask Tommy**\n' + list(['Claude Haiku (the AI) reads **only your words** (and your last few requests). It never sees your account, your grades, your bookings or any result about you.', 'Account questions and actions run **on this device**, where your account data lives: Claude only picks the campus tool, and the result stays on your phone.', 'For public campus questions, Claude writes the answer only from verified USC data and USC websites, shows the sources, and a fact check runs before you see it.', 'Crisis, safety, health and other personal messages are **never sent to the AI**.', 'Settings can turn Claude off and hide the campus tool line under each answer.']), [SRC.soc], [{ label: 'Settings', value: '@go:assistant', kind: '' }])]; },
     function (t) { return /\b(does (the )?ai see|can (the )?ai see|is my data (private|safe)|who can see my (messages|data)|do you store my)\b/.test(t) ? {} : null; });
 
   // ============================================================================================ STUDY PARTNERS / GROUPS / TUTORING
@@ -23365,6 +24722,69 @@ button.pl-title { padding: 0; }
 /* the Customize pill inside the + menu (the menu styles every button as a big tile) */
 .plusmenu .p7-ph-h .p7-edit { display: inline-flex; padding: 6px 12px; min-height: 34px; gap: 5px; border-radius: 999px; font-size: 12.5px; font-weight: 750; box-shadow: none; animation: none; background: color-mix(in srgb, var(--cardinal) 9%, var(--surface)); }
 .plusmenu .p7-ph-h .p7-edit .ic { width: 14px; height: 14px; color: var(--cardinal-ink); }
+</style>
+<style>/* css/p7-howto.css — "How Tommy works" (js/p7-howto.js). Light + dark via the app's tokens. */
+.ht-screen { --ht-phone: var(--cardinal); --ht-claude: #c46a2b; }
+:root[data-theme="dark"] .ht-screen { --ht-claude: #f0a46a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ht-screen { --ht-claude: #f0a46a; } }
+
+.ht-hero { display: flex; gap: 12px; align-items: center; }
+.ht-av { width: 48px; height: 48px; border-radius: 15px; display: grid; place-items: center; flex: none; background: var(--gold); color: #4a0507; font: 900 24px var(--f-display); box-shadow: var(--shadow); }
+.ht-hero h2 { font-size: 21px; line-height: 1.15; }
+
+.ht-lanes { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; font: 800 11px var(--f-mono); letter-spacing: .07em; text-transform: uppercase; }
+.ht-lanes .ic { width: 13px; height: 13px; vertical-align: -2px; }
+.ht-lanes .phone { color: var(--ht-phone); }
+.ht-lanes .claude { color: var(--ht-claude); text-align: right; }
+.ht-lanes .line { color: var(--muted); padding: 3px 8px; border: 1.5px dashed var(--line); border-radius: 999px; }
+
+.ht-flow { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 14px; }
+.ht-flow::before { content: ""; position: absolute; left: 50%; top: -6px; bottom: -6px; border-left: 2px dashed color-mix(in srgb, var(--muted) 45%, transparent); }
+.ht-step { position: relative; display: flex; animation: ht-in .4s cubic-bezier(.2, .9, .3, 1) both; animation-delay: calc(var(--i) * 70ms); }
+.ht-step.claude { justify-content: flex-end; }
+.ht-num { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 2; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 850 13px var(--f-display); color: #fff; box-shadow: 0 0 0 4px var(--bg); }
+.ht-step.phone .ht-num { background: var(--ht-phone); }
+.ht-step.claude .ht-num { background: var(--ht-claude); }
+.ht-card { position: relative; width: calc(50% - 20px); display: grid; gap: 5px; padding: 12px 12px 13px; border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); border-top: 4px solid var(--ht-phone); }
+.ht-step.claude .ht-card { border-top-color: var(--ht-claude); }
+.ht-lane { display: inline-flex; align-items: center; gap: 4px; font: 800 9.5px var(--f-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--ht-phone); }
+.ht-step.claude .ht-lane { color: var(--ht-claude); }
+.ht-lane .ic { width: 11px; height: 11px; }
+.ht-ic { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: color-mix(in srgb, var(--ht-phone) 12%, var(--surface)); color: var(--ht-phone); }
+.ht-step.claude .ht-ic { background: color-mix(in srgb, var(--ht-claude) 14%, var(--surface)); color: var(--ht-claude); }
+.ht-ic .ic { width: 18px; height: 18px; }
+.ht-card b { font: 800 14.5px/1.2 var(--f-display); }
+.ht-card p { font-size: 12.5px; line-height: 1.38; color: var(--muted); }
+.ht-sos { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.ht-sos a { font-size: 11.5px; font-weight: 800; padding: 4px 8px; border-radius: 999px; background: var(--bad); color: #fff; text-decoration: none; white-space: nowrap; }
+.ht-note { display: inline-flex; gap: 5px; align-items: center; font-size: 11.5px; font-weight: 750; color: var(--ht-claude); padding: 4px 8px; border-radius: 8px; background: color-mix(in srgb, var(--ht-claude) 12%, transparent); justify-self: start; }
+.ht-note .ic { width: 13px; height: 13px; }
+
+.ht-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ht-col { padding: 12px; border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); border: 2px solid var(--ht-claude); }
+.ht-col.phone { border-color: var(--ht-phone); }
+.ht-col h3 { display: flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ht-claude); margin-bottom: 8px; }
+.ht-col.phone h3 { color: var(--ht-phone); }
+.ht-col h3 .ic { width: 16px; height: 16px; }
+.ht-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.ht-col li { display: flex; gap: 6px; align-items: flex-start; font-size: 12.5px; line-height: 1.3; }
+.ht-col li .ic { width: 14px; height: 14px; margin-top: 1px; color: var(--muted); }
+
+/* desktop side panel link */
+.ht-pitch { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 16px; padding: 12px 14px; border-radius: 14px; text-align: left; background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line); }
+.ht-pitch > .ic:first-child { width: 22px; height: 22px; color: var(--cardinal-ink); }
+.ht-pitch span { flex: 1; display: grid; }
+.ht-pitch b { font-size: 14px; } .ht-pitch small { font-size: 12px; color: var(--muted); }
+.ht-pitch:hover { border-color: var(--cardinal); }
+
+@keyframes ht-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .ht-step { animation: none; } }
+.ht-step.swap { margin-top: -64px; }
+/* readable in dark: fixed deep red for the emergency chips, the ink tone for red text */
+.ht-sos a { background: #b3261e; }
+.ht-lanes .phone, .ht-lane, .ht-col.phone h3 { color: var(--cardinal-ink); }
+.ht-step.claude .ht-lane { color: var(--ht-claude); }
+.ht-step.phone .ht-ic { color: var(--cardinal-ink); }
 </style>
 <style>/* css/p7-club.css — Part 7 club view: Today + Plan / People / Promote / Money. Uses the app's tokens (light + dark). */
 .p7 .screen-body { gap: 14px; }
@@ -29233,6 +30653,97 @@ button.pl-title { padding: 0; }
     }
     TH.p7.openDiningDollars = openDD;
   }
+})(window.TH);
+</script>
+<script>/* js/p7-howto.js — Part 7: "How Tommy works", a one-screen explainer (route `howtommy`).
+ *
+ * A two-lane flow: what happens on the student's phone (left) and what Claude sees (right), with a dashed
+ * "privacy line" between them, then a summary of what Claude can see vs. what stays on the phone.
+ * Reachable from: Ask Tommy's ⋯ menu ("How Tommy works"), More → Help, and the desktop side panel.
+ * The copy lives in STEPS below so it can be tuned in one place. No stats beyond the real command count.
+ * Loads after js/p7-student.js.
+ */
+(function (TH) {
+  'use strict';
+  if (!TH || !TH.screens) return;
+  const esc = s => TH.esc(s), icon = (n, c) => TH.icon(n, c);
+  const $ = (s, r = document) => r.querySelector(s);
+
+  const PHONE = 'phone', CLAUDE = 'claude';
+  const STEPS = [
+    { lane: PHONE, ic: 'chat', t: 'You type anything', d: 'Questions, plans, “book me a room”, in your own words.' },
+    { lane: PHONE, ic: 'shield', t: 'Safety first, on your phone', d: 'Crisis and personal messages never leave the device. Tommy answers right away with real help.', sos: true },
+    { lane: CLAUDE, ic: 'sparkle', t: 'Claude Haiku understands and plans', d: 'It picks from {N} verified campus tools: class schedule, hours, map, clubs and events, dining, transport, wallet and more.' },
+    { lane: CLAUDE, ic: 'book', t: 'Public questions: USC sources only', d: 'Claude writes the answer only from USC data and USC pages, with sources, and an automatic fact check runs. No tool for it? Claude searches usc.edu only.' },
+    { lane: PHONE, ic: 'lock', t: 'Your account stays on your phone', d: 'Grades, bookings, guest passes, orders: the tool runs on your phone. Claude only sees your words, never the results.', note: 'Claude sees your words only' },
+    { lane: CLAUDE, ic: 'refresh', t: 'Tommy keeps learning', d: 'When Tommy can’t answer, Claude proposes a new tool, and the team approves it before anyone uses it.' },
+  ];
+  const SEES = ['Your words', 'Public USC information'];
+  const STAYS = ['Your account: grades, bookings, passes, orders, Dining Dollars', 'Crisis and personal topics'];
+
+  // the real number of Tommy Script commands in this build (never a made-up stat)
+  const toolCount = () => { try { const n = Object.keys((window.TA && TA.Script && TA.Script.cmds) || {}).length; return n > 20 ? String(n) : 'its'; } catch (e) { return 'its'; } };
+  function step(s, i) {
+    return `<li class="ht-step ${s.lane}${i && STEPS[i - 1].lane !== s.lane ? ' swap' : ''}" style="--i:${i}">
+      <span class="ht-num" aria-hidden="true">${i + 1}</span>
+      <div class="ht-card">
+        <span class="ht-lane">${s.lane === PHONE ? `${icon('phone')} On your phone` : `${icon('sparkle')} Claude`}</span>
+        <span class="ht-ic" aria-hidden="true">${icon(s.ic)}</span>
+        <b>${esc(s.t)}</b>
+        <p>${esc(s.d.replace('{N}', toolCount()))}</p>
+        ${s.sos ? `<span class="ht-sos"><a href="tel:911">911</a><a href="tel:2137404321">DPS 213-740-4321</a><a href="tel:988">988</a></span>` : ''}
+        ${s.note ? `<span class="ht-note">${icon('eye')}${esc(s.note)}</span>` : ''}
+      </div></li>`;
+  }
+
+  TH.screens.howtommy = {
+    render() {
+      return `<div class="screen ht-screen">${TH.ui.topbar('How Tommy works')}
+        <div class="pad screen-body stack">
+          <div class="ht-hero"><span class="ht-av" aria-hidden="true">T</span><div><span class="eyebrow">Ask Tommy</span><h2>Here’s what happens to your words.</h2></div></div>
+          <div class="ht-lanes" aria-hidden="true"><span class="phone">${icon('phone')} Your phone</span><span class="line">Privacy line</span><span class="claude">${icon('sparkle')} Claude</span></div>
+          <ol class="ht-flow" aria-label="How Tommy answers, step by step">${STEPS.map(step).join('')}</ol>
+          <div class="ht-split" role="group" aria-label="The privacy line">
+            <div class="ht-col phone"><h3>${icon('lock')} Stays on your phone</h3><ul>${STAYS.map(x => `<li>${icon('lock')}${esc(x)}</li>`).join('')}</ul></div>
+            <div class="ht-col claude"><h3>${icon('eye')} Claude can see</h3><ul>${SEES.map(x => `<li>${icon('check')}${esc(x)}</li>`).join('')}</ul></div>
+          </div>
+          <button class="btn block" data-go="assistant">${icon('chat')} Ask Tommy</button>
+          <p class="muted tiny" style="text-align:center;padding-bottom:70px">Account actions in this prototype are simulated on a demo student.</p>
+        </div></div>`;
+    },
+  };
+
+  // ---------- entry points ----------
+  // 1) Ask Tommy's ⋯ menu
+  const UI = window.TA && TA.UI;
+  if (UI && UI.renderMenu && UI.menuAction) {
+    const rm0 = UI.renderMenu, ma0 = UI.menuAction;
+    UI.renderMenu = function () {
+      const r = rm0.apply(this, arguments), m = document.getElementById('ta-menu');
+      if (m && !m.querySelector('[data-menu="howtommy"]')) m.insertAdjacentHTML('afterbegin', '<button type="button" role="menuitem" data-menu="howtommy">How Tommy works</button>');
+      return r;
+    };
+    UI.menuAction = function (k) { if (k === 'howtommy') { TH.go('howtommy'); return; } return ma0.apply(this, arguments); };
+  }
+  // 2) More → Help (row added to the student More render from js/p7-student.js)
+  const more = TH.screens.more, mr0 = more && more.render;
+  if (mr0) more.render = function () {
+    const h = mr0.apply(this, arguments), row = `<button class="row" data-go="howtommy" style="--rc:var(--gold-ink)"><span class="rico">${icon('sparkle')}</span><span class="rmain"><span class="rtitle">How Tommy works</span><span class="rsub">What Claude sees, and what stays on your phone</span></span>${icon('chev', 'chev')}</button>`;
+    const i = h.indexOf('data-p7help'); if (i < 0) return h;
+    const s = h.lastIndexOf('<button', i);
+    return h.slice(0, s) + row + h.slice(s);
+  };
+  // 3) the desktop side panel
+  const boot0 = TH.boot;
+  TH.boot = function () {
+    const r = boot0.apply(this, arguments);
+    const ul = $('.pitch ul');
+    if (ul && !$('.pitch .ht-pitch')) {
+      ul.insertAdjacentHTML('afterend', `<button class="ht-pitch" type="button">${icon('sparkle')}<span><b>How Tommy works</b><small>What Claude sees, what stays on your phone</small></span>${icon('chev')}</button>`);
+      $('.pitch .ht-pitch').onclick = () => TH.go('howtommy');
+    }
+    return r;
+  };
 })(window.TH);
 </script>
 <script>/* js/p7-club.js — Part 7: the ORGANIZER / CLUB VIEW, redesigned around one officer running one club on repeat.

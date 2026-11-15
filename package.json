@@ -2,11 +2,12 @@
   "name": "trojan-hub-netlify",
   "private": true,
   "type": "module",
-  "description": "Trojan Hub with Ask Tommy's AI translator on the Claude API (Netlify Function)",
+  "description": "Trojan Hub with Ask Tommy's AI on the Claude API (Netlify Function): AI-written answers from public campus data, translator, answer checker, USC-only search, script-needed alerts with AI-drafted script proposals, daily limits and a search cache",
   "dependencies": {
-    "@anthropic-ai/sdk": "1.8.0"
+    "@anthropic-ai/sdk": "1.8.0",
+    "@netlify/blobs": "11.1.9"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   }
 }
