@@ -272,7 +272,7 @@
     const hotv = r.votes >= 20;
     return `<div class="p7-ev"><div class="p7-evh"><span class="p7-votes ${hotv ? 'hot' : ''}"><b>${r.votes}</b><small>votes</small></span><span class="p7-evt"><b>${esc(r.title)}</b><span>${esc(r.type)} · ${esc(r.when.toLowerCase())}</span></span></div>
       ${tracker('requested')}
-      <div class="p7-evacts"><button class="btn sm" data-p7sched="${esc(r.id)}">${icon('calendar')} Schedule</button></div></div>`;
+      ${isClub(org) ? `<div class="p7-evacts"><button class="btn sm" data-p7sched="${esc(r.id)}">${icon('calendar')} Schedule</button></div>` : `<span class="muted tiny">Sent ${esc(TH.x.reqTo(r))}</span>`}</div>`;
   }
   function evCard(org, ev) {
     const st = stageOf(ev), r = reqOf(ev), rm = roomLabel(org, ev), ec = estCost(org, ev), p = P(org);
@@ -308,7 +308,7 @@
   TH.screens.orgplan = {
     render() {
       const org = XO().cur();
-      if (!isClub(org)) return shell('orgplan', `<div class="rows">${openReqs(org).slice(0, 8).map(r => reqCard(org, r)).join('')}</div><span class="muted tiny">Campus-wide requests. Clubs schedule them from their own Plan.</span>`);
+      if (!isClub(org)) return shell('orgplan', `<div class="p7-evs">${openReqs(org).slice(0, 8).map(r => reqCard(org, r)).join('')}</div><span class="muted tiny">Campus-wide requests. Clubs schedule them from their own Plan.</span>`);
       const f = TH.state.p7stage || 'all', rq = openReqs(org), evs = myEvents(org), last = evs.slice().sort((a, b) => evStart(b) - evStart(a))[0];
       const by = k => k === 'requested' ? rq : evs.filter(e => stageOf(e) === k);
       const real = XO().upcoming(org).slice(0, 4);
