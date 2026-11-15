@@ -1486,6 +1486,49 @@
     [], function () { return [bot('**Privacy in Ask Tommy**\n' + list(['Your message is turned into a script command. When the AI translator is on, it sees **only your words** (and your last few commands), never your account or any result.', 'The command runs **on this device**, which is where your account data lives.', 'Crisis, safety, health and other personal messages are **never sent to the AI**.', 'Settings can turn the AI translator off and hide the script line.']), [SRC.soc], [{ label: 'Settings', value: '@go:assistant', kind: '' }])]; },
     function (t) { return /\b(does (the )?ai see|can (the )?ai see|is my data (private|safe)|who can see my (messages|data)|do you store my)\b/.test(t) ? {} : null; });
 
+  // ============================================================================================ STUDY PARTNERS / GROUPS / TUTORING
+  // USC has no study-partner matching service in the data; the answer says so and lists the real ways students meet
+  // others to study: peer-led group sessions (SI, Marshall Study Sessions), Viterbi Learning Program tutoring/pairs,
+  // study and tutoring events on EngageSC this week, group study rooms, and USC's rule on collaborating on homework.
+  var STUDY = {
+    si: { url: 'https://dornsife.usc.edu/next-gen-science/supplemental-instruction/', title: 'Supplemental Instruction – USC Dornsife', pre: /^(BISC|HBIO|CHEM|ECON|MATH|PHYS|PSYC)$/ },
+    msp: { url: 'https://students.marshall.usc.edu/current-students/marshall-study-sessions', title: 'Marshall Study Sessions – USC Marshall', codes: /^(ECON 35[12]|BUAD 30[68]|BUAD 31[01])/ },
+    vlp: { url: 'https://viterbiundergrad.usc.edu/viterbilearningprogram/', title: 'Viterbi Learning Program', pairs: 'https://viterbiundergrad.usc.edu/viterbilearningprogram/vlpairs/' },
+    collab: { url: 'https://viterbischool.usc.edu/academic-integrity/types-of-violations/', title: 'Academic integrity – USC Viterbi' },
+    hub: { url: 'https://www.usc.edu/advising-support/', title: 'Advising & Support – USC' }
+  };
+  var VITERBI = /^(CSCI|EE|AME|BME|CE|CHE|ISE|ITP|ASTE|ENGR|MASC|PTE|EEB|DSCI|INF)$/;
+  F('study.partners', 'Find people to study with or a study group: peer-led group sessions (Supplemental Instruction, Marshall Study Sessions), Viterbi tutoring and peer pairs, study nights this week, group study rooms, and USC’s rule on working together. "how can i find study partners", "anyone to study with for csci 104", "form a study group", "study buddy". course?',
+    ['course'], function (a) {
+      var code = a.course ? (codesIn(String(a.course))[0] || String(a.course).toUpperCase().trim()) : null, pre = code ? code.split(' ')[0] : null, rows = [], src = [];
+      var siFits = !pre || STUDY.si.pre.test(pre), mspFits = !code || STUDY.msp.codes.test(code), vlpFits = !pre || VITERBI.test(pre);
+      if (siFits) { rows.push('**Supplemental Instruction (SI)**' + (code ? ' (SI schedules list ' + pre + ' courses; check whether ' + code + ' has a session)' : '') + ': free, regularly scheduled peer-led study sessions in small groups for traditionally difficult courses (biology, chemistry, economics, math, physics, psychology). Any student in the course can go; sessions start in week 2.'); src.push(srcOf(STUDY.si.url, STUDY.si.title)); }
+      if (mspFits && (!pre || /^(ECON|BUAD)$/.test(pre))) { rows.push('**Marshall Study Sessions**: peer-led sessions for ECON 351x/352x and BUAD 306/308, 310, 311. Marshall says they can also be used to **meet other students and form study groups**.'); src.push(srcOf(STUDY.msp.url, STUDY.msp.title)); }
+      if (vlpFits) { rows.push('**Viterbi Learning Program** (RTH 222, Mon–Fri 9–5): free tutoring and drop-in hours for Viterbi and Pre-Engineering students, and **VLP Pairs**, which pairs you with a peer tutor who meets you every other week (limited spots).'); src.push(srcOf(STUDY.vlp.url, STUDY.vlp.title)); }
+      var its = P('its');
+      if (its) rows.push('**Group study rooms**: ITS collaboration rooms on Leavey’s lower level (4–6 people; booked in person at the ITS desk, one 2-hour block per day).');
+      var DEPT = { CSCI: 'CS', EE: 'ECE', AME: 'AME', BME: 'BME', ISE: 'ISE', CE: 'CE', CHE: 'CHE', ITP: 'CS', ASTE: 'ASTE', MASC: 'MASC' };
+      var n0 = now(), evs = evsBetween(n0, addDays(dayStart(n0), 7), function (e) {
+        if (!/\b(study (night|hall|session|group|break)s?|tutoring|SI session|review session)\b/i.test(e.title)) return false;
+        var vlpEv = /viterbi learning|\bVLP\b/i.test((e.org || '') + ' ' + e.title);
+        if (vlpEv && pre && !vlpFits) return false;
+        if (vlpEv && pre && DEPT[pre]) return new RegExp('\\b' + DEPT[pre] + '\\b').test(e.title);
+        return !pre || !/\b[A-Z]{2,5} ?\d{3}/.test(e.title) || e.title.indexOf(pre) >= 0;
+      }).filter(function (e, i, arr) { return arr.findIndex(function (x) { return norm(x.title) === norm(e.title); }) === i; }).slice(0, 4);
+      if (evs.length) { rows.push('**Study events this week (EngageSC):** ' + evs.map(function (e) { return e.title + ' (' + evWhen(e) + ')'; }).join('; ')); src.push(srcOf(evs[0].url, evs[0].title)); }
+      var md = (code ? '**Studying with others for ' + code + '**' : '**Finding people to study with**') + '\n\nUSC doesn’t run a study-partner matching service in the information I carry, but these are real ways to meet classmates and study together:\n' + list(rows, 8) +
+        '\n\n**Before you split up homework:** USC treats working together on assignments as unauthorized unless your instructor allows it, so check the syllabus or ask. Studying together for exams is different from sharing answers.' +
+        (code ? '\n\nYour TA’s discussion section and office hours are another good place to find classmates in ' + code + '.' : '');
+      src.push(srcOf(STUDY.collab.url, STUDY.collab.title));
+      var out = [bot(md, src.slice(0, 4), [say('Free tutoring', 'is there free tutoring at usc'), go('Events', 'events')])];
+      out[0].covers = ['study', 'partner', 'partners', 'buddy', 'buddies', 'group', 'groups', 'classmates', 'tutoring', 'together', 'find', 'anyone', 'someone'].concat(code ? words(code) : []);
+      return out;
+    }, function (t, raw) {
+      if (/\b(bible|scripture|abroad|study room (booking|reservation)|book a study room|reserve)\b/.test(t)) return null;
+      if (!/\b(study (partners?|buddy|buddies|group|groups|pals?|mates?|squad|crew)|(someone|anyone|people|friends?|classmates?) (to )?(study|studying) with|study(ing)? together|form(ing)? a study group|start(ing)? a study group|join a study group|find (a |some )?(people|classmates) to study)\b/.test(t)) return null;
+      var c = codesIn(raw)[0]; return c ? { course: c } : {};
+    });
+
   // ============================================================================================ PLACE FINDER WITH ATTRIBUTES
   // "a beautiful library with greenery, an old one", "quiet library open late", "outdoor place to study with shade".
   // Every attribute is backed only by data in this app, and each one the data can't support is said out loud:

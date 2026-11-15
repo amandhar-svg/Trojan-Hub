@@ -6270,5 +6270,47 @@
 "outdoor seating"
 ],
 "oracle": null
+},
+{
+"topic": "mustpass",
+"q": "how can i find study partners",
+"expect": [
+"Supplemental Instruction",
+"study"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "anyone to study with for csci 104",
+"expect": [
+"Viterbi Learning Program",
+"CSCI 104"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "study buddy",
+"expect": [
+"study"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "form a study group",
+"expect": [
+"study group|Study"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "any study groups for econ 351",
+"expect": [
+"Marshall Study Sessions"
+],
+"oracle": null
 }
 ]
