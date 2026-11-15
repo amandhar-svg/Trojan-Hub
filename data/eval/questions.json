@@ -1,6 +1,6 @@
 {
  "built": "2026-11-15",
- "note": "No crisis/self-harm messages; that suite is tested elsewhere.",
+ "note": "No crisis/self-harm messages; that suite is tested elsewhere. Trimmed from 472 to 400 to cap live AI usage (one full run <= 400 messages).",
  "items": [
   {
    "id": "A001",
@@ -451,48 +451,6 @@
    "good_answer": "Saturday dining hall hours"
   },
   {
-   "id": "A065",
-   "text": "is there kosher food",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Kosher options (Hillel / dining)"
-  },
-  {
-   "id": "A066",
-   "text": "whats open to eat at 11pm on a friday",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Venues open at 11pm Friday \u2014 must respect time constraint"
-  },
-  {
-   "id": "A067",
-   "text": "healthy lunch near annenberg",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Healthy option near Annenberg (Caf\u00e9 Annenberg) \u2014 location constraint"
-  },
-  {
-   "id": "A068",
-   "text": "game day dining hours nov 21",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Game-day (Nov 21) dining hours from data"
-  },
-  {
-   "id": "A069",
-   "text": "seeds marketplace hours",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Seeds Marketplace hours"
-  },
-  {
-   "id": "A070",
-   "text": "where can i buy groceries near campus",
-   "kind": "A",
-   "topic": "dining",
-   "good_answer": "Trader Joe's at USC Village / Target"
-  },
-  {
    "id": "A071",
    "text": "is the lyon center open",
    "kind": "A",
@@ -577,27 +535,6 @@
    "good_answer": "Yoga classes / spaces"
   },
   {
-   "id": "A083",
-   "text": "tennis courts usc open to students",
-   "kind": "A",
-   "topic": "gyms",
-   "good_answer": "Tennis court access"
-  },
-  {
-   "id": "A084",
-   "text": "gym hours on sunday",
-   "kind": "A",
-   "topic": "gyms",
-   "good_answer": "Sunday hours for rec centers"
-  },
-  {
-   "id": "A085",
-   "text": "where can i run on campus",
-   "kind": "A",
-   "topic": "gyms",
-   "good_answer": "Running routes/track access"
-  },
-  {
    "id": "A086",
    "text": "which gates are open right now",
    "kind": "A",
@@ -680,20 +617,6 @@
    "kind": "A",
    "topic": "access",
    "good_answer": "Gate nearest Coliseum (Exposition side)"
-  },
-  {
-   "id": "A098",
-   "text": "is hoover gate open",
-   "kind": "A",
-   "topic": "access",
-   "good_answer": "Hoover-side entrance status"
-  },
-  {
-   "id": "A099",
-   "text": "where do uber drop offs happen",
-   "kind": "A",
-   "topic": "access",
-   "good_answer": "Rideshare drop-off points"
   },
   {
    "id": "A100",
@@ -787,34 +710,6 @@
    "good_answer": "Bike parking near Leavey"
   },
   {
-   "id": "A113",
-   "text": "can i scooter on campus",
-   "kind": "A",
-   "topic": "transport",
-   "good_answer": "Scooter/e-scooter policy on campus"
-  },
-  {
-   "id": "A114",
-   "text": "where is the usc village parking",
-   "kind": "A",
-   "topic": "transport",
-   "good_answer": "USC Village underground garage"
-  },
-  {
-   "id": "A115",
-   "text": "tap card discount for students",
-   "kind": "A",
-   "topic": "transport",
-   "good_answer": "U-Pass / student TAP discount"
-  },
-  {
-   "id": "A116",
-   "text": "fryft hours",
-   "kind": "A",
-   "topic": "transport",
-   "good_answer": "USC free Lyft ride program hours/boundaries"
-  },
-  {
    "id": "A117",
    "text": "dps non emergency number",
    "kind": "A",
@@ -883,20 +778,6 @@
    "kind": "A",
    "topic": "safety",
    "good_answer": "LiveSafe / USC safety app info"
-  },
-  {
-   "id": "A127",
-   "text": "is there a dps substation in the village",
-   "kind": "A",
-   "topic": "safety",
-   "good_answer": "DPS USC Village sub-station"
-  },
-  {
-   "id": "A128",
-   "text": "recent crime near campus",
-   "kind": "A",
-   "topic": "safety",
-   "good_answer": "DPS crime log / alerts info (real data or link)"
   },
   {
    "id": "A129",
@@ -1039,41 +920,6 @@
    "good_answer": "Honest suggestion based on SOC/curriculum"
   },
   {
-   "id": "A149",
-   "text": "math 225 vs math 226",
-   "kind": "A",
-   "topic": "courses",
-   "good_answer": "Explain difference (Linear Algebra vs Calc III)"
-  },
-  {
-   "id": "A150",
-   "text": "csci 103 syllabus",
-   "kind": "A",
-   "topic": "courses",
-   "good_answer": "Syllabus pointer / honest"
-  },
-  {
-   "id": "A151",
-   "text": "who teaches the 9am section of math 125",
-   "kind": "A",
-   "topic": "courses",
-   "good_answer": "MATH 125 9am section instructor \u2014 time constraint"
-  },
-  {
-   "id": "A152",
-   "text": "comm 200 sections spring",
-   "kind": "A",
-   "topic": "courses",
-   "good_answer": "COMM 200 Spring 2027 sections"
-  },
-  {
-   "id": "A153",
-   "text": "cs classes taught by a woman professor",
-   "kind": "A",
-   "topic": "courses",
-   "good_answer": "Honest handling; can't infer gender \u2014 explain"
-  },
-  {
    "id": "A154",
    "text": "when is spring registration",
    "kind": "A",
@@ -1151,27 +997,6 @@
    "good_answer": "Change of major process"
   },
   {
-   "id": "A165",
-   "text": "what is a registration hold",
-   "kind": "A",
-   "topic": "registration",
-   "good_answer": "Holds explanation and how to clear"
-  },
-  {
-   "id": "A166",
-   "text": "do i have any holds",
-   "kind": "A",
-   "topic": "registration",
-   "good_answer": "Student's holds (personal) or pointer"
-  },
-  {
-   "id": "A167",
-   "text": "how do i see my degree progress",
-   "kind": "A",
-   "topic": "registration",
-   "good_answer": "STARS/degree progress report"
-  },
-  {
    "id": "A168",
    "text": "when is thanksgiving break",
    "kind": "A",
@@ -1233,27 +1058,6 @@
    "kind": "A",
    "topic": "deadlines",
    "good_answer": "Commencement date"
-  },
-  {
-   "id": "A177",
-   "text": "when are grades due",
-   "kind": "A",
-   "topic": "deadlines",
-   "good_answer": "Grades posting date / honest"
-  },
-  {
-   "id": "A178",
-   "text": "when is the tuition due date",
-   "kind": "A",
-   "topic": "deadlines",
-   "good_answer": "Spring tuition due date"
-  },
-  {
-   "id": "A179",
-   "text": "winter break dates",
-   "kind": "A",
-   "topic": "deadlines",
-   "good_answer": "Winter recess dates"
   },
   {
    "id": "A180",
@@ -1319,27 +1123,6 @@
    "good_answer": "Tuition refund policy"
   },
   {
-   "id": "A189",
-   "text": "how do i appeal my financial aid",
-   "kind": "A",
-   "topic": "finaid",
-   "good_answer": "Aid appeal / special circumstances"
-  },
-  {
-   "id": "A190",
-   "text": "financial aid office phone number",
-   "kind": "A",
-   "topic": "finaid",
-   "good_answer": "Financial aid phone/email"
-  },
-  {
-   "id": "A191",
-   "text": "is there a food pantry",
-   "kind": "A",
-   "topic": "finaid",
-   "good_answer": "Trojan Food Pantry info"
-  },
-  {
    "id": "A192",
    "text": "how do i apply for housing next year",
    "kind": "A",
@@ -1401,27 +1184,6 @@
    "kind": "A",
    "topic": "housing",
    "good_answer": "Summer housing info"
-  },
-  {
-   "id": "A201",
-   "text": "lock out of my dorm what do i do",
-   "kind": "A",
-   "topic": "housing",
-   "good_answer": "Lockout procedure (front desk/RA)"
-  },
-  {
-   "id": "A202",
-   "text": "off campus housing near usc",
-   "kind": "A",
-   "topic": "housing",
-   "good_answer": "Off-campus housing resources"
-  },
-  {
-   "id": "A203",
-   "text": "is there laundry in the village dorms",
-   "kind": "A",
-   "topic": "housing",
-   "good_answer": "Laundry info for Village residence halls"
   },
   {
    "id": "A204",
@@ -1492,34 +1254,6 @@
    "kind": "A",
    "topic": "health",
    "good_answer": "Student Health policy on notes"
-  },
-  {
-   "id": "A214",
-   "text": "free condoms on campus",
-   "kind": "A",
-   "topic": "health",
-   "good_answer": "Where to get free sexual health supplies"
-  },
-  {
-   "id": "A215",
-   "text": "after hours nurse line",
-   "kind": "A",
-   "topic": "health",
-   "good_answer": "After-hours nurse advice line"
-  },
-  {
-   "id": "A216",
-   "text": "how do i register with osas",
-   "kind": "A",
-   "topic": "health",
-   "good_answer": "OSAS registration process"
-  },
-  {
-   "id": "A217",
-   "text": "accommodations for exams",
-   "kind": "A",
-   "topic": "health",
-   "good_answer": "OSAS exam accommodations"
   },
   {
    "id": "A218",
@@ -1739,34 +1473,6 @@
    "good_answer": "Friday night events"
   },
   {
-   "id": "A249",
-   "text": "cultural events this month",
-   "kind": "A",
-   "topic": "events",
-   "good_answer": "Cultural events in Nov"
-  },
-  {
-   "id": "A250",
-   "text": "study break events with snacks",
-   "kind": "A",
-   "topic": "events",
-   "good_answer": "Study break / free food events"
-  },
-  {
-   "id": "A251",
-   "text": "speaker events about ai",
-   "kind": "A",
-   "topic": "events",
-   "good_answer": "AI talks/speaker events"
-  },
-  {
-   "id": "A252",
-   "text": "when is the next basketball game",
-   "kind": "A",
-   "topic": "events",
-   "good_answer": "Next USC basketball game"
-  },
-  {
    "id": "A253",
    "text": "where is the career center",
    "kind": "A",
@@ -1828,27 +1534,6 @@
    "kind": "A",
    "topic": "careers",
    "good_answer": "Drop-in advising hours"
-  },
-  {
-   "id": "A262",
-   "text": "linkedin headshots free",
-   "kind": "A",
-   "topic": "careers",
-   "good_answer": "Free headshot events (honest)"
-  },
-  {
-   "id": "A263",
-   "text": "cpt for internships international students",
-   "kind": "A",
-   "topic": "careers",
-   "good_answer": "OIS CPT process"
-  },
-  {
-   "id": "A264",
-   "text": "how do i get a job in tech as a cs major",
-   "kind": "A",
-   "topic": "careers",
-   "good_answer": "Career advice + Viterbi career services"
   },
   {
    "id": "A265",
@@ -1977,62 +1662,6 @@
    "good_answer": "TCC contents (food, offices, lounge)"
   },
   {
-   "id": "A283",
-   "text": "where's the lost and found",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "DPS Lost and Found"
-  },
-  {
-   "id": "A284",
-   "text": "where is the fisher museum",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Fisher Museum of Art location/hours"
-  },
-  {
-   "id": "A285",
-   "text": "what is doheny library known for",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Doheny history/architecture"
-  },
-  {
-   "id": "A286",
-   "text": "map of campus",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Campus map"
-  },
-  {
-   "id": "A287",
-   "text": "where is annenberg",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Annenberg School buildings (ANN/ASC)"
-  },
-  {
-   "id": "A288",
-   "text": "where is the shrine",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Shrine Auditorium"
-  },
-  {
-   "id": "A289",
-   "text": "where is the usc village",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "USC Village location"
-  },
-  {
-   "id": "A290",
-   "text": "where are the bathrooms in sgm",
-   "kind": "A",
-   "topic": "places",
-   "good_answer": "Honest if not available"
-  },
-  {
    "id": "A291",
    "text": "what does fight on mean",
    "kind": "A",
@@ -2157,62 +1786,6 @@
    "kind": "A",
    "topic": "life",
    "good_answer": "Animal policy on campus"
-  },
-  {
-   "id": "A309",
-   "text": "is there a student discount for movies",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Discounts (honest)"
-  },
-  {
-   "id": "A310",
-   "text": "how do i reserve a table on trousdale",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Tabling / Trousdale reservation process"
-  },
-  {
-   "id": "A311",
-   "text": "where can i watch the game on campus",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Watch party / viewing locations"
-  },
-  {
-   "id": "A312",
-   "text": "does usc have a marching band",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Trojan Marching Band"
-  },
-  {
-   "id": "A313",
-   "text": "who is usc's president",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Current USC president (honest, cited)"
-  },
-  {
-   "id": "A314",
-   "text": "how big is usc",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Enrollment/campus size facts"
-  },
-  {
-   "id": "A315",
-   "text": "when was usc founded",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "1880"
-  },
-  {
-   "id": "A316",
-   "text": "what does the usg do",
-   "kind": "A",
-   "topic": "life",
-   "good_answer": "Undergraduate Student Government"
   },
   {
    "id": "A317",
@@ -2437,27 +2010,6 @@
    "kind": "A",
    "topic": "typos",
    "good_answer": "Music clubs"
-  },
-  {
-   "id": "A349",
-   "text": "hw due",
-   "kind": "A",
-   "topic": "typos",
-   "good_answer": "Student's homework due list"
-  },
-  {
-   "id": "A350",
-   "text": "wheres tomy trojan",
-   "kind": "A",
-   "topic": "typos",
-   "good_answer": "Tommy Trojan location"
-  },
-  {
-   "id": "A351",
-   "text": "is the gym opn rn",
-   "kind": "A",
-   "topic": "typos",
-   "good_answer": "Gym open status"
   },
   {
    "id": "B352",
@@ -2689,41 +2241,6 @@
    "kind": "B",
    "topic": "clubs",
    "good_answer": "RSVP/save event"
-  },
-  {
-   "id": "B385",
-   "text": "add the hackathon to my calendar",
-   "kind": "B",
-   "topic": "clubs",
-   "good_answer": "Save event to calendar"
-  },
-  {
-   "id": "B386",
-   "text": "follow the acm club",
-   "kind": "B",
-   "topic": "clubs",
-   "good_answer": "Follow/join ACM"
-  },
-  {
-   "id": "B387",
-   "text": "show my saved events",
-   "kind": "B",
-   "topic": "clubs",
-   "good_answer": "Saved events list"
-  },
-  {
-   "id": "B388",
-   "text": "pay my club dues",
-   "kind": "B",
-   "topic": "clubs",
-   "good_answer": "Dues payment flow (simulated) or honest"
-  },
-  {
-   "id": "B389",
-   "text": "message the club president",
-   "kind": "B",
-   "topic": "clubs",
-   "good_answer": "Club contact / honest"
   },
   {
    "id": "B390",
@@ -3158,48 +2675,6 @@
    "kind": "B",
    "topic": "services",
    "good_answer": "Next exam"
-  },
-  {
-   "id": "B452",
-   "text": "check out a library book",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Honest pointer"
-  },
-  {
-   "id": "B453",
-   "text": "renew my library books",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Library renewal pointer"
-  },
-  {
-   "id": "B454",
-   "text": "submit my homework",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Honest: can't submit; Brightspace pointer"
-  },
-  {
-   "id": "B455",
-   "text": "schedule office hours with my professor",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Office hours info / draft"
-  },
-  {
-   "id": "B456",
-   "text": "buy football tickets",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Ticket purchase pointer"
-  },
-  {
-   "id": "B457",
-   "text": "register for the career fair",
-   "kind": "B",
-   "topic": "services",
-   "good_answer": "Event RSVP / Handshake pointer"
   },
   {
    "id": "other458",
