@@ -18306,9 +18306,9 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     if (!AI || !AI.translate || !AI.enabled() || (B.sensitive && B.sensitive(n)) || PERSONAL.test(String(text).toLowerCase()) || needsHelp) return out;
     var tr = null;
     try { tr = await AI.translate(text, { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC', actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }); } catch (e) { tr = null; }
+    var out2 = null;
     if (tr && tr.cmd !== 'none' && (TS.cmds[tr.cmd] || tr.cmd === 'do' || tr.cmd === 'ask') &&
         !(tr.cmd === 'ask' && TA.NLU.normalize && TA.NLU.normalize(String(tr.args.q || '')) === TA.NLU.normalize(text))) {
-      var out2 = null;
       try { out2 = await runCmd(tr, text, 'ai'); } catch (e) { console.error(e); out2 = null; }
       if (out2 && !TS.weak(out2)) return out2;
     }
@@ -18319,6 +18319,10 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
       try { found = await AI.uscSearch(q, text); } catch (e) { found = null; }
       if (found && found.length) return found;
     }
+    // The AI read it as a USC question: never answer with the "I can only help with questions about USC" refusal;
+    // the USC pages closest to the AI's clearer question are more useful.
+    var offTopic = (out || []).some(function (m) { return m && m.kind === 'off'; });
+    if (offTopic && out2 && out2.length && !(out2 || []).some(function (m) { return m && m.kind === 'off'; })) return out2;
     return out;
   };
   // an answer that didn't really answer: nothing, "couldn't find", an off-topic refusal or a closest-match guess
