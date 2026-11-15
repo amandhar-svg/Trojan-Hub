@@ -6182,5 +6182,93 @@
 "W"
 ],
 "oracle": null
+},
+{
+"topic": "mustpass",
+"q": "find me a library that's beautiful with a lot of greenery and an old library",
+"expect": [
+"Doheny",
+"Alumni Park|McCarthy Quad",
+"1932",
+"rate places by beauty"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "I want to find a beautiful place with greenery to work at",
+"expect": [
+"Doheny|Park|Quad",
+"green|Green|lawn"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "quiet library open late",
+"expect": [
+"Doheny",
+"Leavey",
+"quiet"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "historic buildings on campus",
+"expect": [
+"Doheny",
+"Bovard"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "outdoor place to study with shade",
+"expect": [
+"Law School Cafe",
+"shade"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "who teaches intro to civil engineering at usc",
+"expect": [
+"Rechenmacher"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "quiet place to study",
+"expect": [
+"quiet"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "study spot open late",
+"expect": [
+"Leavey"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "place to work with outlets",
+"expect": [
+"outlet"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "outdoor seating",
+"expect": [
+"outdoor seating"
+],
+"oracle": null
 }
 ]

@@ -1478,6 +1478,148 @@
     [], function () { return [bot('**Privacy in Ask Tommy**\n' + list(['Your message is turned into a script command. When the AI translator is on, it sees **only your words** (and your last few commands), never your account or any result.', 'The command runs **on this device**, which is where your account data lives.', 'Crisis, safety, health and other personal messages are **never sent to the AI**.', 'Settings can turn the AI translator off and hide the script line.']), [SRC.soc], [{ label: 'Settings', value: '@go:assistant', kind: '' }])]; },
     function (t) { return /\b(does (the )?ai see|can (the )?ai see|is my data (private|safe)|who can see my (messages|data)|do you store my)\b/.test(t) ? {} : null; });
 
+  // ============================================================================================ PLACE FINDER WITH ATTRIBUTES
+  // "a beautiful library with greenery, an old one", "quiet library open late", "outdoor place to study with shade".
+  // Every attribute is backed only by data in this app, and each one the data can't support is said out loud:
+  //   green    -> OpenStreetMap parks / gardens / lawns (TH.GEO.land) near the place, measured on the map
+  //   historic -> the place's own "Historic" tag or opening year (TH.PLACES), and USC history facts (TH.FACTS)
+  //   quiet    -> "Quiet" tag or quiet in the place's description (TH.PLACES)
+  //   late/open -> posted hours (TH.PLACES)
+  //   outlets / shade / outdoor seating -> the place's listed features
+  //   beautiful / view / aesthetic -> not rated anywhere in USC's data (said so; the green + historic evidence is shown instead)
+  var ATTR = {
+    green: /\b(green\w*|garden\w*|lawns?|grass\w*|trees?|nature|natural|parks?|plants?|leafy|flowers?)\b/,
+    historic: /\b(old|older|oldest|historic\w*|history|classic|architecture|architectural|vintage|landmark)\b/,
+    quiet: /\b(quiet|silent|silence|calm|peaceful|not loud|no noise)\b/,
+    late: /\b(late|latest|all night|overnight|24 ?(hours?|\/7|7)|after midnight)\b/,
+    now: /\b(open now|right now|rn|currently open|still open)\b/,
+    outdoor: /\b(outdoor|outdoors|outside|open air|fresh air|al fresco)\b/,
+    shade: /\b(shade|shaded|shady)\b/,
+    outlets: /\b(outlets?|plugs?|charg\w*|power)\b/,
+    beautiful: /\b(beautiful|pretty|gorgeous|aesthetic|scenic|lovely|nice looking|cute|vibes?|instagram\w*)\b/,
+    view: /\b(views?|overlook\w*)\b/,
+    coffee: /\b(coffee|cafe|caf|tea)\b/
+  };
+  var KINDQ = { library: /\b(librar\w*)\b/, outdoor: /\b(outdoor|outside|lawn|park|garden|quad|courtyard)\b/, cafe: /\b(cafe|caf|coffee shop)\b/, building: /\b(buildings?|architecture|landmarks?|statues?)\b/, study: /\b(study|studying|work|working|do homework|read|reading|spot|place|somewhere)\b/ };
+  function attrsOf(t) { return Object.keys(ATTR).filter(function (k) { return ATTR[k].test(t); }); }
+  function kindOf(t) { return /\b(librar\w*)\b/.test(t) ? 'library' : /\b(historic|old|oldest) (buildings?|places?|spots?|sites?)\b|\b(buildings?|landmarks?)\b/.test(t) && !/\b(study|work)\b/.test(t) ? 'building' : /\b(cafe|caf|coffee shop)\b/.test(t) ? 'cafe' : /\b(outdoor|outside)\b/.test(t) && !/\b(seating)\b/.test(t) ? 'outdoor' : 'study'; }
+  var GREEN = null;
+  function greens() {
+    if (GREEN) return GREEN;
+    var G = TH.GEO || {}, me = TH.ME || { x: 0, y: 0 };
+    GREEN = (G.land || []).filter(function (l) { return /leisure=(park|garden)|landuse=grass|natural=wood/.test(l.kind) && l.poly && l.poly[0]; }).map(function (l) {
+      var r = l.poly[0], cx = 0, cy = 0; r.forEach(function (p) { cx += p[0]; cy += p[1]; }); cx /= r.length; cy /= r.length;
+      return { name: l.name || null, kind: /garden/.test(l.kind) ? 'garden' : /park/.test(l.kind) ? 'park / green' : /wood/.test(l.kind) ? 'wooded area' : 'lawn', x: cx, y: cy, ring: r };
+    }).filter(function (g) { return Math.hypot(g.x - me.x, g.y - me.y) < 900; });
+    return GREEN;
+  }
+  function distToRing(x, y, r) {
+    var inside = false, best = Infinity;
+    for (var i = 0, j = r.length - 1; i < r.length; j = i++) {
+      var a = r[i], b = r[j];
+      if (((a[1] > y) !== (b[1] > y)) && (x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0])) inside = !inside;
+      var dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy, tt = L ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / L)) : 0;
+      best = Math.min(best, Math.hypot(x - (a[0] + tt * dx), y - (a[1] + tt * dy)));
+    }
+    return inside ? 0 : best;
+  }
+  function nearGreen(p, within) {
+    var hits = greens().map(function (g) { return { g: g, d: distToRing(p.x, p.y, g.ring) }; }).filter(function (h) { return h.d <= (within || 90); }).sort(function (a, b) { return (b.g.name ? 1 : 0) - (a.g.name ? 1 : 0) || a.d - b.d; });
+    return hits;
+  }
+  function pText(p) { return norm([p.name, p.desc, (p.tags || []).join(' '), (p.features || []).join(' ')].join(' ')); }
+  function histOf(p) {
+    var t = pText(p), yr = /\b(opened|built|established|unveiled|dedicated)(?: in)? (1[89]\d\d)\b/.exec(t), anyYr = p.cat === 'landmark' && /\b1[89]\d\d\b/.test(p.desc || '');
+    if (/^(safety|transit|gate|restroom|parking|dining)$/.test(p.cat)) return null;
+    // a USC history fact counts only if it names this place in full (e.g. "Doheny Memorial Library", "Fisher Gallery")
+    var full = norm(String(p.name).replace(/\(.*?\)/g, '')).replace(/^usc /, '');
+    var fact = full.split(' ').length >= 2 ? (TH.FACTS || []).filter(function (f) { return norm(f.text).indexOf(full) >= 0 && /\b1[89]\d\d\b/.test(f.text); })[0] : null;
+    var tagged = (p.tags || []).some(function (x) { return /historic|landmark/i.test(x); }) || /\bhistoric\b/.test(t) || /national register/.test(t);
+    return (tagged || yr || fact || anyYr) ? { year: yr ? yr[2] : null, verb: yr ? yr[1] : null, fact: fact || null, tagged: tagged } : null;
+  }
+  function closeMin(p, d) { var r = TH.hoursHelpers.dayRanges(p, d); if (!r || !r.length) return null; return Math.max.apply(null, r.map(function (x) { return x[1]; })); }
+  function walkMin(p) { try { var r = TH.route(TH.ME, p); return r && r.minutes; } catch (e) { return null; } }
+
+  F('place.find', 'Find a campus spot by what you want it to be like: library / study spot / outdoor space / cafe / historic building, with green (lawns, gardens, parks), historic or old, quiet, open late, outlets, shade, outdoor seating. "a beautiful library with lots of greenery", "quiet library open late", "outdoor place to study with shade", "historic buildings on campus". kind?; attrs? comma list; open? now|late',
+    ['kind', 'attrs', 'open'], function (a) {
+      var t = norm([a.kind, a.attrs, a.open].join(' ')), kind = norm(a.kind) || kindOf(t);
+      kind = /librar/.test(kind) ? 'library' : /outdoor|outside|lawn|park|garden/.test(kind) ? 'outdoor' : /cafe|coffee/.test(kind) ? 'cafe' : /building|landmark|architect/.test(kind) ? 'building' : 'study';
+      var want = attrsOf(t + (/\blate\b/.test(norm(a.open)) ? ' late' : '') + (/\bnow\b/.test(norm(a.open)) ? ' open now' : ''));
+      if (kind === 'outdoor' && want.indexOf('outdoor') < 0) want.push('outdoor');
+      var now0 = now(), notes = [], src = [], covers = [kind].concat(want);
+      // candidates
+      var cands;
+      if (kind === 'library') cands = (TH.PLACES || []).filter(function (p) { return p.cat === 'study' && /librar|archives|collections/i.test(p.name); });
+      else if (kind === 'cafe') cands = (TH.PLACES || []).filter(function (p) { return inCat(p, 'coffee'); });
+      else if (kind === 'building') cands = (TH.PLACES || []).filter(function (p) { return p.cat === 'landmark' || histOf(p); });
+      else if (kind === 'outdoor') cands = (TH.PLACES || []).filter(function (p) { return /shaded outdoor|outdoor seating|patio|terrace/.test(pText(p)); });
+      else cands = (TH.PLACES || []).filter(function (p) { return p.cat === 'study' || (p.cat === 'dining' && /outlet|seating|study/i.test(pText(p))); });
+      // score each candidate with evidence per wanted attribute
+      var rows = cands.map(function (p) {
+        var ev = [], s = 0, gr = null, h = null, met = {};
+        if (want.indexOf('green') >= 0 || want.indexOf('beautiful') >= 0 || want.indexOf('outdoor') >= 0) { gr = nearGreen(p, 90)[0]; if (gr) { s += 2; met.green = met.outdoor = met.beautiful = 1; ev.push('next to ' + (gr.g.name ? '**' + gr.g.name + '**' : 'a lawn') + ' (' + gr.g.kind + ', ~' + Math.max(5, Math.round(gr.d / 5) * 5) + ' m on the map)'); } }
+        if (want.indexOf('historic') >= 0 || want.indexOf('beautiful') >= 0 || kind === 'building') { h = histOf(p); if (h) { s += 2; met.historic = met.beautiful = 1; ev.push(h.year ? h.verb + ' ' + h.year : h.tagged ? 'listed as historic' : 'history in its USC description'); if (h.fact) src.push(srcOf(h.fact.url, 'USC history')); } }
+        if (want.indexOf('quiet') >= 0) { if ((p.tags || []).some(function (x) { return /quiet/i.test(x); }) || /\bquiet\b/.test(pText(p))) { s += 2; met.quiet = 1; ev.push('listed as a quiet space'); } }
+        if (want.indexOf('outlets') >= 0) { if (/outlet/.test(pText(p))) { s += 2; met.outlets = 1; ev.push('laptop outlets listed'); } }
+        if (want.indexOf('shade') >= 0 || want.indexOf('outdoor') >= 0) { if (/shaded outdoor|outdoor seating|patio|terrace/.test(pText(p))) { s += 2; met.outdoor = 1; if (/shade/.test(pText(p))) met.shade = 1; ev.push((p.features || []).filter(function (f) { return /outdoor|shade|patio|terrace/i.test(f); })[0] || 'outdoor seating listed'); } }
+        if (want.indexOf('coffee') >= 0 && /literatea|cafe|caf|coffee/.test(pText(p)) && kind !== 'cafe') { s += 1; met.coffee = 1; ev.push('café inside or listed'); }
+        var st = p.hours ? TH.status(p, now0) : null, cl = p.hours ? closeMin(p, now0) : null;
+        if (want.indexOf('late') >= 0) { var rr = p.hours ? TH.hoursHelpers.dayRanges(p, now0) : null; if (cl != null && cl >= 22 * 60) { s += 2; met.late = 1; ev.push(rr && rr.length === 1 && rr[0][0] === 0 && rr[0][1] >= 1440 ? 'open 24 hours today' : 'open until ' + (cl >= 1440 ? (cl === 1440 ? 'midnight' : fmtMin(cl - 1440) + ' (after midnight)') : fmtMin(cl)) + ' today'); } }
+        if (st) { if (st.open) s += 0.5; ev.push(st.open ? 'open now' + (st.detail ? ' (' + st.detail.toLowerCase() + ')' : '') : 'closed now'); }
+        if (want.indexOf('now') >= 0) { if (st && st.open) met.now = 1; else s -= 3; }
+        return { p: p, s: s, ev: ev, met: met, w: walkMin(p) };
+      }).filter(function (r) { return !want.length || Object.keys(r.met).length > 0; }).sort(function (x, y) { return y.s - x.s || (x.w || 99) - (y.w || 99); });
+      // outdoor green spaces themselves
+      var out = [];
+      if (kind === 'outdoor' || (kind === 'study' && (want.indexOf('green') >= 0 || want.indexOf('outdoor') >= 0))) {
+        out = greens().filter(function (g) { return g.name; }).map(function (g) { var w = null; try { w = TH.route(TH.ME, { x: g.x, y: g.y }).minutes; } catch (e) { w = null; } return { g: g, w: w }; }).sort(function (x, y) { return (x.w || 99) - (y.w || 99); }).slice(0, 5);
+        if (out.length) src.push(srcOf('https://www.openstreetmap.org/', 'OpenStreetMap (parks, gardens, lawns)'));
+      }
+      // what the data can't support, said plainly
+      if (want.indexOf('beautiful') >= 0) { notes.push('USC’s pages don’t rate places by beauty, so I ranked by what the data does show: green space next to it and history.'); covers.push('beautiful'); }
+      if (want.indexOf('view') >= 0) notes.push('Views aren’t described in the data I carry.');
+      if (want.indexOf('shade') >= 0) notes.push('The map data doesn’t mark trees or shade, except where a place lists shaded seating.');
+      if (want.indexOf('quiet') >= 0 && !rows.some(function (r) { return r.ev.some(function (e) { return /quiet/.test(e); }); })) notes.push('None of these is listed as a quiet space.');
+      if (want.indexOf('outlets') >= 0 && !rows.some(function (r) { return r.ev.some(function (e) { return /outlet/.test(e); }); })) notes.push('Outlets aren’t listed for these places.');
+      var top = rows.slice(0, kind === 'building' ? 8 : 5), hard = want.filter(function (x) { return /^(green|historic|quiet|late|outlets|shade|now)$/.test(x); });
+      if (hard.length > 1 && top.length && !rows.some(function (r) { return hard.every(function (x) { return r.met[x]; }); })) notes.unshift('No single place in the data has all of: ' + hard.join(', ').replace('green', 'greenery').replace('historic', 'old / historic') + '. Closest matches first.');
+      top.forEach(function (r) { pSrc(r.p).forEach(function (s) { src.push(s); }); });
+      var md = '';
+      if (top.length) md += '**' + (kind === 'library' ? 'Libraries' : kind === 'cafe' ? 'Cafés' : kind === 'building' ? 'Historic places on and next to campus' : 'Study spots') + (want.length ? ' matching ' + want.filter(function (x) { return x !== 'now'; }).join(', ').replace('green', 'greenery').replace('historic', 'old / historic') : '') + ':**\n' + list(top.map(function (r) { return '**' + r.p.name + '**' + (r.w ? ' · ~' + r.w + ' min walk' : '') + (r.ev.length ? ' · ' + r.ev.join(' · ') : '') + (kind === 'building' && r.p.desc ? '\n  ' + r.p.desc : ''); }), 8);
+      if (out.length) md += (md ? '\n\n' : '') + '**Green spaces to sit or work outside** (OpenStreetMap):\n' + list(out.map(function (o) { return '**' + o.g.name + '** · ' + o.g.kind + (o.w ? ' · ~' + o.w + ' min walk' : ''); }));
+      if (!md) md = 'I couldn’t find a place with those features in the data I carry.';
+      if (notes.length) md += '\n\n_' + notes.join(' ') + '_';
+      var seen = {}; src = src.filter(function (s) { if (!s || seen[s.url]) return false; seen[s.url] = 1; return true; }).slice(0, 4);
+      var o2 = [bot(md, src, top[0] ? [go('Walk me there', 'map', top[0].p.id)] : [])];
+      o2[0].covers = covers.concat(['place', 'spot', 'campus']);
+      return o2;
+    }, function (t) {
+      var at = attrsOf(t), k = kindOf(t);
+      if (/\b(my|register|book|reserve|order|class|course|club|event|events|food|eat|lunch|dinner|parking|bathroom|restroom)\b/.test(t)) return null;
+      var findish = /\b(find|where|wheres|recommend|suggest|looking for|want|need|any|good|best|is there|are there|show me|list)\b/.test(t);
+      var placeish = /\b(librar\w*|place|places|spot|spots|somewhere|area|buildings?|landmarks?|outdoors?|outside|lawns?|parks?|gardens?|quad|courtyard|cafe)\b/.test(t);
+      var attrish = at.filter(function (x) { return x !== 'now' && x !== 'coffee'; }).length;
+      if (!placeish || !attrish) return null;
+      if (!findish && !/^(quiet|silent|historic|old|outdoor|green|late|24)\b/.test(t) && !/\b(open late|open now|to (work|study)|for (work|working|studying))\b/.test(t)) return null;
+      // leave single-place questions ("is leavey open late") to place.hours
+      if (findPlaces(t).length && !/\b(librar(y|ies)|place|spot|buildings?)\b/.test(t.replace(/\b(leavey|doheny)\b/g, ''))) return null;
+      var o = { kind: k, attrs: at.filter(function (x) { return x !== 'now' && x !== 'late'; }).join(',') };
+      if (at.indexOf('late') >= 0) o.open = 'late'; else if (at.indexOf('now') >= 0) o.open = 'now';
+      return o;
+    });
+  // matched before the other place commands ("quiet library open late" is a finder question, not an hours one)
+  X.names.filter(function (n) { return n !== 'place.find'; }).forEach(function (n) { var sp = TS.cmds[n]; delete TS.cmds[n]; TS.cmds[n] = sp; });
+
+  // every Part 7 answer says which words it covered, for the integrator's answer-quality gate (m.covers)
+  X.names.forEach(function (n) {
+    var sp = TS.cmds[n], r0 = sp.run, base = n.split('.').concat(words(sp.about.split('.')[0]).filter(function (w) { return w.length > 3; }).slice(0, 12));
+    sp.run = function (a) {
+      var out = r0.apply(this, arguments);
+      try { var m = (out || []).find(function (x) { return x && x.role === 'bot'; }); if (m) { var c = (m.covers || []).concat(base); Object.keys(a || {}).forEach(function (k) { words(a[k]).forEach(function (w) { if (w.length > 2) c.push(w); }); }); m.covers = Array.from(new Set(c)); } } catch (e) { /* covers are optional */ }
+      return out;
+    };
+  });
+
   // ============================================================================================ extra on-device matchers (narrow; checked against the sample)
   var DAYL = { monday: 'M', mondays: 'M', tuesday: 'T', tuesdays: 'T', wednesday: 'W', wednesdays: 'W', thursday: 'H', thursdays: 'H', friday: 'F', fridays: 'F' };
   var EVT = null;
