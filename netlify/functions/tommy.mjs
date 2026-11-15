@@ -13,7 +13,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM, COMMANDS } from "./tommy-prompt.mjs";
 
-const MODEL = process.env.TOMMY_MODEL || "claude-opus-5-5";
+const MODEL = process.env.TOMMY_MODEL || "claude-haiku-5-5"; // fast and low-cost: its only job is words -> one Tommy command
 const MAX_BODY = 20_000;               // bytes
 const LIMIT = 40, WINDOW_MS = 10 * 60_000; // per visitor, per function instance (best effort; your Console spend limit is the hard cap)
 const hits = new Map();
@@ -63,15 +63,8 @@ async function translate(body) {
     system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }], // instructions + catalogue are identical every call
     messages: [{ role: "user", content: `NOW: ${clean(body.now, 80)}\n\nEARLIER\n${earlier}\n\nSTUDENT MESSAGE\n${clean(body.text, 1000)}` }],
   };
-  let response;
-  try {
-    // If a safety classifier declines, the API retries on a fallback model inside the same call.
-    response = await client.beta.messages.create({ ...params, betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" });
-  } catch (e) {
-    if (!(e instanceof Anthropic.BadRequestError)) throw e;
-    response = await client.messages.create(params); // same request without the fallback beta
-  }
-  if (response.stop_reason === "refusal") return { cmd: null };
+  const response = await client.messages.create(params);
+  if (response.stop_reason === "refusal") return { cmd: null }; // Tommy keeps its own on-device answer
   const raw = response.content.filter((b) => b.type === "text").map((b) => b.text).join("");
   return parseCommand(raw) ?? { cmd: null };
 }
