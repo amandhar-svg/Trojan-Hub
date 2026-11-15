@@ -69,6 +69,11 @@ export const COMMANDS = {
  "watch.list": [],
  "guest.list": [],
  "news.list": [],
+ "events.find.public": [
+  "q",
+  "hashtag",
+  "cat"
+ ],
  "course.who": [
   "course",
   "term"
@@ -478,20 +483,15 @@ export const COMMANDS = {
  "study.partners": [
   "course"
  ],
+ "faq": [
+  "id"
+ ],
+ "requests.list": [],
  "place.find.public": [
   "kind",
   "attrs",
   "open"
  ],
- "events.find.public": [
-  "q",
-  "hashtag",
-  "cat"
- ],
- "faq": [
-  "id"
- ],
- "requests.list": [],
  "do": [
   "action",
   "request"

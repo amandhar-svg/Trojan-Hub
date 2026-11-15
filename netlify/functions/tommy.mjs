@@ -87,7 +87,7 @@ const DEDUPE_MS = 3 * 60_000;                            // one visitor flagging
 export const ANSWER_LIMITS = { context: 10_000, sources: 10, words: 120, question: 500 };   // the browser sends ≤3,000 chars per tool block
 const DAY_MS = 24 * 3_600_000;
 export const CACHE_TTL = { found: 7 * DAY_MS, notFound: DAY_MS };
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2;   // 2: search answers joined sentence by sentence (v1 entries could hold a run-on where two cited passages met)
 export const REASONS = ["inaccurate", "no-script", "missing-feature", "factcheck"];   // flag reasons (missing-feature: Part B, no action exists; factcheck: the browser rejected an AI answer)
 const SEARCH_REASONS = ["inaccurate", "no-script"];      // a search is only ever about a question (Part A)
 const MODES = new Set(["translate", "judge", "search", "answer", "flag"]);
@@ -696,6 +696,22 @@ export function tidyAnswer(s) {
   return capWords(t, 150);
 }
 
+// Claude's answer comes as several text blocks (one per cited passage). Joined with nothing, a block that ended without
+// punctuation ran into the next ("…and a fountain Adjacent to the north face of Doheny…"): put the sentence break back.
+export function joinBlocks(texts) {
+  let out = "";
+  for (const t0 of texts) {
+    const t = String(t0 ?? "");
+    if (!t) continue;
+    if (out && !/\s$/.test(out) && !/^\s/.test(t)) {
+      if (/[\p{L}\p{N})”"’]$/u.test(out) && /^\p{Lu}/u.test(t)) out += ". ";
+      else if (/[.!?:;]$/.test(out) && /^[\p{L}\p{N}]/u.test(t)) out += " ";
+    }
+    out += t;
+  }
+  return out;
+}
+
 // [Claude responses of one search, in order] -> the search result. The answer is the text after the last search
 // (anything before it is preamble such as "I'll look that up"); its sources are the USC pages that text cites.
 export function readSearch(responses) {
@@ -720,7 +736,7 @@ export function readSearch(responses) {
   if (!last) return out(false, { reason: "no-reply" });
   if (last.stop_reason === "refusal") return out(false, { reason: "refusal" });
   if (last.stop_reason === "pause_turn") return out(false, { reason: "paused" });
-  const raw = segment.map((b) => b.text || "").join("");
+  const raw = joinBlocks(segment.map((b) => b.text || ""));
   if (/^\W*NOT[_ ]?FOUND\W*$/i.test(raw.trim()) || !raw.trim()) return out(false, { reason: "not-found" });
   const seen = new Map();
   for (const b of segment) {
