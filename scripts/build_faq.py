@@ -78,12 +78,15 @@ def prefix(cat):
     return p
 
 
-def short_title(t, n=40):
+def short_title(t, n=36):
     t = re.sub(r'\s*\(.*?\)\s*', ' ', t).strip()
     t = re.sub(r'\s+', ' ', t)
     if len(t) <= n: return t.rstrip('?')
-    cut = t[:n].rsplit(' ', 1)[0]
-    return cut.rstrip(',:;-–')
+    cut = t[:n].rsplit(' ', 1)[0].rstrip(',:;-–')
+    # don't end a cut title on a dangling small word ("Commencement tickets for you and")
+    while re.search(r'\s(on|your|you|and|for|the|of|to|a|an|in|with|or|at|by|from|is|are|do|does|what|how|when|vs\.?|&)$', cut, re.I):
+        cut = re.sub(r'\s+\S+$', '', cut).rstrip(',:;-–')
+    return cut
 
 
 def main():

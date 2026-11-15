@@ -26,10 +26,10 @@ Ask Tommy now answers far more student questions through **151 new command famil
 | 119 held-out casual questions, first run before any fix | 76 (63.9%) | 104 (87.4%); 106 (89.1%) hand-adjudicated |
 | same 119 after fixing generalizable misses | 76 (63.9%) | 116 (97.5%) |
 | Translator path: intended command run with intended args (415) | n/a | 415 (100%) |
-| FAQ index top-1 / top-3 on 108 FAQ questions | n/a | 98 / 105 |
+| FAQ index top-1 / top-3 on 108 FAQ questions | n/a | 97 / 105 (no-answer fallback fired on 73, 68 right) |
 | Hand review of 100 random answers | n/a | 93 correct (5 of 7 misses were existing brain answers; 2 matcher bugs fixed since) |
 
-Compile time: 0.35 ms per message on average (was 0.04 ms). Catalogue (`TA.Script.catalog()` incl. FAQ line): 78,320 chars ≈ 19.6k tokens (est.). Smoke: NO ERRORS. Safety suite: FAILS: 0.
+Compile time: 0.35 ms per message on average (was 0.04 ms). Catalogue (`TA.Script.catalog()` incl. the FAQ line): 73,704 chars ≈ 18.4k–20.5k tokens (est.). The whole generated translator prompt (rules + catalogue + the existing actions list) is ~24.2k tokens by `build-netlify.cjs`'s own estimate; it is cached (`cache_control`). Smoke: NO ERRORS. Safety suite: FAILS: 0.
 
 Re-run: `python3 scripts/build.py /tmp/th.html && node scripts/p7-eval/run_eval.cjs /tmp/th.html scripts/p7-eval/tests.json /tmp/out.json` (add `oracle` as a 4th arg for the translator-path check).
 
