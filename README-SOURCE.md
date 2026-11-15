@@ -8,6 +8,7 @@ This branch holds the **source** of the Trojan Hub app. The live site (trojanhub
 - `js/ta/*`: **Ask Tommy** (Trojan Assist engine). `js/ta/script.js` holds Tommy Script commands (`TA.Script.cmds`). `js/ta/course-info.js` (`course.who`) is an example of a command added from its own file. `js/ta/ai-api.js` is the AI translator on this site's Netlify Function.
 - `data/kb.json.gz`: Tommy's USC knowledge base (31,282 docs from USC sites, built 2026-11-09; `docs[]` items with `t` type, `id`, `ti` title, `q` question paraphrases, text and source URL fields). `data/soc.json.gz`: USC Schedule of Classes, Fall 2026 and Spring 2027.
 - `data/research/facts`: sourced USC facts (places, hours, transport, safety). `data/research/tacode`: notes on the Trojan Assist code.
+- `node scripts/smoke.cjs <built.html>`: opens every screen and must print `NO ERRORS`. `node scripts/safety-suite.cjs <built.html> SAFETY-PHRASES.json`: Tommy's crisis and emergency regression, must print `FAILS: 0`.
 - `P6-CONTRACT.md`: the project's rules (truthfulness, simulated labels, safety). `SAFETY-PHRASES.json`: crisis and emergency regression phrases that must keep passing.
 
 Demo: date pinned to Mon Nov 9, 2026 (campus time); demo student Jordan Rivera (CS sophomore). All account state is in `TH.H()` (`TA.State.d.hub`, friend's extras in `TH.H().x`).
