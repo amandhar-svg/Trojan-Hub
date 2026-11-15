@@ -136,6 +136,8 @@
     },
     run: function () {
       if (!TA.State || !TA.State.d || !TA.State.d.dining) return [bot('I can’t see a meal plan on this account.')];
+      // account answer: respect an explicit sign-out (Trojan Hub otherwise signs Tommy in as the demo student)
+      if (!TA.State.d.signedIn && TA.store && TA.store.get && TA.store.get('hubSignedOut', false)) return [bot('Sign in so I can check your Dining Dollars balance and pace. You signed out, so I can’t see your account right now.', [say('Sign in', 'sign in')])];
       var p = TH.ddPace(), m = money;
       if (p.balance <= 0) return [bot('You have **' + m(0) + '** Dining Dollars left on your ' + p.planName + ', so there’s nothing to pace. You can add a $250 or $500 block (10% off) if you need more.', [go('Open Wallet', 'wallet')])];
       var status = p.onTrack

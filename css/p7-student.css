@@ -10,7 +10,7 @@
     mask-image: linear-gradient(transparent 0, #000 18px, #000 calc(100% - 34px), transparent 100%);
   }
   .pitch:focus-visible { outline-offset: 4px; }
-  .pitch li { grid-template-columns: minmax(0, 1fr) minmax(0, 52%); }
+  .pitch li { grid-template-columns: minmax(0, 1fr) fit-content(56%); }
   .device { flex: none; }
 }
 
@@ -61,7 +61,8 @@
 .p7-seg { display: flex; padding: 3px; border-radius: 12px; background: var(--surface-2); }
 .p7-seg button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 10px; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--muted); }
 .p7-seg button .ic { width: 16px; height: 16px; }
-.p7-seg button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.p7-seg button[aria-selected="true"] { background: var(--cardinal); color: #fff; box-shadow: var(--shadow); }
+.p7-flip { transform: rotate(180deg); }
 .p7-pv { border-radius: var(--r-lg); padding: 12px; background: linear-gradient(160deg, color-mix(in srgb, var(--cardinal) 10%, var(--bg)), var(--bg)); border: 1px dashed color-mix(in srgb, var(--cardinal) 30%, transparent); }
 .p7-pv-cap { display: flex; align-items: center; gap: 6px; font: 700 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 .p7-pv-cap .ic { width: 13px; height: 13px; }
@@ -148,7 +149,7 @@
 .p7-ddsheet .p7-dd-st b { font-size: 26px; }
 .p7-tx { list-style: none; margin: 0; padding: 0; display: grid; }
 .p7-tx li { display: grid; grid-template-columns: 54px 1fr auto; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); }
-.p7-tx-d { font: 650 11.5px var(--f-mono); color: var(--muted); }
+.p7-tx-d { display: grid; font: 650 11px var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; } .p7-tx-d b { font-size: 13px; color: var(--ink); text-transform: none; letter-spacing: 0; }
 .p7-tx-w { display: grid; min-width: 0; } .p7-tx-w b { font-size: 14px; } .p7-tx-w small { font-size: 12px; color: var(--muted); }
 .p7-tx-a { font-weight: 750; }
 .p7-src { color: var(--muted); } .p7-src a { color: var(--cardinal-ink); font-weight: 650; }
@@ -161,7 +162,7 @@
 .p7-bg .ccv { height: 100%; }
 .x-post.p7-ph::after, .x-post.p7-cl::after { inset: 18% 0 0; background: linear-gradient(rgba(0, 0, 0, .05), rgba(0, 0, 0, .82) 70%); z-index: 0; }
 .x-post.p7-cl .p7-bg .ccv.logo img { width: 58px; height: 58px; margin-top: -40px; }
-.x-post.p7-cl .p7-bg .ccv.gen b { margin-top: -36px; font-size: 38px; }
+.x-post.p7-cl .p7-bg .ccv.gen b { margin-top: -44px; font-size: 40px; }
 .x-post.p7-cl .pb { gap: 6px; }
 .x-post .pb .club-logo, .x-post.p7-cl .pb .club-logo { box-shadow: 0 0 0 2px rgba(255, 255, 255, .85); }
 .x-post.p7-cl .pb .club-logo.sm { width: 28px; height: 28px; border-radius: 8px; font-size: 11px; }

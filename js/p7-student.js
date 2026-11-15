@@ -124,8 +124,8 @@
       return `<li class="p7-row${flash === f.id ? ' flash' : ''}" data-id="${f.id}">
         <span class="p7-grip" aria-hidden="true" title="Drag to reorder">${icon('menu')}</span>
         <span class="p7-ric">${icon(f.ic)}</span><span class="p7-rl"><b>${esc(f.l)}</b></span>
-        <button class="p7-ar" data-mv="-1" data-id="${f.id}" ${i === 0 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} up">${icon('up')}</button>
-        <button class="p7-ar" data-mv="1" data-id="${f.id}" ${i === n - 1 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} down">${icon('dn')}</button>
+        <button class="p7-ar" data-mv="-1" data-id="${f.id}" ${i === 0 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} up">${icon('down', 'p7-flip')}</button>
+        <button class="p7-ar" data-mv="1" data-id="${f.id}" ${i === n - 1 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} down">${icon('down')}</button>
         <button class="p7-rm" data-rm="${f.id}" ${n <= MIN ? 'disabled' : ''} aria-label="Remove ${esc(f.l)}">${icon('minus')}</button></li>`;
     }
     function rowOff(f, full) {
@@ -143,7 +143,7 @@
     }
     const html = `<div class="p7-cz">
       <div class="sheet-head"><div><span class="eyebrow">Make it yours</span><h2>Customize</h2></div><button class="iconbtn flat" data-close aria-label="Close without saving">${icon('x')}</button></div>
-      <div class="seg p7-seg" role="tablist">${['home', 'plus'].map(x => `<button role="tab" data-k="${x}" aria-selected="${x === k}">${x === 'home' ? `${icon('home')} Home` : `${icon('plus')} + menu`}</button>`).join('')}</div>
+      <div class="seg p7-seg" role="tablist">${['home', 'plus'].map(x => `<button role="tab" data-k="${x}" aria-selected="${x === k}">${x === 'home' ? `${icon('home')} Home` : `${icon('grid')} + menu`}</button>`).join('')}</div>
       <div id="p7-cz-body"></div>
       <div class="p7-cz-foot"><button class="btn line" id="p7-reset">${icon('refresh')} Reset to default</button><button class="btn" id="p7-done">Done</button></div>
     </div>`;
@@ -158,6 +158,7 @@
         flash = null;
       }
       paint();
+      setTimeout(() => { const t = $(`.p7-seg [data-k="${k}"]`, w); if (t) t.focus({ preventScroll: true }); }, 70);
       $$('.p7-seg [data-k]', w).forEach(b => b.onclick = () => { k = b.dataset.k; paint(); });
       host.addEventListener('click', e => {
         const mv = e.target.closest('[data-mv]'), rm = e.target.closest('[data-rm]'), ad = e.target.closest('[data-addf]');
@@ -170,14 +171,15 @@
       host.addEventListener('pointerdown', e => {
         const g = e.target.closest('.p7-grip'); if (!g) return;
         const list = $('#p7-on', w), row = g.closest('.p7-row'); if (!list || !row) return;
-        e.preventDefault(); row.classList.add('drag'); try { g.setPointerCapture(e.pointerId); } catch (er) { /* fine */ }
+        e.preventDefault(); row.classList.add('drag');
         const move = ev => {
           const y = ev.clientY;
           for (const r of $$('.p7-row', list)) { if (r === row) continue; const b = r.getBoundingClientRect(); if (y < b.top + b.height / 2) { if (row.nextElementSibling !== r) list.insertBefore(row, r); return; } }
           if (list.lastElementChild !== row) list.appendChild(row);
         };
-        const up = () => { g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', up); g.removeEventListener('pointercancel', up); row.classList.remove('drag'); draft[k] = $$('.p7-row', list).map(r => r.dataset.id); flash = row.dataset.id; paint(); };
-        g.addEventListener('pointermove', move); g.addEventListener('pointerup', up); g.addEventListener('pointercancel', up);
+        // listen on window: moving the row in the DOM drops pointer capture
+        const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); row.classList.remove('drag'); draft[k] = $$('.p7-row', list).map(r => r.dataset.id); flash = row.dataset.id; paint(); };
+        window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
       });
       $('#p7-reset', w).onclick = () => { draft[k] = DEF[k].slice(); paint(); TH.toast(`${NAME[k]} back to the default. Tap Done to keep it.`, 'refresh'); };
       $('#p7-done', w).onclick = () => {
@@ -243,7 +245,8 @@
       if (b.dataset.p7) return; const c = clubOf(b.dataset.club); if (!c) return; b.dataset.p7 = '1';
       b.classList.add('p7-cl'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg">${TH.clubCover(c, { size: 'md' })}</span>`);
       const big = $('.big', b); if (big) big.remove();
-      const pb = $('.pb', b); if (pb) pb.insertAdjacentHTML('afterbegin', thumb(c, 'sm'));
+      // a photo cover also gets the club's logo (as on the Clubs screen); logo and generated covers already show it
+      const pb = $('.pb', b); if (pb && photoOf(c)) pb.insertAdjacentHTML('afterbegin', thumb(c, 'sm'));
     });
     // event posters, the billboard and spotlights: the host club's photo behind, its logo next to the name
     $$('.x-post[data-event]', host).forEach(b => {
@@ -291,6 +294,13 @@
     const f = $('.tabbar .fab'); if (f) f.onclick = openPlus;
     return r;
   };
+
+  // Desktop: the wheel anywhere on the page outside the phone scrolls the left side (css makes .pitch scrollable)
+  document.addEventListener('wheel', e => {
+    const p = $('.pitch'); if (!p || e.defaultPrevented || e.target.closest('.device, .pitch') || p.scrollHeight <= p.clientHeight) return;
+    if (getComputedStyle(p).display === 'none') return;
+    p.scrollBy({ top: e.deltaY * (e.deltaMode === 1 ? 32 : 1), behavior: 'auto' });
+  }, { passive: true });
 
   // =====================================================================
   // MORE (student view)
@@ -445,7 +455,7 @@
     };
     function openDD() {
       const p = TH.ddPace();
-      const tx = p.recent.map(x => `<li><span class="p7-tx-d">${esc(TH.fmtDate(x.at))}</span><span class="p7-tx-w"><b>${esc(x.where)}</b><small>${x.sim ? `${esc((x.items || []).join(' + '))} · <i class="p7-sim">Simulated</i>` : `Mobile order ${esc(x.order || '')}`}</small></span><span class="p7-tx-a mono">−${money(x.amount)}</span></li>`).join('');
+      const tx = p.recent.map(x => `<li><span class="p7-tx-d">${esc(TH.DAYS3 ? TH.DAYS3[x.at.getDay()] : '')}<b>${esc(TH.MONTHS[x.at.getMonth()].slice(0, 3))} ${x.at.getDate()}</b></span><span class="p7-tx-w"><b>${esc(x.where)}</b><small>${x.sim ? `${esc((x.items || []).join(' + '))} · <i class="p7-sim">Simulated</i>` : `Mobile order ${esc(x.order || '')}`}</small></span><span class="p7-tx-a mono">−${money(x.amount)}</span></li>`).join('');
       const verdict = p.onTrack
         ? `You’re on track. At ${money(p.pacePerDay)} a day you’d use it all${p.runOutDate && p.runOutDate < p.deadline ? ` around ${fmtD(p.runOutDate)}` : ''}.`
         : `At ${money(p.pacePerDay)} a day about ${money(p.projectedLeft)} would be left on ${fmtD(p.deadline)}. Spend about ${money(Math.max(0, p.needPerDay - p.pacePerDay))} more a day, or donate what you won’t use.`;
