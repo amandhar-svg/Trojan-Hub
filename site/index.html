@@ -20413,6 +20413,167 @@ window.TA_FAQ = [{"id":"reg1","t":"How to register for classes in Web","q":["how
   TA.FAQ = { strict: false, search: search, confident: confident, toks: toks, data: DATA, count: DATA.length,
     catalogChars: function () { return TS.cmds.faq.about.length; } };
 })();
+</script><script>/* js/ta/wallet-dining.js — Dining Dollars pace (Part 7).
+ *
+ * TH.ddPace() → the numbers the Wallet card, its detail sheet and Tommy share:
+ *   { balance, planName, included, blocks, start, deadline, deadlineLabel, daysLeft, needPerDay,
+ *     recent:[{at, where, amount, sim}], recentDays, recentSum, pacePerDay, projectedLeft, runOutDate, onTrack,
+ *     classesEnd, needByClassesEnd, rules, sources }
+ * Tommy Script command wallet.dining {} answers "how much should I spend on dining dollars per day",
+ * "am I on track with my dining dollars", "dining dollars per day". It runs on this device from the demo
+ * account; it's an account answer, never the AI.
+ *
+ * Truthfulness:
+ * - The balance and plan come from the demo account (TA.State.d.dining). Picked-up mobile orders are real
+ *   simulated debits. The other purchases in the "recent" list are SIMULATED (the demo account stores no card
+ *   history), use the app's sample menu prices at venues where the app's own mobile order already charges
+ *   Dining Dollars, and are labeled Simulated; the spending pace built on them is labeled Est.
+ * - USC publishes no separate Dining Dollars cutoff date. USC Hospitality says Flex/Trojan/block Dining Dollars
+ *   don't roll over and are forfeited at the end (last day) of the semester; we use the Fall 2026 semester end
+ *   from USC's academic calendar (finals end Wed, Dec 16, 2026; TA.POLICY.cal) and say so.
+ * Load after js/ta/course-info.js.
+ */
+(function () {
+  'use strict';
+  var TH = window.TH || (window.TH = {});
+  var TA = window.TA;
+  var DAY = 864e5;
+
+  var SOURCES = [
+    { url: 'https://hospitality.usc.edu/frequently-asked-questions/', title: 'USC Hospitality – Frequently asked questions' },
+    { url: 'https://hospitality.usc.edu/meal-plan-options/', title: 'USC Hospitality – Meal plan options' },
+    { url: 'https://mycard.usc.edu/meal-plans/', title: 'USCard Services – Meal plans' },
+    { url: 'https://www.usc.edu/academic-calendar/', title: 'USC Academic Calendar (Fall 2026 finals end Dec 16)' }
+  ];
+  var RULES = [
+    'Dining Dollars on the Trojan Plan, Flex120 Plan and Dining Dollar Blocks don’t roll over and aren’t refunded.',
+    'Unused Flex120 Dining Dollars are forfeited at the end of the semester; block Dining Dollars on the last day of the semester.',
+    'USC doesn’t publish a separate Dining Dollars cutoff date, so this uses the last day of the Fall 2026 semester: finals end Wed, Dec 16, 2026 (USC academic calendar).',
+    'You can donate unused Dining Dollars to USC programs for food-insecure students. Your separate USCard discretionary balance does roll over.'
+  ];
+
+  function pol() { return (TA && TA.POLICY) || {}; }
+  function D() { return TA && TA.State && TA.State.d; }
+  function now() { return TH.clock ? TH.clock.now() : new Date(); }
+  function dayStart(d) { return TH.dayStart ? TH.dayStart(d) : new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function key(s) { return TH.parseKey ? TH.parseKey(s) : new Date(s + 'T00:00:00'); }
+  function r2(n) { return Math.round(n * 100) / 100; }
+  function seed(str) { var s = 0; for (var i = 0; i < str.length; i++) s = (s * 31 + str.charCodeAt(i)) >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+  // the semester's last day from TA.POLICY.cal ("Dec 9–16, 2026" → Dec 16, 2026)
+  function semesterEnd(cal) {
+    var m = String(cal.finals || '').match(/([A-Z][a-z]{2})\w*\s+(\d+)\s*[–-]\s*(?:([A-Z][a-z]{2})\w*\s+)?(\d+),\s*(\d{4})/);
+    if (!m) return cal.classesEnd ? key(cal.classesEnd) : null;
+    var mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(m[3] || m[1]);
+    return new Date(+m[5], mon, +m[4]);
+  }
+  function includedDD(plan) {
+    if (!plan) return 0;
+    var m = String(plan.short || '').match(/\$([\d,]+)\s*(worth of\s*)?Dining Dollars/i);
+    return m ? +m[1].replace(/,/g, '') : 0;
+  }
+  function fmtDay(d) { return TH.fmtDate ? TH.fmtDate(d) : d.toDateString().slice(0, 10); }
+  function money(n) { return TH.money ? TH.money(n) : '$' + (+n).toFixed(2); }
+
+  // Simulated recent purchases (deterministic for the demo date) + real simulated mobile-order pickups.
+  function recentTx(days, maxTotal) {
+    var t0 = dayStart(now()), from = new Date(t0.getTime() - days * DAY), out = [];
+    var hubOrders = (TH.H && D() ? (TH.H().orders || []) : []);
+    hubOrders.forEach(function (o) {
+      if (o && o.state === 'picked' && o.pickedAt && o.pickedAt >= from.getTime()) out.push({ at: new Date(o.pickedAt), where: placeName(o.at), amount: +o.total || 0, sim: false, order: o.code });
+    });
+    var venues = (TH.PLACES || []).filter(function (p) { return p.order && (TH.ORDER_MENUS || {})[p.id]; });
+    if (venues.length) {
+      var rnd = seed('dd|' + (TH.dkey ? TH.dkey(t0) : t0.toDateString())), sum = 0, n = 4;
+      for (var i = 0; i < n; i++) {
+        var back = 1 + Math.floor(rnd() * (days - 1)), v = venues[Math.floor(rnd() * venues.length)], menu = TH.ORDER_MENUS[v.id];
+        var pick = menu.filter(function (it, j) { return j === 0 ? rnd() < 0.45 : rnd() < 0.6; });
+        if (!pick.length) pick = [menu[menu.length - 1]];
+        var amt = r2(pick.reduce(function (s, it) { return s + (+it[1] || 0); }, 0));
+        if (sum + amt > maxTotal) continue;
+        sum += amt;
+        var at = new Date(t0.getTime() - back * DAY + (11 + Math.floor(rnd() * 8)) * 3600e3 + Math.floor(rnd() * 4) * 15 * 60e3);
+        out.push({ at: at, where: v.name.replace(/ \(.*\)/, ''), amount: amt, sim: true, items: pick.map(function (it) { return String(it[0]).replace(/ \(sample item\)/, ''); }) });
+      }
+    }
+    return out.sort(function (a, b) { return b.at - a.at; });
+  }
+  function placeName(id) { var p = (TH.byId || {})[id]; return p ? p.name.replace(/ \(.*\)/, '') : String(id || 'Mobile order'); }
+
+  TH.ddPace = function () {
+    var d = D(), dn = (d && d.dining) || {}, P = pol(), term = (P.terms && P.terms.current && P.terms.current.code) || '20263';
+    var cal = (P.cal || {})[term] || {}, plan = (TA && TA.State && TA.State.mealPlan) ? TA.State.mealPlan() : null;
+    var balance = +dn.diningDollars || 0, blocks = (dn.ddBlocks || []).reduce(function (s, b) { return s + (+b.amount || 0); }, 0);
+    var included = includedDD(plan), today = dayStart(now());
+    var start = cal.classesBegin ? key(cal.classesBegin) : null, deadline = semesterEnd(cal);
+    var classesEnd = cal.classesEnd ? key(cal.classesEnd) : null;
+    var daysLeft = deadline ? Math.max(0, Math.round((deadline - today) / DAY) + 1) : null; // today through the last day
+    var daysToClassesEnd = classesEnd ? Math.max(0, Math.round((classesEnd - today) / DAY) + 1) : null;
+    var spentAll = Math.max(0, r2(included + blocks - balance));
+    var RECENT = 14, recent = recentTx(RECENT, Math.min(spentAll, 40));
+    var recentSum = r2(recent.reduce(function (s, x) { return s + x.amount; }, 0));
+    var pace = r2(recentSum / RECENT);
+    var need = daysLeft ? r2(balance / daysLeft) : null;
+    var projectedLeft = daysLeft != null ? Math.max(0, r2(balance - pace * daysLeft)) : null;
+    var runOut = pace > 0 ? new Date(today.getTime() + Math.ceil(balance / pace) * DAY) : null;
+    return {
+      balance: balance, planName: plan ? plan.name : (dn.plan || 'Meal plan'), included: included, blocks: blocks, spentAll: spentAll,
+      start: start, deadline: deadline, deadlineLabel: deadline ? fmtDay(deadline) : 'not published',
+      daysLeft: daysLeft, needPerDay: need, recent: recent, recentDays: RECENT, recentSum: recentSum, pacePerDay: pace,
+      projectedLeft: projectedLeft, runOutDate: runOut, onTrack: need != null && pace >= need - 0.005,
+      classesEnd: classesEnd, needByClassesEnd: daysToClassesEnd ? r2(balance / daysToClassesEnd) : null, daysToClassesEnd: daysToClassesEnd,
+      semesterPct: start && deadline ? Math.max(0, Math.min(100, Math.round((today - start) / (deadline - start) * 100))) : null,
+      usedPct: included + blocks > 0 ? Math.max(0, Math.min(100, Math.round(spentAll / (included + blocks) * 100))) : null,
+      rules: RULES, sources: SOURCES
+    };
+  };
+  TH.ddPace.SOURCES = SOURCES;
+  TH.ddPace.RULES = RULES;
+
+  // ---------- Tommy Script: wallet.dining ----------
+  var TS = TA && TA.Script;
+  if (!TS || !TS.cmds) return;
+  var DD = /\b(dining dollars?|diningdollars|dining dollar balance|dd|dds|dining money)\b/;
+  // only per-day / on-track / pace wording; general Dining Dollars questions belong to dining.dollars (scripts-plus.js)
+  var PACE = /\b(per day|a day|each day|every day|daily|per week|a week|on track|on pace|pace|burn rate|how much (should|can|do) i (spend|use)( \w+){0,4} (per|a|each) (day|week))\b/;
+  function bot(md, chips, sources) { return { role: 'bot', kind: 'c', md: md, chips: chips || [], sources: sources || SOURCES }; }
+  function go(label, screen, arg) { return { label: label, value: '@go:' + screen + (arg != null ? ':' + arg : ''), kind: '' }; }
+  function say(label, value) { return { label: label, value: value || label.toLowerCase(), kind: '' }; }
+
+  TS.cmds['wallet.dining'] = {
+    name: 'wallet.dining',
+    about: 'DINING DOLLARS PACE for the student’s own account: balance, how much they spend per day now (Est., from recent purchases) and how much per day they must spend to use the rest before Dining Dollars are forfeited at the end of the semester. Use for "how much should I spend on dining dollars per day", "am I on track with my dining dollars", "will my dining dollars run out", "dining dollars per day". No args.',
+    args: [],
+    match: function (t) {
+      if (!DD.test(t)) return null;
+      if (/\b(add|buy|purchase|load|top up|top-up|block)\b/.test(t) && !/\b(should i|do i need|need to)\b/.test(t)) return null;
+      if (/\b(roll ?over|refund|transfer|donate|where can|accepted)\b/.test(t)) return null;
+      return PACE.test(t) ? {} : null;
+    },
+    run: function () {
+      if (!TA.State || !TA.State.d || !TA.State.d.dining) return [bot('I can’t see a meal plan on this account.')];
+      // account answer: respect an explicit sign-out (Trojan Hub otherwise signs Tommy in as the demo student)
+      if (!TA.State.d.signedIn && TA.store && TA.store.get && TA.store.get('hubSignedOut', false)) return [bot('Sign in so I can check your Dining Dollars balance and pace. You signed out, so I can’t see your account right now.', [say('Sign in', 'sign in')])];
+      var p = TH.ddPace(), m = money;
+      if (p.balance <= 0) return [bot('You have **' + m(0) + '** Dining Dollars left on your ' + p.planName + ', so there’s nothing to pace. You can add a $250 or $500 block (10% off) if you need more.', [go('Open Wallet', 'wallet')])];
+      var status = p.onTrack
+        ? 'You’re **on track**: at your recent pace you’d use it all' + (p.runOutDate && p.deadline && p.runOutDate < p.deadline ? ' by about **' + fmtDay(p.runOutDate) + '**' : '') + '.'
+        : 'At your recent pace you’d leave about **' + m(p.projectedLeft) + '** unused on ' + p.deadlineLabel + '. Spend about **' + m(Math.max(0, p.needPerDay - p.pacePerDay)) + ' more per day** to use it all.';
+      var md = 'You have **' + m(p.balance) + '** Dining Dollars on your ' + p.planName + '.\n\n' +
+        '- **Spending now: ' + m(p.pacePerDay) + ' per day (Est.)**, the average over the last ' + p.recentDays + ' days (' + m(p.recentSum) + ' in ' + p.recent.length + ' purchase' + (p.recent.length === 1 ? '' : 's') + ').\n' +
+        '- **To use it all by ' + p.deadlineLabel + ': ' + m(p.needPerDay) + ' per day** (' + p.daysLeft + ' days, counting today).\n' +
+        (p.needByClassesEnd ? '- Regular dining hall hours and classes end ' + fmtDay(p.classesEnd) + '; to finish by then it’s ' + m(p.needByClassesEnd) + ' per day.\n' : '') +
+        '\n' + status +
+        '\n\n**Why that deadline:** Dining Dollars on Flex120, the Trojan Plan and blocks don’t roll over and aren’t refunded; they’re forfeited at the end of the semester. USC doesn’t list a separate cutoff date, so I used the last day of Fall 2026 (finals end Dec 16, USC academic calendar).' +
+        '\n\n_Your balance is from the demo account. The recent purchases are simulated (sample menu prices), so the pace is an estimate._';
+      var m0 = bot(md, [go('Open Wallet', 'wallet', 'dd'), say('Do they roll over?', 'do dining dollars roll over'), say('Where can I use them?', 'where can i use dining dollars')]);
+      m0.covers = ['dining', 'dollars', 'per', 'day', 'spend', 'spending', 'balance', 'track', 'pace', 'need'];
+      return [m0];
+    }
+  };
+  // checked before the general dining commands (it only matches per-day / on-track / pace wording)
+  (function () { var c = TS.cmds['wallet.dining'], rest = {}; Object.keys(TS.cmds).forEach(function (k) { if (k !== 'wallet.dining') { rest[k] = TS.cmds[k]; delete TS.cmds[k]; } }); delete TS.cmds['wallet.dining']; TS.cmds['wallet.dining'] = c; Object.keys(rest).forEach(function (k) { TS.cmds[k] = rest[k]; }); })();
+})();
 </script><script>/* js/ta/act-anything.js */
 /* js/ta/act-anything.js — Tommy acts on (almost) anything.
  *
@@ -22312,6 +22473,196 @@ button.pl-title { padding: 0; }
   .p6o-ring.s1 .in .ic, .p6o-ring.s2 .in, .p6o-steps li.now i, .p6o-fact.go > .ic, .p6o-bar i.now, .p6o-card.pop .p6o-hero, .p6m-pay.just { animation: none; }
   .p6o-confetti { display: none; }
 }
+</style>
+<style>/* css/p7-student.css — Part 7, student side (js/p7-student.js). Light + dark via the app's tokens. */
+
+/* ---------- 2. Desktop: the left side scrolls on its own; the phone frame stays put ---------- */
+@media (min-width: 900px) and (min-height: 640px) {
+  .stage { align-items: safe center; }
+  .pitch {
+    max-height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+    padding: 6px 14px 28px 4px; align-self: center; flex: 0 1 400px;
+    -webkit-mask-image: linear-gradient(transparent 0, #000 18px, #000 calc(100% - 34px), transparent 100%);
+    mask-image: linear-gradient(transparent 0, #000 18px, #000 calc(100% - 34px), transparent 100%);
+  }
+  .pitch:focus-visible { outline-offset: 4px; }
+  .pitch li { grid-template-columns: minmax(0, 1fr) fit-content(56%); }
+  .device { flex: none; }
+}
+
+/* ---------- 3. Onboarding: a clear, easy "Skip for now" ---------- */
+.p6-ob-skip {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  min-height: 40px; padding: 8px 15px; border-radius: 999px;
+  background: var(--surface); color: var(--ink); border: 1.5px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  box-shadow: var(--shadow); font-size: 14px; font-weight: 750; letter-spacing: .01em; flex: none; position: relative;
+}
+.p6-ob-skip::after { content: ""; position: absolute; inset: -6px; } /* 52px+ touch target */
+.p6-ob-skip:hover { background: var(--surface-2); border-color: color-mix(in srgb, var(--ink) 40%, transparent); }
+.p6-ob-skip:active { transform: scale(.97); }
+
+/* ---------- shared bits ---------- */
+.p7-edit { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; min-height: 32px; border-radius: 999px; font-size: 12.5px; font-weight: 750; color: var(--cardinal-ink); background: color-mix(in srgb, var(--cardinal) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--cardinal) 22%, transparent); }
+.p7-edit .ic { width: 14px; height: 14px; }
+.p7-edit:active { transform: scale(.96); }
+.p7-callout { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-md); background: var(--ok-bg); color: var(--ink); }
+.p7-callout > .ic { color: var(--ok); margin-top: 2px; }
+.p7-callout.warn { background: var(--warn-bg); } .p7-callout.warn > .ic { color: var(--warn); }
+.p7-callout b { display: block; } .p7-callout span { font-size: 13.5px; color: var(--muted); }
+.p7-callout a { color: var(--cardinal-ink); font-weight: 700; }
+.p7-bul { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13.5px; }
+.p7-ag { font-size: 15px; margin: 6px 0 2px; }
+.p7-est, .p7-sim { font-style: normal; font: 700 10px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 6px; background: var(--mute-bg); color: var(--muted); vertical-align: 1px; }
+
+/* ---------- 1. More ---------- */
+.p7-more .p7-mh { font-size: 13px; font-family: var(--f-mono); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 6px 2px -4px; font-stretch: 100%; }
+.p7-prof .p7-pct { display: inline-block; margin-top: 4px; font-size: 12px; font-weight: 750; color: var(--cardinal-ink); }
+.p7-badge { min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; background: var(--cardinal); color: #fff; font-size: 12px; font-weight: 800; display: inline-grid; place-items: center; margin-right: 4px; }
+.p7-rowsel { cursor: default; }
+.p7-rowsel select { flex: none; width: auto; min-width: 104px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); padding: 0 10px; font-weight: 650; }
+.p7-demo summary { list-style: none; display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 32px; }
+.p7-demo summary::-webkit-details-marker { display: none; }
+.p7-demo summary .tiny { flex: 1; text-align: right; }
+.p7-demo summary .ic { transition: transform .2s; color: var(--muted); }
+.p7-demo[open] summary .ic { transform: rotate(180deg); }
+.p7-info .rows { margin: 0; }
+
+/* ---------- 4. Customizable shortcuts ---------- */
+.p7-qh { display: flex; align-items: center; justify-content: space-between; margin: 2px 2px -6px; }
+.p7-qh > span { font: 700 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.p7-ph-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.p7-ph-h h2 { margin: 0 !important; }
+.p7-czsheet { max-height: 92%; }
+.p7-cz { display: grid; gap: 12px; }
+.p7-seg { display: flex; padding: 3px; border-radius: 12px; background: var(--surface-2); }
+.p7-seg button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 10px; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--muted); }
+.p7-seg button .ic { width: 16px; height: 16px; }
+.p7-seg button[aria-selected="true"] { background: var(--cardinal); color: #fff; box-shadow: var(--shadow); }
+.p7-flip { transform: rotate(180deg); }
+.p7-pv { border-radius: var(--r-lg); padding: 12px; background: linear-gradient(160deg, color-mix(in srgb, var(--cardinal) 10%, var(--bg)), var(--bg)); border: 1px dashed color-mix(in srgb, var(--cardinal) 30%, transparent); }
+.p7-pv-cap { display: flex; align-items: center; gap: 6px; font: 700 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.p7-pv-cap .ic { width: 13px; height: 13px; }
+.p7-pv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 6px; }
+.p7-pv.plus .p7-pv-grid { grid-template-columns: repeat(3, 1fr); }
+.p7-pv-t { display: grid; justify-items: center; gap: 4px; font-size: 10.5px; font-weight: 650; text-align: center; line-height: 1.15; animation: p7-pop .25s ease both; }
+.p7-pv-t .qi { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--surface); box-shadow: var(--shadow); color: var(--cardinal-ink); }
+.p7-pv-t .qi .ic { width: 19px; height: 19px; }
+.p7-pv.plus .p7-pv-t { background: var(--surface); border-radius: 12px; padding: 8px 4px; box-shadow: var(--shadow); }
+.p7-pv.plus .p7-pv-t .qi { box-shadow: none; width: 26px; height: 26px; background: none; }
+.p7-lh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 2px; }
+.p7-lh h3 { font-size: 15px; }
+.p7-lh .ic { width: 12px; height: 12px; vertical-align: -1px; }
+.p7-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.p7-row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 8px; min-height: 52px; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+.p7-row.off { box-shadow: none; background: var(--surface-2); }
+.p7-row.flash { animation: p7-flash .7s ease; }
+.p7-row.drag { box-shadow: 0 10px 28px rgba(0, 0, 0, .22); transform: scale(1.02); position: relative; z-index: 2; outline: 2px solid var(--gold); }
+.p7-grip { width: 30px; height: 40px; display: grid; place-items: center; color: var(--muted); cursor: grab; touch-action: none; flex: none; }
+.p7-grip:active { cursor: grabbing; }
+.p7-grip .ic { width: 18px; height: 18px; }
+.p7-ric { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: color-mix(in srgb, var(--cardinal) 10%, var(--surface)); color: var(--cardinal-ink); flex: none; }
+.p7-ric .ic { width: 18px; height: 18px; }
+.p7-rl { flex: 1; min-width: 0; display: grid; }
+.p7-rl b { font-size: 14px; font-weight: 700; }
+.p7-rl small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.p7-ar, .p7-rm, .p7-add { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.p7-ar { color: var(--ink); background: var(--surface-2); }
+.p7-ar .ic, .p7-rm .ic, .p7-add .ic { width: 18px; height: 18px; }
+.p7-rm { color: #fff; background: var(--bad); }
+.p7-add { color: #fff; background: var(--ok); }
+.p7-ar:disabled, .p7-rm:disabled, .p7-add:disabled { opacity: .3; cursor: not-allowed; }
+.p7-ar:not(:disabled):active, .p7-rm:not(:disabled):active, .p7-add:not(:disabled):active { transform: scale(.92); }
+.p7-note { display: flex; gap: 6px; align-items: flex-start; } .p7-note .ic { width: 14px; height: 14px; margin-top: 1px; }
+.p7-cz-foot { position: sticky; bottom: calc(-1 * var(--sheet-pad, 16px)); display: flex; gap: 10px; padding: 12px 0 calc(4px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, var(--surface) 30%); margin-top: -4px; z-index: 3; }
+.p7-cz-foot .btn { flex: 1; min-height: 48px; }
+.p7-cz-foot .btn:disabled { opacity: .45; }
+@keyframes p7-pop { from { opacity: 0; transform: scale(.85); } }
+@keyframes p7-flash { 0% { background: color-mix(in srgb, var(--gold) 45%, var(--surface)); } 100% { background: var(--surface); } }
+
+/* All features */
+.p7-search { display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 44px; border-radius: 12px; background: var(--surface-2); color: var(--muted); }
+.p7-search input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 15px; color: var(--ink); }
+.p7-agrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.p7-agrid button { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; text-align: left; padding: 10px; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); min-height: 60px; }
+.p7-agrid .qi { grid-row: span 2; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: color-mix(in srgb, var(--cardinal) 10%, var(--surface)); color: var(--cardinal-ink); }
+.p7-agrid .qi .ic { width: 18px; height: 18px; }
+.p7-agrid b { font-size: 13.5px; line-height: 1.2; }
+.p7-agrid small { font-size: 11.5px; color: var(--muted); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- 5. Dining Dollars ---------- */
+.p7-dd { display: grid; gap: 12px; width: 100%; text-align: left; padding: 16px; border-radius: var(--r-lg); color: #2a1d00; background: radial-gradient(130% 120% at 100% 0%, #ffe27a, #ffcc00 45%, #f0b400); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.p7-dd::before { content: ""; position: absolute; right: -40px; top: -50px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255, 255, 255, .22); }
+.p7-dd > * { position: relative; }
+.p7-dd-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.p7-dd-k { display: block; font: 800 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; opacity: .8; }
+.p7-dd-bal { display: block; font: 880 34px/1.05 var(--f-display); font-stretch: 112%; font-variant-numeric: tabular-nums; }
+.p7-dd-sub { display: block; font-size: 12.5px; opacity: .8; margin-top: 2px; }
+.p7-dd-days { display: grid; justify-items: center; padding: 8px 10px; border-radius: 14px; background: rgba(255, 255, 255, .5); min-width: 64px; }
+.p7-dd-days b { font: 880 24px/1 var(--f-display); } .p7-dd-days small { font-size: 10.5px; font-weight: 700; opacity: .8; }
+.p7-dd-bar { position: relative; height: 10px; border-radius: 999px; background: rgba(42, 29, 0, .16); overflow: visible; }
+.p7-dd-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: #2a1d00; transition: width .6s cubic-bezier(.2, .9, .3, 1); }
+.p7-dd-bar em { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: var(--cardinal); box-shadow: 0 0 0 2px rgba(255, 255, 255, .7); }
+.p7-dd-leg { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 650; opacity: .8; margin-top: -6px; }
+.p7-dd-leg span:last-child { color: var(--cardinal-deep, #7a0000); }
+.p7-dd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.p7-dd-st { display: grid; gap: 1px; padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, .55); }
+.p7-dd-st small { font-size: 11.5px; font-weight: 750; opacity: .85; }
+.p7-dd-st b { font: 860 22px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.p7-dd-st b em { font-style: normal; font-size: 13px; font-weight: 700; opacity: .75; margin-left: 1px; }
+.p7-dd-st > span { font-size: 11px; opacity: .75; }
+.p7-dd-st.need { background: #2a1d00; color: #ffe27a; }
+.p7-dd .p7-est { background: rgba(42, 29, 0, .14); color: inherit; }
+.p7-dd-status { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; }
+.p7-dd-status .ic { width: 16px; height: 16px; }
+.p7-dd-more { margin-left: auto; display: inline-flex; align-items: center; gap: 2px; font-weight: 800; white-space: nowrap; }
+.p7-dd-more .ic { width: 14px; height: 14px; }
+.p7-dd:active { transform: scale(.99); }
+.p7-swipes { margin-top: -4px; }
+.p7-ddsheet .p7-dd-hero { display: grid; gap: 2px; }
+.p7-ddsheet .p7-dd-hero .p7-dd-bal { color: var(--ink); font-size: 40px; }
+.p7-ddsheet .p7-dd-stats .p7-dd-st { background: var(--surface-2); color: var(--ink); }
+.p7-ddsheet .p7-dd-stats .p7-dd-st.need { background: var(--cardinal); color: #fff; }
+.p7-ddsheet .p7-dd-st b { font-size: 26px; }
+.p7-tx { list-style: none; margin: 0; padding: 0; display: grid; }
+.p7-tx li { display: grid; grid-template-columns: 54px 1fr auto; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.p7-tx-d { display: grid; font: 650 11px var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; } .p7-tx-d b { font-size: 13px; color: var(--ink); text-transform: none; letter-spacing: 0; }
+.p7-tx-w { display: grid; min-width: 0; } .p7-tx-w b { font-size: 14px; } .p7-tx-w small { font-size: 12px; color: var(--muted); }
+.p7-tx-a { font-weight: 750; }
+.p7-src { color: var(--muted); } .p7-src a { color: var(--cardinal-ink); font-weight: 650; }
+:root[data-theme="dark"] .p7-dd { color: #241900; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .p7-dd { color: #241900; } }
+
+/* ---------- 6. Club images on Home ---------- */
+.p7-bg { position: absolute; inset: 0; z-index: 0 !important; display: block; }
+.p7-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.p7-bg .ccv { height: 100%; }
+.x-post.p7-ph::after, .x-post.p7-cl::after { inset: 18% 0 0; background: linear-gradient(rgba(0, 0, 0, .05), rgba(0, 0, 0, .82) 70%); z-index: 0; }
+.x-post.p7-cl .p7-bg .ccv.logo img { width: 58px; height: 58px; margin-top: -40px; }
+.x-post.p7-cl .p7-bg .ccv.gen b { margin-top: -44px; font-size: 40px; }
+.x-post.p7-cl .pb { gap: 6px; }
+.x-post .pb .club-logo, .x-post.p7-cl .pb .club-logo { box-shadow: 0 0 0 2px rgba(255, 255, 255, .85); }
+.x-post.p7-cl .pb .club-logo.sm { width: 28px; height: 28px; border-radius: 8px; font-size: 11px; }
+.p7-po { display: flex !important; align-items: center; gap: 6px; min-width: 0; }
+.p7-po .club-logo.sm { width: 20px; height: 20px; border-radius: 6px; font-size: 8.5px; flex: none; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .8); }
+.x-bill .p7-po .club-logo.sm, .x-spot .p7-po .club-logo.sm { width: 24px; height: 24px; border-radius: 7px; font-size: 9.5px; }
+.x-bill.p7-ph::after { background: linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .85) 65%); inset: 0; }
+.x-spot.p7-ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 0, 0, .78), rgba(0, 0, 0, .45)); z-index: 0; }
+.x-spot > *:not(.p7-bg) { position: relative; z-index: 1; }
+.p7-withlogo { position: relative; padding-left: 64px !important; min-height: 72px; }
+.p7-withlogo > .club-logo.md { position: absolute; left: 12px; top: 14px; }
+.x-nlc.p7-withlogo > .club-logo.md, .newscard.p7-withlogo > .club-logo.md { top: 16px; }
+.p7-stack { display: flex; flex: none; }
+.p7-stack .club-logo.sm { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 0 0 2px var(--surface); }
+.p7-stack .club-logo + .club-logo { margin-left: -12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .p7-pv-t, .p7-row.flash { animation: none; }
+  .p7-dd-bar i, .p7-demo summary .ic { transition: none; }
+  .p7-row.drag { transform: none; }
+}
+/* the Customize pill inside the + menu (the menu styles every button as a big tile) */
+.plusmenu .p7-ph-h .p7-edit { display: inline-flex; padding: 6px 12px; min-height: 34px; gap: 5px; border-radius: 999px; font-size: 12.5px; font-weight: 750; box-shadow: none; animation: none; background: color-mix(in srgb, var(--cardinal) 9%, var(--surface)); }
+.plusmenu .p7-ph-h .p7-edit .ic { width: 14px; height: 14px; color: var(--cardinal-ink); }
 </style>
 <script>/* js/hub2a.js — Trojan Hub, student side additions (all account actions SIMULATED on the demo student):
  * report a problem (photos, location, routed to the right office), profile, For You recommendations with
@@ -27446,6 +27797,492 @@ button.pl-title { padding: 0; }
   }
   setInterval(() => { try { tickLive(); } catch (e) { /* never break the app for a countdown */ } }, 1000);
 })(window.TH = window.TH || {});
+</script>
+<script>/* js/p7-student.js — Part 7, student side.
+ *
+ * 1. More (student view), decluttered: account and profile, the switch to the club view, shortcuts (All features,
+ *    Customize), settings (Connections & Alerts, Notifications, Appearance, Accessibility, Privacy & data, Tommy),
+ *    help and about, account (Account & permissions, Sign out), demo controls (time, Reset demo account).
+ *    Everything the old rows opened is still on Home, in the + menu, on the tab bar, or in More → All features.
+ * 4. Customizable Home shortcuts and + menu: TH.p7.features (catalogue), TH.p7.items(kind), TH.p7.customize(kind).
+ *    The choice lives in TH.H().x.p7 = {home:[ids], plus:[ids]} (Trojan Assist's store), so Tommy's Undo and
+ *    "Reset demo account" cover it. Missing/invalid → today's defaults.
+ * 5. Dining Dollars pace on the Wallet (TH.ddPace from js/ta/wallet-dining.js) + a detail sheet.
+ * 6. Club images on Home: real EngageSC logo/photo or the generated cover, through TH.clubCover / TH.clubThumb /
+ *    TH.clubPhotos (js/p6-clubs.js), added after Home renders.
+ * Items 2 (desktop left side scrolls) and 3 (visible "Skip for now") are CSS only, in css/p7-student.css.
+ *
+ * Loads after js/p6-order.js and wraps the FINAL TH.screens.more / home / wallet and the + button.
+ */
+(function (TH) {
+  'use strict';
+  if (!TH || !TH.screens) return;
+  const esc = s => TH.esc(s), icon = (n, c) => TH.icon(n, c);
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const hasTA = () => !!(window.TA && TA.State && TA.State.d);
+  const money = n => TH.money(n);
+
+  // =====================================================================
+  // FEATURE CATALOGUE (every place a shortcut can go)
+  // =====================================================================
+  const F = [
+    // get around
+    { id: 'lyft', l: 'Free Lyft', ic: 'car', go: 'rides:lyft', s: 'USC Lyft rides and hours', g: 'Get around' },
+    { id: 'bus', l: 'Next Bus', ic: 'bus', go: 'rides', s: 'USC buses, Metro, Zipcar, parking', g: 'Get around' },
+    { id: 'ride', l: 'Get a Ride', ic: 'car', go: 'rides', s: 'Lyft, buses, Metro, parking', g: 'Get around' },
+    { id: 'map', l: 'Campus Map', ic: 'map', go: 'map', s: 'Buildings, hours, wait times', g: 'Get around' },
+    { id: 'restroom', l: 'Find a Restroom', ic: 'wc', go: 'map:restroom', s: 'All-gender and nearest restrooms', g: 'Get around' },
+    { id: 'upass', l: 'Metro U-Pass', ic: 'train', go: 'upass', s: 'Free Metro pass for USC students', g: 'Get around' },
+    // food & money
+    { id: 'order', l: 'Order Food', ic: 'bag', go: 'food:order', s: 'Mobile order ahead (simulated)', g: 'Food & money' },
+    { id: 'dining', l: 'Dining Halls', ic: 'fork', go: 'food', s: 'Real hours and menus', g: 'Food & money' },
+    { id: 'wallet', l: 'Wallet', ic: 'wallet', go: 'wallet', s: 'USCard, Dining Dollars, U-Pass, parking', g: 'Food & money' },
+    // classes & plans
+    { id: 'grades', l: 'Grades', ic: 'grad', go: 'grades', s: 'Courses, scores, term GPA', g: 'Classes & plans' },
+    { id: 'plan', l: 'Plan my Day', ic: 'compass', go: 'plan', s: 'Tommy plans your day or week', g: 'Classes & plans' },
+    { id: 'room', l: 'Book a Room', ic: 'ticket', go: 'book:room', s: 'Study rooms and spaces', g: 'Classes & plans' },
+    { id: 'pass', l: 'Trojan Pass', ic: 'ticket', go: 'pass', s: 'Rooms, racquetball, advising, Writing Center', g: 'Classes & plans' },
+    { id: 'queue', l: 'Virtual Line', ic: 'queue', go: 'queue', s: 'Career Center, Financial Aid, U-Pass pickup', g: 'Classes & plans' },
+    // campus life
+    { id: 'clubs', l: 'Clubs', ic: 'users', go: 'clubs', s: '2,000 real EngageSC groups', g: 'Campus life' },
+    { id: 'events', l: 'Events', ic: 'calendar', go: 'events', s: 'Public EngageSC events, free food', g: 'Campus life' },
+    { id: 'chats', l: 'Club Messages', ic: 'chat', go: 'chats', s: 'Club chats and announcements', g: 'Campus life' },
+    { id: 'news', l: 'Newsletters', ic: 'mail', go: 'news', s: 'This week from the clubs you follow', g: 'Campus life' },
+    { id: 'gameday', l: 'Game Day', ic: 'football', go: 'gameday', s: 'Coliseum, clear-bag rules, shuttles', g: 'Campus life' },
+    { id: 'guests', l: 'Guest Pass', ic: 'idcard', go: 'guests', s: 'Register a visitor', g: 'Campus life' },
+    // help & safety
+    { id: 'tommy', l: 'Ask Tommy', ic: 'sparkle', go: 'assistant', s: 'Answers from USC sources; acts for you', g: 'Help & safety' },
+    { id: 'safewalk', l: 'Safe Walk', ic: 'walk', go: 'safety', s: 'Safety map, safe walk, DPS numbers', g: 'Help & safety' },
+    { id: 'report', l: 'Report', ic: 'flag', go: 'report', s: 'Report something, track it', g: 'Help & safety' },
+    { id: 'watches', l: 'Watch List', ic: 'eye', go: 'watches', s: 'Tell Tommy what to look out for', g: 'Help & safety' },
+    { id: 'alerts', l: 'Alerts', ic: 'bell', go: 'alerts', s: 'Your notifications', g: 'Help & safety' },
+    { id: 'access', l: 'Accessibility', ic: 'access', go: 'access', s: 'Step-free routes, all-gender restrooms, OSAS', g: 'Help & safety' },
+  ];
+  const BY = Object.fromEntries(F.map(f => [f.id, f]));
+  const DEF = {
+    home: ['grades', 'lyft', 'bus', 'order', 'guests', 'safewalk', 'room', 'tommy'],
+    plus: ['ride', 'order', 'pass', 'queue', 'safewalk', 'clubs', 'events', 'restroom', 'tommy'],
+  };
+  const MAX = { home: 12, plus: 12 }, MIN = 1;
+  const NAME = { home: 'Home shortcuts', plus: '+ menu' };
+  const xs = () => { const h = TH.H(); return h.x || (h.x = {}); };
+  function ids(kind) {
+    let a = null;
+    try { const p = hasTA() ? xs().p7 : null; a = p && Array.isArray(p[kind]) ? p[kind] : null; } catch (e) { a = null; }
+    a = (a || DEF[kind]).filter((id, i, all) => BY[id] && all.indexOf(id) === i).slice(0, MAX[kind]);
+    return a.length ? a : DEF[kind].slice();
+  }
+  const items = kind => ids(kind).map(id => BY[id]);
+  const isDefault = (kind, list) => (list || ids(kind)).join() === DEF[kind].join();
+
+  // Save with Tommy's Undo (TA.Brain.lastUndo) + an Undo toast
+  function saveChoice(next, label) {
+    if (!hasTA()) return false;
+    const x = xs(), prev = x.p7 ? JSON.parse(JSON.stringify(x.p7)) : null, snap = TA.State.snapshot();
+    const clean = {};
+    ['home', 'plus'].forEach(k => { if (next[k] && !isDefault(k, next[k])) clean[k] = next[k].slice(); });
+    if (Object.keys(clean).length) x.p7 = clean; else delete x.p7;
+    let entry = null;
+    try { entry = TA.State.log({ action: label, system: 'Trojan Hub', conf: TA.confNo ? TA.confNo('TH') : null }); } catch (e) { entry = null; }
+    TA.State.save();
+    if (TA.Brain && entry) TA.Brain.lastUndo = { snap, logId: entry.id, title: 'Shortcuts updated', label };
+    undoToast(label.replace(/^Customized/, 'Saved:'), () => {
+      const x2 = xs(); if (prev) x2.p7 = prev; else delete x2.p7;
+      try { const L = TA.State.d.log; if (entry && L && L[0] && L[0].id === entry.id) L.shift(); } catch (e) { /* log is cosmetic */ }
+      if (TA.Brain && TA.Brain.lastUndo && entry && TA.Brain.lastUndo.logId === entry.id) TA.Brain.lastUndo = null;
+      TA.State.save(); TH.render(true); TH.toast('Undone. Your shortcuts are back.', 'refresh');
+    });
+    return true;
+  }
+  let undoT = null;
+  function undoToast(msg, fn) {
+    const dev = $('.device'); if (!dev) return;
+    $$('.toast, .p6-undo', dev).forEach(n => n.remove()); clearTimeout(undoT);
+    dev.insertAdjacentHTML('beforeend', `<div class="p6-undo p7-undo" role="status">${icon('check')}<span>${esc(msg)}</span><button type="button">Undo</button></div>`);
+    const t = $('.p7-undo', dev);
+    t.querySelector('button').onclick = () => { clearTimeout(undoT); t.remove(); fn(); };
+    undoT = setTimeout(() => t.remove(), 6500);
+  }
+
+  // =====================================================================
+  // CUSTOMIZE SHEET (tap to add/remove, drag or arrows to reorder, live preview, Reset to default, Done)
+  // =====================================================================
+  function openCustomize(kind) {
+    kind = kind === 'plus' ? 'plus' : 'home';
+    TH.closePlus && TH.closePlus();
+    const draft = { home: ids('home'), plus: ids('plus') }, start = JSON.stringify(draft);
+    let k = kind, flash = null;
+    const tile = f => `<span class="p7-pv-t"><span class="qi">${icon(f.ic)}</span><span>${esc(f.l)}</span></span>`;
+    function preview() {
+      const list = draft[k].map(id => BY[id]);
+      return k === 'home'
+        ? `<div class="p7-pv home" aria-hidden="true"><div class="p7-pv-cap">${icon('home')} Home</div><div class="p7-pv-grid">${list.map(tile).join('')}</div></div>`
+        : `<div class="p7-pv plus" aria-hidden="true"><div class="p7-pv-cap">${icon('plus')} What do you want to do?</div><div class="p7-pv-grid">${list.map(tile).join('')}</div></div>`;
+    }
+    function rowOn(f, i, n) {
+      return `<li class="p7-row${flash === f.id ? ' flash' : ''}" data-id="${f.id}">
+        <span class="p7-grip" aria-hidden="true" title="Drag to reorder">${icon('menu')}</span>
+        <span class="p7-ric">${icon(f.ic)}</span><span class="p7-rl"><b>${esc(f.l)}</b></span>
+        <button class="p7-ar" data-mv="-1" data-id="${f.id}" ${i === 0 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} up">${icon('down', 'p7-flip')}</button>
+        <button class="p7-ar" data-mv="1" data-id="${f.id}" ${i === n - 1 ? 'disabled' : ''} aria-label="Move ${esc(f.l)} down">${icon('down')}</button>
+        <button class="p7-rm" data-rm="${f.id}" ${n <= MIN ? 'disabled' : ''} aria-label="Remove ${esc(f.l)}">${icon('minus')}</button></li>`;
+    }
+    function rowOff(f, full) {
+      return `<li class="p7-row off"><span class="p7-ric">${icon(f.ic)}</span><span class="p7-rl"><b>${esc(f.l)}</b><small>${esc(f.s)}</small></span>
+        <button class="p7-add" data-addf="${f.id}" ${full ? 'disabled' : ''} aria-label="Add ${esc(f.l)}">${icon('plus')}</button></li>`;
+    }
+    function body() {
+      const on = draft[k], full = on.length >= MAX[k], off = F.filter(f => !on.includes(f.id));
+      return `${preview()}
+        <div class="p7-lh"><h3>${k === 'home' ? 'On Home' : 'In the + menu'}</h3><span class="muted tiny">${on.length} of ${MAX[k]} · drag ${icon('menu')} or use the arrows</span></div>
+        <ol class="p7-list" id="p7-on">${on.map((id, i) => rowOn(BY[id], i, on.length)).join('')}</ol>
+        <div class="p7-lh"><h3>Add more</h3><span class="muted tiny">${full ? `Full. Remove one to add another.` : 'Tap + to add'}</span></div>
+        <ul class="p7-list">${off.map(f => rowOff(f, full)).join('')}</ul>
+        <p class="muted tiny p7-note">${icon('info')} Anything you hide stays one tap away in More → All features, and Tommy can open it.</p>`;
+    }
+    const html = `<div class="p7-cz">
+      <div class="sheet-head"><div><span class="eyebrow">Make it yours</span><h2>Customize</h2></div><button class="iconbtn flat" data-close aria-label="Close without saving">${icon('x')}</button></div>
+      <div class="seg p7-seg" role="tablist">${['home', 'plus'].map(x => `<button role="tab" data-k="${x}" aria-selected="${x === k}">${x === 'home' ? `${icon('home')} Home` : `${icon('grid')} + menu`}</button>`).join('')}</div>
+      <div id="p7-cz-body"></div>
+      <div class="p7-cz-foot"><button class="btn line" id="p7-reset">${icon('refresh')} Reset to default</button><button class="btn" id="p7-done">Done</button></div>
+    </div>`;
+    TH.sheet(html, w => {
+      const sh = $('.sheet', w); sh.classList.add('p7-czsheet');
+      const host = $('#p7-cz-body', w);
+      function paint(focusSel) {
+        host.innerHTML = body();
+        $$('.p7-seg [data-k]', w).forEach(b => b.setAttribute('aria-selected', String(b.dataset.k === k)));
+        $('#p7-reset', w).disabled = isDefault(k, draft[k]);
+        if (focusSel) { const f = $(focusSel, w); if (f && !f.disabled) f.focus({ preventScroll: true }); }
+        flash = null;
+      }
+      paint();
+      setTimeout(() => { const t = $(`.p7-seg [data-k="${k}"]`, w); if (t) t.focus({ preventScroll: true }); }, 70);
+      $$('.p7-seg [data-k]', w).forEach(b => b.onclick = () => { k = b.dataset.k; paint(); });
+      host.addEventListener('click', e => {
+        const mv = e.target.closest('[data-mv]'), rm = e.target.closest('[data-rm]'), ad = e.target.closest('[data-addf]');
+        const a = draft[k];
+        if (mv) { const id = mv.dataset.id, i = a.indexOf(id), j = i + (+mv.dataset.mv); if (j < 0 || j >= a.length) return; a.splice(i, 1); a.splice(j, 0, id); flash = id; paint(`[data-mv="${mv.dataset.mv}"][data-id="${id}"]`); }
+        else if (rm) { if (a.length <= MIN) return; a.splice(a.indexOf(rm.dataset.rm), 1); paint(); }
+        else if (ad) { if (a.length >= MAX[k]) return; a.push(ad.dataset.addf); flash = ad.dataset.addf; paint(); const r = $(`#p7-on [data-id="${ad.dataset.addf}"]`, w); if (r) r.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+      });
+      // drag to reorder (pointer events; the arrows do the same for keyboard and screen readers)
+      host.addEventListener('pointerdown', e => {
+        const g = e.target.closest('.p7-grip'); if (!g) return;
+        const list = $('#p7-on', w), row = g.closest('.p7-row'); if (!list || !row) return;
+        e.preventDefault(); row.classList.add('drag');
+        const move = ev => {
+          const y = ev.clientY;
+          for (const r of $$('.p7-row', list)) { if (r === row) continue; const b = r.getBoundingClientRect(); if (y < b.top + b.height / 2) { if (row.nextElementSibling !== r) list.insertBefore(row, r); return; } }
+          if (list.lastElementChild !== row) list.appendChild(row);
+        };
+        // listen on window: moving the row in the DOM drops pointer capture
+        const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); row.classList.remove('drag'); draft[k] = $$('.p7-row', list).map(r => r.dataset.id); flash = row.dataset.id; paint(); };
+        window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+      });
+      $('#p7-reset', w).onclick = () => { draft[k] = DEF[k].slice(); paint(); TH.toast(`${NAME[k]} back to the default. Tap Done to keep it.`, 'refresh'); };
+      $('#p7-done', w).onclick = () => {
+        TH.closeSheet();
+        if (JSON.stringify(draft) === start) return;
+        const changed = ['home', 'plus'].filter(x => draft[x].join() !== JSON.parse(start)[x].join());
+        const both = changed.length > 1, allDef = changed.every(x => isDefault(x, draft[x]));
+        saveChoice(draft, allDef ? `Reset ${both ? 'Home shortcuts and the + menu' : NAME[changed[0]]} to default` : `Customized ${both ? 'Home shortcuts and the + menu' : NAME[changed[0]]}`);
+        TH.render(true);
+      };
+    });
+  }
+
+  // a directory of every feature (More → All features)
+  function openAll() {
+    const groups = [...new Set(F.map(f => f.g))];
+    const body = q => {
+      const t = String(q || '').toLowerCase().trim();
+      const hit = f => !t || (f.l + ' ' + f.s + ' ' + f.g).toLowerCase().includes(t);
+      const out = groups.map(g => { const l = F.filter(f => f.g === g && hit(f)); return l.length ? `<h3 class="p7-ag">${esc(g)}</h3><div class="p7-agrid">${l.map(f => `<button data-go="${esc(f.go)}"><span class="qi">${icon(f.ic)}</span><b>${esc(f.l)}</b><small>${esc(f.s)}</small></button>`).join('')}</div>` : ''; }).join('');
+      return out || `<p class="muted" style="padding:12px 0">Nothing called “${esc(q)}”. Try Tommy: he can open any screen.</p>`;
+    };
+    TH.sheet(`<div class="stack p7-all">
+      <div class="sheet-head"><div><span class="eyebrow">Everything in Trojan Hub</span><h2>All features</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
+      <label class="p7-search">${icon('search')}<span class="sr">Search features</span><input id="p7-aq" type="search" placeholder="Search: rides, grades, guests…" autocomplete="off"></label>
+      <div id="p7-al">${body('')}</div>
+      <button class="btn line block" data-p7cust="home">${icon('pencil')} Choose what’s on Home and in the + menu</button></div>`, w => {
+      const i = $('#p7-aq', w); i.oninput = () => { $('#p7-al', w).innerHTML = body(i.value); };
+      $('.sheet', w).addEventListener('click', e => { if (e.target.closest('[data-go]')) TH.closeSheet(); });
+    });
+  }
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-p7cust]'); if (c) { e.preventDefault(); e.stopPropagation(); openCustomize(c.dataset.p7cust); return; }
+    const a = e.target.closest('[data-p7all]'); if (a) { e.preventDefault(); openAll(); }
+  }, true);
+  TH.p7 = { features: F, defaults: DEF, items, customize: openCustomize, allFeatures: openAll };
+
+  // =====================================================================
+  // HOME: customizable shortcuts + club images
+  // =====================================================================
+  const homeR0 = TH.screens.home.render, homeM0 = TH.screens.home.mount;
+  TH.screens.home.render = function () {
+    let h = homeR0.apply(this, arguments);
+    h = h.replace(/<nav class="quick"([^>]*)>[\s\S]*?<\/nav>/, (m, attrs) => `<div class="p7-qh"><span>Your shortcuts</span><button class="p7-edit" data-p7cust="home" aria-label="Edit Home shortcuts">${icon('pencil')}Edit</button></div><nav class="quick"${attrs}>${items('home').map(f => `<button data-go="${esc(f.go)}"><span class="qi">${icon(f.ic)}</span>${esc(f.l)}</button>`).join('')}</nav>`);
+    return h;
+  };
+  TH.screens.home.mount = function (host) {
+    homeM0 && homeM0.apply(this, arguments);
+    try { clubImages(host); } catch (e) { console.error(e); }
+  };
+
+  // ---------- club images (same helpers as the Clubs screen) ----------
+  const clubOf = id => (TH.clubById ? TH.clubById(id) : null);
+  const eventClub = id => { const ev = TH.eventById ? TH.eventById(id) : null; return ev ? clubOf(ev.orgId) : null; };
+  const photoOf = c => (TH.clubPhotos ? TH.clubPhotos(c) : []).find(x => x.kind === 'photo');
+  const thumb = (c, size) => (TH.clubThumb ? TH.clubThumb(c, size || 'sm') : '');
+  let byName = null;
+  const clubByName = n => { if (!byName) { byName = new Map(); (TH.CLUBS || []).forEach(c => byName.set(String(c.name).toLowerCase(), c)); } return byName.get(String(n || '').toLowerCase().trim()) || null; };
+  function clubImages(host) {
+    if (!TH.clubCover) return;
+    // "Clubs like …" posters: the cover (photo → logo → generated graphic)
+    $$('.x-post.club[data-club]', host).forEach(b => {
+      if (b.dataset.p7) return; const c = clubOf(b.dataset.club); if (!c) return; b.dataset.p7 = '1';
+      b.classList.add('p7-cl'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg">${TH.clubCover(c, { size: 'md' })}</span>`);
+      const big = $('.big', b); if (big) big.remove();
+      // a photo cover also gets the club's logo (as on the Clubs screen); logo and generated covers already show it
+      const pb = $('.pb', b); if (pb && photoOf(c)) pb.insertAdjacentHTML('afterbegin', thumb(c, 'sm'));
+    });
+    // event posters, the billboard and spotlights: the host club's photo behind, its logo next to the name
+    $$('.x-post[data-event]', host).forEach(b => {
+      if (b.dataset.p7) return; const c = eventClub(b.dataset.event); if (!c) return; b.dataset.p7 = '1';
+      const ph = photoOf(c); if (ph) { b.classList.add('p7-ph'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg"><img src="${ph.src}" alt="" loading="lazy" decoding="async"></span>`); }
+      const po = $('.po', b); if (po) { po.classList.add('p7-po'); po.insertAdjacentHTML('afterbegin', thumb(c, 'sm')); }
+    });
+    $$('.x-bill, .x-spot', host).forEach(b => {
+      if (b.dataset.p7) return; const ev = b.matches('[data-event]') ? b : $('[data-event]', b); const c = ev && eventClub(ev.dataset.event); if (!c) return; b.dataset.p7 = '1';
+      const ph = photoOf(c); if (ph) { b.classList.add('p7-ph'); b.insertAdjacentHTML('afterbegin', `<span class="p7-bg"><img src="${ph.src}" alt="" loading="lazy" decoding="async"></span>`); }
+      const m = $('.m', b); if (m) { m.classList.add('p7-po'); m.insertAdjacentHTML('afterbegin', thumb(c, 'sm')); }
+    });
+    // "Your clubs this week" cards and anything else with an event and an org line
+    $$('.card.clubev[data-event]', host).forEach(b => { if (b.dataset.p7) return; const c = eventClub(b.dataset.event); if (!c) return; b.dataset.p7 = '1'; b.classList.add('p7-withlogo'); b.insertAdjacentHTML('afterbegin', thumb(c, 'md')); });
+    // newsletters from clubs (officer newsletters and weekly digests)
+    $$('.x-nlc[data-xnews]', host).forEach(b => {
+      if (b.dataset.p7) return; const k = $('.mono', b), name = k ? k.textContent.split(' officers')[0] : ''; const c = clubByName(name); if (!c) return; b.dataset.p7 = '1';
+      b.classList.add('p7-withlogo'); b.insertAdjacentHTML('afterbegin', thumb(c, 'md'));
+    });
+    $$('.newscard[data-issue]', host).forEach(b => { if (b.dataset.p7) return; const c = clubOf(b.dataset.issue); if (!c) return; b.dataset.p7 = '1'; b.classList.add('p7-withlogo'); b.insertAdjacentHTML('afterbegin', thumb(c, 'md')); });
+    // the "Find your people" promo: a few real club logos
+    const promo = $('.card.promo[data-go="clubs"]', host);
+    if (promo && !promo.dataset.p7) {
+      const P = TH.CLUB_PHOTOS || {}, picks = (TH.CLUBS || []).filter(c => c.registered && (P[c.id] || []).some(x => x.kind === 'logo')).slice(0, 3);
+      if (picks.length) { promo.dataset.p7 = '1'; const qi = $('.qi', promo); if (qi) qi.outerHTML = `<span class="p7-stack" aria-hidden="true">${picks.map(c => thumb(c, 'sm')).join('')}</span>`; }
+    }
+    $$('.cthumb img, .p7-bg img', host).forEach(img => { img.onerror = () => img.remove(); });
+  }
+  TH.p7.clubImages = clubImages;
+
+  // =====================================================================
+  // + MENU from the student's choice (same look as before + Customize)
+  // =====================================================================
+  function openPlus() {
+    const dev = $('.device'); if (!dev) return;
+    if ($('.plusmenu', dev)) { TH.closePlus(); return; }
+    dev.insertAdjacentHTML('beforeend', `<div class="plusmenu pad"><div style="width:100%"><div class="p7-ph-h"><h2>What do you want to do?</h2><button class="p7-edit" data-p7cust="plus" aria-label="Customize the + menu">${icon('pencil')}Customize</button></div><div class="grid">${items('plus').map((f, i) => `<button data-go="${esc(f.go)}" style="animation-delay:${i * 25}ms">${icon(f.ic)}${esc(f.l)}</button>`).join('')}</div></div></div>`);
+    const m = $('.plusmenu', dev); TH.bindCommon(m); m.addEventListener('click', e => { if (e.target === m) TH.closePlus(); });
+    const f = $('.fab'); if (f) { f.classList.add('open'); f.setAttribute('aria-expanded', 'true'); }
+  }
+  TH.openPlus = openPlus;
+  const boot0 = TH.boot;
+  TH.boot = function () {
+    const r = boot0.apply(this, arguments);
+    const f = $('.tabbar .fab'); if (f) f.onclick = openPlus;
+    return r;
+  };
+
+  // Desktop: the wheel anywhere on the page outside the phone scrolls the left side (css makes .pitch scrollable)
+  document.addEventListener('wheel', e => {
+    const p = $('.pitch'); if (!p || e.defaultPrevented || e.target.closest('.device, .pitch') || p.scrollHeight <= p.clientHeight) return;
+    if (getComputedStyle(p).display === 'none') return;
+    p.scrollBy({ top: e.deltaY * (e.deltaMode === 1 ? 32 : 1), behavior: 'auto' });
+  }, { passive: true });
+
+  // =====================================================================
+  // MORE (student view)
+  // =====================================================================
+  const DEMO_TIMES = [[480, 'Today at 8 AM'], [720, 'Today at noon'], [900, 'Today at 3 PM'], [1080, 'Today at 6 PM'], [1260, 'Today at 9 PM'], [1380, 'Today at 11 PM'], [90, 'Today at 1:30 AM']];
+  const moreM0 = TH.screens.more.mount;
+  const R = (attrs, ic, t, sub, color, side) => `<button class="row" ${attrs} style="--rc:${color || 'var(--cardinal)'}"><span class="rico">${icon(ic)}</span><span class="rmain"><span class="rtitle">${t}</span>${sub ? `<span class="rsub">${sub}</span>` : ''}</span>${side || icon('chev', 'chev')}</button>`;
+  // Trojan Hub acts as the demo student everywhere; Tommy signs in on its own unless the student signed out (embed.js)
+  const signedIn = () => hasTA() && (!!TA.State.d.signedIn || !(TA.store && TA.store.get && TA.store.get('hubSignedOut', false)));
+  TH.screens.more.render = function () {
+    const st = TH.student(), c = TH.profileCompleteness ? TH.profileCompleteness() : null, h = TH.H();
+    const unread = (TH.notes ? TH.notes() : []).filter(n => !n.read).length;
+    const S = TH.state, cur = TH.clock.overridden ? TH.minOfDay(TH.clock.now()) : 'live';
+    const sel = DEMO_TIMES.some(([m]) => m === cur) ? cur : (TH.clock.overridden ? 'custom' : 'live');
+    const conn = (() => { try { const x = h.x && h.x.conn; return x ? Object.values(x).filter(v => v === true).length : 0; } catch (e) { return 0; } })();
+    const ini = esc((st.first || 'S')[0]) + esc((st.last || '')[0] || '');
+    const custom = ['home', 'plus'].filter(k => !isDefault(k)).length;
+    return `<div class="screen p7-more">${TH.ui && TH.ui.topbar ? TH.ui.topbar('More', false) : `<div class="topbar pad"><h1>More</h1></div>`}
+      <div class="pad screen-body stack">
+        <button class="card profile p7-prof" data-go="profile"><span class="avatar">${ini}</span><span style="flex:1;min-width:0"><b style="font-size:16px">${esc(st.full)}</b><br><span class="muted" style="font-size:13px">${esc(st.standing)} · ${esc(st.major)}</span><br><span class="p7-pct">${c ? `${c.pct}% set up · ` : ''}Edit profile</span></span>${icon('chev')}</button>
+        <div class="x-modebar"><span class="x-mb-main"><b>Student side</b><span style="font-size:13px">Run a club or a USC office? Switch to the club view any time.</span></span><button class="btn sm gold" data-go="org">${icon('swap')} Club view</button></div>
+
+        <h2 class="p7-mh">Make it yours</h2>
+        <div class="rows">
+          ${R('data-p7all', 'grid', 'All features', 'Everything in Trojan Hub in one place', 'var(--cardinal)')}
+          ${R('data-p7cust="home"', 'pencil', 'Customize Home and + menu', custom ? 'Your own picks are on' : 'Choose your shortcuts and their order', 'var(--gold-ink)')}
+        </div>
+
+        <h2 class="p7-mh">Settings</h2>
+        <div class="rows">
+          ${R('data-go="connect"', 'link', 'Connections & Alerts', `${conn ? conn + ' connected · ' : ''}Gmail, calendars, Slack; app or email per alert`, 'var(--c-transit)')}
+          ${R('data-go="alerts"', 'bell', 'Notifications', unread ? `${unread} unread` : 'All caught up', 'var(--c-service)', unread ? `<span class="p7-badge">${unread}</span>${icon('chev', 'chev')}` : '')}
+          <div class="row p7-rowsel" style="--rc:var(--c-study)"><span class="rico">${icon(S.theme === 'dark' ? 'moon' : 'sun')}</span><span class="rmain"><label class="rtitle" for="demo-theme">Appearance</label><span class="rsub">Light, dark, or match your device</span></span><select id="demo-theme">${['system', 'light', 'dark'].map(t => `<option value="${t}" ${S.theme === t ? 'selected' : ''}>${t[0].toUpperCase() + t.slice(1)}</option>`).join('')}</select></div>
+          ${R('data-go="access"', 'access', 'Accessibility', 'Step-free routes, all-gender restrooms, OSAS', 'var(--c-restroom)')}
+          ${R('data-p7priv', 'lock', 'Privacy & data', 'Your data stays on this device', 'var(--c-gate)')}
+          ${R('data-p7tommy="settings"', 'sparkle', 'Tommy settings', 'Claude AI mode, activity log', 'var(--gold-ink)')}
+        </div>
+
+        <h2 class="p7-mh">Help</h2>
+        <div class="rows">
+          ${R('data-p7help', 'chat', 'Help & feedback', 'Ask or call Tommy, send feedback, safety numbers', 'var(--c-health)')}
+          ${R('data-go="about"', 'info', 'About this prototype', 'What’s real, what’s simulated, sources', 'var(--c-service)')}
+        </div>
+
+        <h2 class="p7-mh">Account</h2>
+        <div class="rows">
+          ${R('data-p7tommy="account"', 'verified', 'Account & permissions', 'What Tommy may see and do for you', 'var(--cardinal)')}
+          ${R('data-p7sign', signedIn() ? 'unlock' : 'lock', signedIn() ? 'Sign out' : 'Sign in (demo)', signedIn() ? `Signed in as ${esc(st.first)} (demo). Tommy stops acting for you.` : 'Let Tommy see and change your demo account', 'var(--c-gate)')}
+        </div>
+
+        <details class="card flat p7-demo">
+          <summary><b>Demo controls</b><span class="muted tiny">Demo time · Reset demo account</span>${icon('down')}</summary>
+          <div class="stack" style="margin-top:12px">
+            <div class="field"><label for="demo-time">Demo time (the date stays Mon, Nov 9, 2026)</label>
+              <select id="demo-time"><option value="live" ${sel === 'live' ? 'selected' : ''}>Live clock</option>${sel === 'custom' ? `<option value="custom" selected>Custom: ${TH.fmtTime(TH.clock.now())}</option>` : ''}${DEMO_TIMES.map(([m, l]) => `<option value="${m}" ${sel === m ? 'selected' : ''}>${l}</option>`).join('')}</select>
+              <span class="muted tiny">Try 9 PM: controlled campus access, USC Lyft hours and the safety map change.</span></div>
+            <button class="btn line sm" id="demo-reset">${icon('refresh')} Reset demo account</button>
+            <span class="muted tiny">Resets Jordan’s account (clubs, calendar, orders, passes, shortcuts, Tommy’s activity log) and the app’s settings.</span>
+          </div>
+        </details>
+        <p class="muted tiny" style="text-align:center;padding:4px 0 70px">Trojan Hub · student prototype · account actions are simulated</p>
+      </div></div>`;
+  };
+  TH.screens.more.mount = function (host) {
+    moreM0 && moreM0.apply(this, arguments); // demo time, appearance, reset (app.js)
+    const d = $('.p7-demo', host); if (d && TH.state.p7demoOpen) d.open = true;
+    if (d) d.addEventListener('toggle', () => { TH.state.p7demoOpen = d.open; });
+    host.addEventListener('click', e => {
+      const t = e.target.closest('[data-p7priv],[data-p7help],[data-p7tommy],[data-p7sign]'); if (!t) return;
+      if (t.dataset.p7priv !== undefined) return openPrivacy();
+      if (t.dataset.p7help !== undefined) return openHelp();
+      if (t.dataset.p7tommy) return openTommySheet(t.dataset.p7tommy);
+      if (t.dataset.p7sign !== undefined) return toggleSign();
+    });
+  };
+  function openTommySheet(kind) {
+    TH.go('assistant');
+    let n = 0; const t = setInterval(() => { n++; try { if (window.TA && TA.UI && document.getElementById('ta-log')) { clearInterval(t); TA.UI.sheet(kind); } } catch (e) { clearInterval(t); } if (n > 30) clearInterval(t); }, 60);
+  }
+  function toggleSign() {
+    if (!hasTA()) return;
+    if (signedIn()) {
+      TH.sheet(`<div class="stack"><div class="sheet-head"><h2>Sign out of the demo account?</h2><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div><p class="muted">Tommy can still answer questions, but he won’t see or change your classes, orders, passes or Dining Dollars until you sign in again. Your settings stay on this device.</p><div class="btn-row"><button class="btn line" data-close>Cancel</button><button class="btn" id="p7-so">Sign out</button></div></div>`, w => {
+        $('#p7-so', w).onclick = () => { TA.State.signOut(); TA.State.save(); TH.closeSheet(); TH.toast('Signed out. Sign in again from More.', 'lock'); TH.render(true); };
+      });
+    } else { TA.State.signIn(); TH.toast(`Signed in as ${TH.student().first} (demo)`, 'unlock'); TH.render(true); }
+  }
+  function openPrivacy() {
+    TH.sheet(`<div class="stack p7-info">
+      <div class="sheet-head"><div><span class="eyebrow">Settings</span><h2>Privacy & data</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
+      <div class="p7-callout">${icon('lock')}<div><b>Your data stays on this device.</b><span>Your profile, preferences, shortcuts, reports and their photos, and Tommy’s conversation are saved in this browser’s storage. Trojan Hub doesn’t send them to USC or anyone else.</span></div></div>
+      <ul class="p7-bul">
+        <li><b>Tommy’s AI mode:</b> when Tommy’s own scripts can’t understand a question, the words of that question (never your account data) may go to the AI translator on this site’s server. Crisis, safety and personal topics never leave the device. Turn it off in Tommy settings.</li>
+        <li><b>Connections</b> (Gmail, calendars, Slack…) are simulated in this prototype; nothing is really linked.</li>
+        <li><b>Account actions</b> (orders, passes, Dining Dollars, reports) are simulated on a demo student.</li>
+        <li><b>Delete everything:</b> More → Demo controls → Reset demo account clears it all from this device.</li>
+      </ul>
+      <div class="btn-row"><button class="btn line" data-go="connect">Connections & Alerts</button><button class="btn" data-close>Got it</button></div></div>`);
+  }
+  function openHelp() {
+    TH.sheet(`<div class="stack p7-info">
+      <div class="sheet-head"><div><span class="eyebrow">Help</span><h2>How can we help?</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
+      <div class="rows">
+        ${R('data-go="assistant"', 'sparkle', 'Ask Tommy', 'Questions about USC or this app, answered from USC sources', 'var(--gold-ink)')}
+        ${R('data-xcall', 'phone', 'Call Tommy', 'Talk and hear the answer', 'var(--c-health)')}
+        ${R('data-p7fb', 'mail', 'Send feedback', 'Ideas, bugs, dining hall suggestions', 'var(--c-transit)')}
+        ${R('data-go="about"', 'info', 'What’s real and what’s simulated', 'Sources for hours, clubs, events and DPS data', 'var(--c-service)')}
+      </div>
+      <div class="p7-callout warn">${icon('shield')}<div><b>Emergency? Call 911.</b><span>USC DPS (24/7): <a href="tel:2137404321">213-740-4321</a> · Counseling (24/7): <a href="tel:2137409355">213-740-9355</a> · Crisis line: <a href="tel:988">988</a></span></div></div></div>`, w => {
+      $('.sheet', w).addEventListener('click', e => {
+        if (e.target.closest('[data-p7fb]')) { TH.closeSheet(); if (TH.openReportSheet) TH.openReportSheet('feedback'); else TH.go('report'); }
+        else if (e.target.closest('[data-go],[data-xcall]')) TH.closeSheet();
+      });
+    });
+  }
+
+  // =====================================================================
+  // WALLET: Dining Dollars pace
+  // =====================================================================
+  const W = TH.screens.wallet;
+  if (W && TH.ddPace) {
+    const wR0 = W.render, wM0 = W.mount;
+    const fmtD = d => (d ? TH.fmtDate(d) : '—');
+    function ddCard(p) {
+      const status = p.onTrack ? `On track to use it all by ${fmtD(p.deadline)}` : `At this pace about ${money(p.projectedLeft)} would go unused`;
+      return `<button class="p7-dd ${p.onTrack ? 'ok' : 'warn'}" id="p7-dd" aria-label="Dining Dollars ${money(p.balance)}. Spending about ${money(p.pacePerDay)} per day, estimate. ${money(p.needPerDay)} per day uses it all by ${fmtD(p.deadline)}. Details">
+        <span class="p7-dd-top"><span><span class="p7-dd-k">Dining Dollars</span><span class="p7-dd-bal">${money(p.balance)}</span><span class="p7-dd-sub">${esc(p.planName)} · forfeited after ${fmtD(p.deadline)}</span></span><span class="p7-dd-days"><b>${p.daysLeft}</b><small>days left</small></span></span>
+        <span class="p7-dd-bar" aria-hidden="true"><i style="width:${p.usedPct || 0}%"></i><em style="left:${p.semesterPct || 0}%"></em></span>
+        <span class="p7-dd-leg" aria-hidden="true"><span>${p.usedPct}% of ${money(p.included + p.blocks)} spent</span><span>${p.semesterPct}% of the semester gone</span></span>
+        <span class="p7-dd-stats">
+          <span class="p7-dd-st"><small>Spending now <i class="p7-est">Est.</i></small><b>${money(p.pacePerDay)}<em>/day</em></b><span>last ${p.recentDays} days</span></span>
+          <span class="p7-dd-st need"><small>To use it all</small><b>${money(p.needPerDay)}<em>/day</em></b><span>through ${fmtD(p.deadline)}</span></span>
+        </span>
+        <span class="p7-dd-status">${icon(p.onTrack ? 'check' : 'alert')}${esc(status)}<span class="p7-dd-more">Details ${icon('chev')}</span></span>
+      </button>`;
+    }
+    W.render = function () {
+      let h = wR0.apply(this, arguments);
+      let p = null; try { p = TH.ddPace(); } catch (e) { console.error(e); }
+      if (!p || p.deadline == null) return h;
+      const st = TH.student(), i = h.indexOf('<div class="grid2">');
+      if (i < 0) return h;
+      // the grid2 block holds two cards (Dining Dollars, Meal swipes); replace it with the pace card + a swipes row
+      const j = h.indexOf('</div></div></div>', i); const end = j < 0 ? -1 : j + '</div></div></div>'.length;
+      const swipes = `<div class="row flatrow p7-swipes"><span class="rico" style="--rc:var(--c-dining)">${icon('fork')}</span><span class="rmain"><span class="rtitle">Meal swipes</span><span class="rsub">${st.dining.guestLeft != null ? `${st.dining.guestLeft} guest swipes left · ` : ''}reset at the end of the semester</span></span><span class="rside"><b class="mono">${st.dining.swipesLeft ?? '—'}</b><span class="muted" style="font-size:12px"> of ${st.dining.swipesTotal ?? '—'}</span></span></div>`;
+      return end < 0 ? h : h.slice(0, i) + ddCard(p) + swipes + h.slice(end);
+    };
+    W.mount = function (host) {
+      wM0 && wM0.apply(this, arguments);
+      const b = $('#p7-dd', host); if (b) b.onclick = openDD;
+      if (TH.state.params && TH.state.params.arg === 'dd') { TH.state.params = {}; setTimeout(openDD, 80); }
+    };
+    function openDD() {
+      const p = TH.ddPace();
+      const tx = p.recent.map(x => `<li><span class="p7-tx-d">${esc(TH.DAYS3 ? TH.DAYS3[x.at.getDay()] : '')}<b>${esc(TH.MONTHS[x.at.getMonth()].slice(0, 3))} ${x.at.getDate()}</b></span><span class="p7-tx-w"><b>${esc(x.where)}</b><small>${x.sim ? `${esc((x.items || []).join(' + '))} · <i class="p7-sim">Simulated</i>` : `Mobile order ${esc(x.order || '')}`}</small></span><span class="p7-tx-a mono">−${money(x.amount)}</span></li>`).join('');
+      const verdict = p.onTrack
+        ? `You’re on track. At ${money(p.pacePerDay)} a day you’d use it all${p.runOutDate && p.runOutDate < p.deadline ? ` around ${fmtD(p.runOutDate)}` : ''}.`
+        : `At ${money(p.pacePerDay)} a day about ${money(p.projectedLeft)} would be left on ${fmtD(p.deadline)}. Spend about ${money(Math.max(0, p.needPerDay - p.pacePerDay))} more a day, or donate what you won’t use.`;
+      TH.sheet(`<div class="stack p7-ddsheet">
+        <div class="sheet-head"><div><span class="eyebrow">Trojan Wallet</span><h2>Dining Dollars</h2></div><button class="iconbtn flat" data-close aria-label="Close">${icon('x')}</button></div>
+        <div class="p7-dd-hero"><span class="p7-dd-bal">${money(p.balance)}</span><span class="muted">left on your ${esc(p.planName)} (${money(p.included)}${p.blocks ? ` + ${money(p.blocks)} in blocks` : ''} this semester)</span></div>
+        <div class="p7-dd-stats big">
+          <span class="p7-dd-st"><small>Spending now <i class="p7-est">Est.</i></small><b>${money(p.pacePerDay)}<em>/day</em></b><span>${money(p.recentSum)} over the last ${p.recentDays} days</span></span>
+          <span class="p7-dd-st need"><small>Needed to use it all</small><b>${money(p.needPerDay)}<em>/day</em></b><span>${p.daysLeft} days through ${fmtD(p.deadline)}</span></span>
+        </div>
+        <div class="p7-callout ${p.onTrack ? '' : 'warn'}">${icon(p.onTrack ? 'check' : 'alert')}<div><b>${p.onTrack ? 'On track' : 'Heads up'}</b><span>${esc(verdict)}</span></div></div>
+        ${p.needByClassesEnd ? `<p class="muted tiny">Classes and regular dining hall hours end ${fmtD(p.classesEnd)}. To finish by then: ${money(p.needByClassesEnd)}/day.</p>` : ''}
+        <h3 class="p7-ag">Recent purchases</h3>
+        ${tx ? `<ul class="p7-tx">${tx}</ul>` : `<p class="muted">No purchases in the last ${p.recentDays} days.</p>`}
+        <p class="muted tiny">The demo account keeps no card history, so the purchases marked Simulated use sample menu prices; the daily pace is an estimate. Picked-up mobile orders are your real (simulated) orders. Your balance is from the demo account.</p>
+        <h3 class="p7-ag">The rules</h3>
+        <ul class="p7-bul">${p.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+        <p class="tiny p7-src">Sources: ${p.sources.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a>`).join(' · ')}</p>
+        <div class="btn-row"><button class="btn line" id="p7-dd-ask">${icon('sparkle')} Ask Tommy</button><button class="btn" data-go="food:order">${icon('bag')} Order food</button></div>
+      </div>`, w => {
+        $('#p7-dd-ask', w).onclick = () => { TH.closeSheet(); TH.go('assistant', { arg: 'how much should I spend on dining dollars per day' }); };
+        $('.sheet', w).addEventListener('click', e => { if (e.target.closest('[data-go]')) TH.closeSheet(); });
+      });
+    }
+    TH.p7.openDiningDollars = openDD;
+  }
+})(window.TH);
 </script>
 <script>
   (function () {
