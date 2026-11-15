@@ -6312,5 +6312,57 @@
 "Marshall Study Sessions"
 ],
 "oracle": null
+},
+{
+"topic": "mustpass",
+"q": "clubs for people who like hiking",
+"expect": [
+"Hike for Habitats|Outdoor"
+],
+"oracle": null,
+"not": "Reproductive Healthcare"
+},
+{
+"topic": "mustpass",
+"q": "hiking clubs",
+"expect": [
+"Hike for Habitats|Outdoor"
+],
+"oracle": null
+},
+{
+"topic": "mustpass",
+"q": "vegetarian food open now near leavey",
+"expect": [
+"nearest to Leavey"
+],
+"oracle": null,
+"not": "Leavey Library\\*\\* \u00b7 today"
+},
+{
+"topic": "mustpass",
+"q": "is the gate by the village open at night",
+"expect": [
+"McClintock"
+],
+"oracle": null,
+"not": "couldn"
+},
+{
+"topic": "mustpass",
+"q": "is engemann open",
+"expect": [
+"Engemann"
+],
+"oracle": null,
+"not": "couldn"
+},
+{
+"topic": "mustpass",
+"q": "student health hours",
+"expect": [
+"Engemann"
+],
+"oracle": null
 }
 ]

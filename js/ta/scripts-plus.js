@@ -43,7 +43,9 @@
     history: { url: 'https://www.usc.edu/we-are-usc/the-university/our-history/', title: 'Our History – USC' }
   };
   var ACCT = { url: 'https://my.usc.edu/', title: 'Your account (demo data on this device)' };
-  function bot(md, sources, chips) { return { role: 'bot', kind: 'c', md: md, chips: chips || [], sources: (sources || []).filter(Boolean) }; }
+  // user-facing text never names internal files or keys (some research notes say "See transport.json lyft.")
+  function scrub(md) { return String(md == null ? '' : md).replace(/\s*\(?See [\w./-]+\.(json|js|py|md)\b[^.)\n]*[.)]?/gi, '').replace(/\b[\w-]+\.(json|gz)\b/g, 'USC data'); }
+  function bot(md, sources, chips) { return { role: 'bot', kind: 'c', md: scrub(md), chips: chips || [], sources: (sources || []).filter(Boolean) }; }
   function go(label, screen, arg) { return { label: label, value: '@go:' + screen + (arg != null ? ':' + arg : ''), kind: '' }; }
   function say(label, value) { return { label: label, value: value || label.toLowerCase(), kind: '' }; }
   function srcOf(url, title) { return url ? { url: url, title: title || url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') } : null; }
@@ -447,9 +449,11 @@
       var ps = findPlaces(a.place); if (!ps.length) return noPlace(a.place);
       var day = dayArg(a.day);
       if (day.weekend) return [bot(ps.map(function (p) { return hoursMd(p, { d: day.d, label: 'Saturday' }) + '\n' + hoursMd(p, { d: addDays(day.d, 1), label: 'Sunday' }).replace(/^\*\*[^*]+\*\* · /, '**' + p.name + '** · '); }).join('\n\n'), pSrc(ps[0]))];
-      return [bot(ps.map(function (p) { return hoursMd(p, day); }).join('\n\n') + '\n\n_Posted USC hours; holidays can differ._', ps.reduce(function (s, p) { return s.concat(pSrc(p)); }, []).slice(0, 3), [go('See on the map', 'map', ps[0].id)])];
+      return [bot(ps.map(function (p) { return hoursMd(p, day); }).join('\n\n') + (ps.some(function (p) { return p.hours; }) ? '\n\n_Posted USC hours; holidays can differ._' : '\n\n_USC doesn’t post regular hours for this place; the source page has the latest._'), ps.reduce(function (s, p) { return s.concat(pSrc(p)); }, []).slice(0, 3), [go('See on the map', 'map', ps[0].id)])];
     }, function (t, raw) {
       if (!PLACE_Q.test(t) || /\b(registration|register|enroll|webreg|portal|application|deadline|class|course|seats?|parking permit|account|office hours of|professor|prof|ta)\b/.test(t)) return null;
+      if (/\b(near|nearby|close to|next to|around)\b/.test(t) && catOf(t.replace(/\b(near|nearby|close to|next to|around)\b.*$/, ''))) return null;
+      if (/\b(gates?|entrances?)\b/.test(t)) return null;
       var ps = findPlaces(raw); if (!ps.length) return null;
       // "is there any coffee open" is a list question for open.now, not Coffee Bean: only a named place counts here
       if (/\b(any|anything|anywhere|something|somewhere|is there|are there)\b/.test(t) && !namedPlace(raw)) return null;
@@ -476,8 +480,8 @@
   var CATQ = { dining: /\b(food|eat|eating|dining|meal|lunch|dinner|breakfast|brunch|snack|hungry|restaurant|dining halls?|grab a bite|bite)\b/, coffee: /\b(coffee|cafe|caf|tea|boba|latte|espresso|drinks?)\b/, study: /\b(study|studying|librar\w*|quiet place|place to work)\b/, fitness: /\b(gym|gyms|work ?out|workout|fitness|lift|lifting|swim|pool|exercise)\b/, health: /\b(health|clinic|doctor|pharmacy|nurse)\b/, service: /\b(office|offices|services?)\b/, restroom: /\b(restroom|bathroom|toilet|washroom)\b/ };
   function catOf(v) { var t = norm(v); var k = Object.keys(CATQ).filter(function (c) { return CATQ[c].test(' ' + t + ' ') || t === c; })[0]; return k || (/(dining|study|fitness|health|service|restroom|parking|landmark|transit|safety|gate)/.exec(t) || [])[1] || null; }
   function inCat(p, c) { if (c === 'coffee') return p.cat === 'dining' && /coffee|tea|caf[eé]|grounds|bean|literatea|juice/i.test(p.name + ' ' + (p.tags || []).join(' ') + ' ' + (p.desc || '')); return p.cat === c; }
-  F('open.now', 'What’s open right now (or at a given time) by category: food, coffee, study/libraries, gyms, health, offices, restrooms. "what’s open right now for food", "any coffee open", "libraries open now", "what’s open at 11pm". cat; at? like "11pm"; day?',
-    ['cat', 'at', 'day'], function (a) {
+  F('open.now', 'What’s open right now (or at a given time) by category, optionally near a place or with a food type: food, coffee, study/libraries, gyms, health, offices, restrooms. "what’s open right now for food", "vegetarian food open now near leavey", "libraries open now", "what’s open at 11pm". cat; at? like "11pm"; day?; near? place; what? like "vegetarian"',
+    ['cat', 'at', 'day', 'near', 'what'], function (a) {
       var c = catOf(a.cat || 'dining') || 'dining', day = dayArg(a.day), at = new Date(now());
       if (!day.today) { at = new Date(day.d); at.setHours(now().getHours(), now().getMinutes()); }
       var tm = String(a.at || '').trim(), mm = /(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i.exec(tm);
@@ -485,14 +489,19 @@
       else if (/noon/i.test(tm)) { at = new Date(dayStart(at)); at.setHours(12, 0); }
       else if (mm) { var h = +mm[1] % 12 + (/pm/i.test(mm[3] || '') || (!mm[3] && +mm[1] < 7) ? 12 : 0); at = new Date(dayStart(at)); at.setHours(h, +(mm[2] || 0)); }
       var when = (tm || !day.today) ? 'at ' + fmtMin(minOf(at)) + (day.today ? '' : ' ' + day.label) : 'right now';
-      var ps = (TH.PLACES || []).filter(function (p) { return inCat(p, c) && p.hours; });
+      var ps = (TH.PLACES || []).filter(function (p) { return inCat(p, c) && p.hours; }), near = a.near ? (findPlaces(a.near)[0] || (/\bvillage\b/i.test(a.near) ? P('villagedh') : null)) : null, whatW = words(String(a.what || '').replace(/gluten.?free/i, 'gluten')).filter(function (w) { return w.length > 2 && !/^(food|options?|free|place|places)$/.test(w); });
+      if (whatW.length) { var ps2 = ps.filter(function (p) { var h = pText(p); return whatW.every(function (w) { return h.indexOf(w.replace(/(ian|s)$/, '')) >= 0; }); }); if (ps2.length) ps = ps2; else { var note0 = 'None of the ' + c + ' places I carry list **' + a.what + '**; here is everything open.'; } }
+      if (near) ps.sort(function (x, y) { return Math.hypot(x.x - near.x, x.y - near.y) - Math.hypot(y.x - near.x, y.y - near.y); });
       var open = ps.filter(function (p) { return TH.openFor(p, at, 0) === true; }), unk = ps.filter(function (p) { return TH.openFor(p, at, 0) == null; });
       var label = { dining: 'places to eat', coffee: 'coffee spots', study: 'libraries and study spaces', fitness: 'gyms and rec facilities', health: 'health places', service: 'offices', restroom: 'restrooms' }[c] || c;
       if (!open.length) return [bot('No ' + label + ' I carry are open ' + when + '.' + (unk.length ? ' Hours aren’t published for ' + unk.slice(0, 4).map(function (p) { return p.name; }).join(', ') + '.' : '') + (c === 'dining' || c === 'coffee' ? '\n\nFree USC Lyft runs 7 PM – 2 AM if you need to get off campus for food.' : ''), [SRC.hours])];
-      var md = '**' + cap(label) + ' open ' + when + '** (' + open.length + '):\n' + list(open.map(function (p) { var st = TH.status(p, at); return '**' + p.name + '**' + (st && st.detail ? ' · ' + st.detail.toLowerCase() : '') + ((p.tags || []).indexOf('Meal swipes') >= 0 ? ' · meal swipes' : ''); }), 12);
+      var md = (note0 ? '_' + note0 + '_\n\n' : '') + '**' + cap((whatW.length && !note0 ? a.what + ' ' : '') + label) + ' open ' + when + (near ? ', nearest to ' + near.name + ' first' : '') + '** (' + open.length + '):\n' + list(open.map(function (p) { var st = TH.status(p, at), dm = near ? Math.round(Math.hypot(p.x - near.x, p.y - near.y) / 10) * 10 : null; return '**' + p.name + '**' + (st && st.detail ? ' · ' + st.detail.toLowerCase() : '') + (dm != null ? ' · ~' + dm + ' m from ' + near.name.split(' (')[0] : '') + ((p.tags || []).indexOf('Meal swipes') >= 0 ? ' · meal swipes' : ''); }), 12);
       if (unk.length) md += '\n\n_Hours not published for ' + unk.length + ' more (e.g. ' + unk.slice(0, 2).map(function (p) { return p.name; }).join(', ') + ')._';
       return [bot(md + '\n\n_Posted USC hours; specials and holidays can differ._', c === 'fitness' ? [SRC.rec] : c === 'study' ? [SRC.lib] : [SRC.hours], [go('Open the map', 'map')])];
     }, function (t, raw) {
+      var mn = /^(?:is there |are there |any |anything |whats |what is |where can i get |where is )?(.{0,25}?)\s*(food|coffee|cafe|cafes|place to eat|places to eat|lunch|dinner|breakfast|snacks?|study spots?|libraries|library|gym)(?: (?:places?|spots?|options?))? (?:that is |thats )?(?:open|still open)(?: now| rn| right now| late| tonight)? (?:near|by|around|close to|next to) (?:the )?(.{3,30})$/.exec(t);
+      if (!mn) { var mm = /^(?:is there |are there |any |anything |whats |what is |where can i get |where is )?(.{0,25}?)\s*(food|coffee|cafe|cafes|place to eat|places to eat|lunch|dinner|breakfast|snacks?|study spots?|libraries|library|gym)(?: (?:places?|spots?|options?))? (?:near|by|around|close to|next to) (?:the )?(.{3,30}?) (?:that is |thats )?(?:open|still open)(?: now| rn| right now| late| tonight)?$/.exec(t); if (mm) mn = mm; }
+      if (mn) { var nearP = findPlaces(mn[3])[0] || (/\bvillage\b/.test(mn[3]) ? P('villagedh') : null); if (nearP) { var o0 = { cat: catOf(mn[2]) || 'dining', near: nearP.id }; if (mn[1] && !/^(any|some|good|the)$/.test(mn[1].trim())) o0.what = mn[1].trim(); return o0; } }
       if (!/\b(open|still open|opened)\b/.test(t) || !/\b(what|whats|where|anything|anywhere|any|is there|somewhere|places?)\b/.test(t)) return null;
       if (/\b(registration|enroll|class|course|seats?|section|apply|application|portal|house|position|spots?)\b/.test(t) || namedPlace(raw) && !/\b(what|anything|any)\b/.test(t)) return null;
       var c = catOf(t); if (!c) return null;
@@ -776,9 +785,9 @@
 
   F('campus.access', 'Campus access rules: open to the public by day, controlled access 9 PM–6 AM (only McCarthy and McClintock gates), guest registration. "when does campus close", "can my friend come on campus at night". topic?',
     ['topic'], function () {
-      var A = SF().access || {}, g = (A.after9 || []).map(P).filter(Boolean).map(function (p) { return p.name; });
+      var A = SF().access || {}, g = (A.after9 || []).map(P).filter(Boolean).map(function (p) { return p.name + (p.desc ? ' (' + String(p.desc).split(/[.;]/)[0] + ')' : ''); });
       return [bot('**Campus access (UPC)**\n' + list([A.daytime, 'From **' + (A.idCheck || '9 PM – 6 AM') + '**: controlled access; open gates: ' + (g.join(' and ') || 'McCarthy and McClintock') + '.', 'Guests after hours: ' + (A.guests || 'register them in advance') + '.']), [SRC.access], [say('Register a guest', 'register a guest for tonight'), say('Which gates are open?', 'which gates are open')])];
-    }, function (t) { return /\b(campus (close|closes|closing|access|hours)|when does campus close|is campus open|campus open to (the )?public|after 9 ?pm|after hours access)\b/.test(t) && !/\b(register|sign in my|guest pass for)\b/.test(t) ? {} : null; });
+    }, function (t) { return (/\b(campus (close|closes|closing|access|hours)|when does campus close|is campus open|campus open to (the )?public|after 9 ?pm|after hours access)\b/.test(t) || (/\b(gates?|entrances?)\b/.test(t) && /\b(night|tonight|after dark|after 9|9 ?pm|late|overnight|evening)\b/.test(t))) && !/\b(register|sign in my|guest pass for)\b/.test(t) ? {} : null; });
 
   F('safety.programs', 'USC safety programs and apps: LiveSafe (SafeWalk), TrojansAlert, free Lyft, DPS escorts, Security Ambassadors (yellow jackets), blue light phones. "safe walk", "how do i get an escort at night", "what is livesafe". program?',
     ['program'], function (a) {
@@ -938,15 +947,24 @@
       return [bot('**' + c.name + '** · ' + (c.cats || [c.cat]).join(', ') + '\n' + list([c.open === false ? 'Online joining is **closed** on EngageSC; officers may ask you to reach out directly.' : engageUrl(c) ? 'Join on its EngageSC page: ' + engageUrl(c) : 'Find it on EngageSC (engage.usc.edu) and click Join', c.url && c.url !== engageUrl(c) ? 'Club website: ' + c.url : null, c.registered === false ? 'EngageSC marks it **not registered yet** for this year.' : 'Registered student organization.', meetTxtC(c) ? 'Meets: ' + meetTxtC(c).split('\n')[0] : null]), cSrc(c), [{ label: 'Join in Trojan Hub', value: 'join ' + c.name, kind: 'action' }])];
     }, function (t, raw) { if (!/\b(how (do|can) i join|how to join|joining|accepting (new )?members|can i join)\b/.test(t) || /\b(a club|clubs|any club|greek|frat|sorority|band|team usc)\b/.test(t)) return null; var cs = findClubs(raw, 1); return cs.length ? { club: cs[0].name } : null; });
 
+  // words that say nothing about the club itself ("clubs for people who like hiking")
+  var CLUB_STOP = /^(club|clubs|org|orgs|organization|organizations|for|about|any|and|the|usc|groups?|people|person|who|that|like|likes|love|loves|into|enjoy|enjoys|students?|someone|anyone|me|my|interested|interest|interests|related|things|stuff|some|good|best|fun|cool|with|are|there|find|show|list|want|join|looking)$/;
+  var CLUB_SYN = { hiking: ['hike', 'outdoor', 'backpacking', 'trail', 'adventure'], hike: ['hiking', 'outdoor', 'trail', 'adventure'], outdoors: ['outdoor', 'hike', 'adventure'], climbing: ['climb', 'boulder'], coding: ['code', 'programming', 'computer', 'software', 'hackathon'], programming: ['coding', 'software', 'computer'], dance: ['dancing', 'danc'], kpop: ['k pop', 'korean pop'], music: ['band', 'choir', 'orchestra', 'a cappella'], gaming: ['game', 'esports', 'video game'], film: ['cinema', 'movie', 'filmmaking'], startup: ['entrepreneur', 'venture'], startups: ['entrepreneur', 'venture'], volunteering: ['volunteer', 'service', 'community service'], volunteer: ['service', 'community service'] };
+  function stemOf(w) { return w.length > 5 ? w.replace(/(ing|ers|er|ies|es|s)$/, '') : w.replace(/s$/, ''); }
+  function stemRe(w) { var st = stemOf(norm(w)); return new RegExp('\\b' + st.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s') + (st.length >= 3 ? '' : '\\b')); }
   F('club.find', 'Find USC clubs by interest or keyword (EngageSC directory). "clubs about chess", "any k-pop dance clubs", "pre-law organizations", "clubs for cs majors". topic; open? yes',
     ['topic', 'open'], function (a) {
-      var tw = words(a.topic).filter(function (w) { return w.length > 2 && !/^(club|clubs|org|orgs|organization|organizations|for|about|any|and|the|usc|groups?)$/.test(w); });
+      var tw = words(a.topic).filter(function (w) { return w.length > 2 && !CLUB_STOP.test(w); });
       if (!tw.length) return [bot('What are you into? For example “clubs about chess” or “pre-law organizations”.', [SRC.engage])];
-      var hits = (TH.CLUBS || []).map(function (c) { var nm = norm(c.name), ds = norm((c.cats || []).join(' ') + ' ' + c.desc); var s = tw.reduce(function (n, w) { return n + (nm.indexOf(w) >= 0 ? 3 : 0) + (ds.indexOf(w) >= 0 ? 1 : 0); }, 0); return { c: c, s: s + (c.events ? 0.3 : 0) - (c.registered === false ? 0.5 : 0) }; })
-        .filter(function (x) { return x.s >= tw.length && (!/^y/i.test(String(a.open || '')) || x.c.open !== false); }).sort(function (x, y) { return y.s - x.s; });
+      var res = tw.map(function (w) { return [stemRe(w)].concat((CLUB_SYN[w] || CLUB_SYN[stemOf(w)] || []).map(stemRe)); });
+      var hits = (TH.CLUBS || []).map(function (c) {
+        var nm = ' ' + norm(c.name) + ' ', ds = ' ' + norm((c.cats || []).join(' ') + ' ' + c.desc) + ' ', all = true, s = 0;
+        res.forEach(function (alts) { var best = 0; alts.forEach(function (re, i) { var w8 = i ? 0.6 : 1; if (re.test(nm)) best = Math.max(best, 3 * w8); else if (re.test(ds)) best = Math.max(best, 1 * w8); }); if (!best) all = false; s += best; });
+        return { c: c, s: all ? s + (c.events ? 0.3 : 0) - (c.registered === false ? 0.5 : 0) : 0 };
+      }).filter(function (x) { return x.s > 0 && (!/^y/i.test(String(a.open || '')) || x.c.open !== false); }).sort(function (x, y) { return y.s - x.s; });
       if (!hits.length) return [bot('No EngageSC groups match **' + a.topic + '**. Try a broader word.', [SRC.engage])];
       return [bot('EngageSC groups for **' + a.topic + '** (' + hits.length + '):\n' + list(hits.map(function (x) { var c = x.c; return '**' + c.name + '** · ' + (c.cats || [c.cat]).slice(0, 2).join(', ') + (c.events ? ' · ' + c.events + ' upcoming events' : '') + (c.open === false ? ' · joining closed' : ''); }), 8), [SRC.engage], [go('Browse clubs', 'clubs')])];
-    }, function (t) { var m = /^(?:are there |is there |find |show me |any |list )?(?:any |some )?(?:clubs?|orgs?|organizations?|student groups?) (?:about|for|on|related to|that do|into|with) (.{3,40})$/.exec(t) || /^(?:any |find |show me )?(.{3,30}) (?:clubs|organizations|orgs)(?: at usc)?$/.exec(t) || /^(?:is there|are there) (?:an? |any )?(.{3,30}?) (?:club|clubs|org|orgs|organization|team)(?: at usc| on campus)?$/.exec(t); return m && !/\b(my|join|joined|most active|busiest|biggest|popular|how many)\b/.test(t) ? { topic: m[1] } : null; });
+    }, function (t) { var m = /^(?:are there |is there |find |show me |any |list |what |which )?(?:any |some )?(?:clubs?|orgs?|organizations?|student groups?)(?: are there| exist| are out there| do you know| does usc have)? (?:about|for|on|related to|that do|into|with) (.{3,40})$/.exec(t) || /^(?:any |find |show me )?(.{3,30}) (?:clubs|organizations|orgs)(?: at usc)?$/.exec(t) || /^(?:is there|are there) (?:an? |any )?(.{3,30}?) (?:club|clubs|org|orgs|organization|team)(?: at usc| on campus)?$/.exec(t); return m && !/\b(my|join|joined|most active|busiest|biggest|popular|how many)\b/.test(t) ? { topic: m[1] } : null; });
 
   F('club.about', 'What a USC club does (EngageSC description, categories, status). "what is the whine and cheese club", "tell me about nikkei student union". club',
     ['club'], function (a) {
@@ -1718,6 +1736,7 @@
   deferTo('events.recommend', ['club.events', 'events.food', 'events.cat']);
   deferTo('events.find', ['events.cat', 'events.food', 'club.events', 'my.calendar', 'event.info', 'events.ongoing', 'events.next', 'events.search', 'club.find', 'club.about']);
   deferTo('grades.show', ['tommy.privacy', 'my.profs']);
+  deferTo('gates.status', ['campus.access']);
   // "who can see my grades" / "units for research" are policy questions, not a grade lookup
   (function () { var g = TS.cmds['grades.show']; if (!g) return; var m0 = g.match; g.match = function (t, raw) { if (/\b(who can see|can (anyone|my parents|parents) see|ferpa|units? for|credit for|research|privacy|private)\b/.test(t)) return null; return m0.apply(this, arguments); }; })();
   // course.who couldn't read some course codes ("ACCT 410": the NLU reads "acct" as slang); answer those from the schedule
@@ -1749,9 +1768,12 @@
       // "now / this week" questions; when that repaired version is loaded, only questions about a specific day, time
       // or holiday (which it doesn't read) go to place.hours / open.now / dining.halls.
       var broken = /TH\.DATA/.test(String(r0));
-      var DAYTIME = /\b(tomorrow|tmrw|tonight|this weekend|weekend|thanksgiving|veterans day|black friday|christmas|new years|game day|gameday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun|at \d{1,2}|\d{1,2}(:\d\d)? ?(am|pm)|midnight|noon|latest|late|breakfast|lunch|dinner|brunch|closing soon|busy|crowded)\b/;
+      var DAYTIME = /\b(near|nearby|close to|next to|night|after dark|overnight|gates?|entrances?|tomorrow|tmrw|tonight|this weekend|weekend|thanksgiving|veterans day|black friday|christmas|new years|game day|gameday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun|at \d{1,2}|\d{1,2}(:\d\d)? ?(am|pm)|midnight|noon|latest|late|breakfast|lunch|dinner|brunch|closing soon|busy|crowded)\b/;
       hc.match = function (t, raw) {
-        try { if ((broken || DAYTIME.test(t)) && ['place.hours', 'open.now', 'open.late', 'open.weekend', 'open.closing', 'dining.halls', 'dining.meals', 'dining.gameday', 'place.crowd', 'place.find'].some(function (k) { return TS.cmds[k] && TS.cmds[k].match(t, raw); })) return null; } catch (e) { /* fall through */ }
+        try {
+          // places USC posts no regular hours for (Engemann Student Health): place.hours says so and shows what is published
+          var pa = ph.match(t, raw), pp = pa && findPlaces(pa.place)[0]; if (pp && !pp.hours) return null;
+          if ((broken || DAYTIME.test(t)) && ['place.hours', 'open.now', 'open.late', 'open.weekend', 'open.closing', 'dining.halls', 'dining.meals', 'dining.gameday', 'place.crowd', 'place.find', 'campus.access'].some(function (k) { return TS.cmds[k] && TS.cmds[k].match(t, raw); })) return null; } catch (e) { /* fall through */ }
         return m0.apply(this, arguments);
       };
       hc.run = function (a) {

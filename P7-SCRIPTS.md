@@ -26,6 +26,13 @@ Kinds: library, study spot, outdoor space, cafe, historic building. Each attribu
 ## Study partners (`study.partners {course?}`)
 "how can i find study partners", "anyone to study with for csci 104", "study buddy", "form a study group". USC runs no study-partner matching service in the data, and the answer says so. It then lists the real ways to study with others, filtered by the course when one is given: Supplemental Instruction (Dornsife; subjects listed), Marshall Study Sessions (their page says students can use them to form study groups), the Viterbi Learning Program and VLP Pairs (Viterbi courses only), ITS group study rooms, and study/tutoring events this week on EngageSC. It also gives USC's rule that working together on assignments is unauthorized unless the instructor allows it. Bible-study and room-booking wording is left to other commands.
 
+## Live-tester fixes
+- `club.find` ignores filler words (people, who, like, love, students, usc…), matches word stems ("hiking" → hike/hikes) and a few synonyms (hiking → outdoor, backpacking, trails).
+- `open.now` takes `near` and `what` ("vegetarian food open now near leavey": nearest first, and it says so if no place lists that food type); `place.hours` no longer claims "<food> near <place>" or gate questions.
+- Gate-at-night questions go to `campus.access`, which names the gates open after 9 PM with where they are.
+- Places with no posted regular hours (Engemann Student Health) are answered by `place.hours`, which says the hours aren't posted and shows what is (closing times, appointments, 24/7 phone), even when hours-check.js is loaded.
+- Every Part 7 answer is scrubbed of internal file or key names (a research note said "See transport.json lyft.").
+
 ## `covers` for the answer-quality gate
 Every Part 7 answer sets `m.covers` on its bot message: the family's own words, the words of its arguments, and (for `place.find`) the kind and attributes it addressed, including ones it addressed by saying the data can't support them (e.g. `beautiful`).
 
@@ -37,8 +44,8 @@ Every Part 7 answer sets `m.covers` on its bot message: the family's own words, 
 ## Numbers (on device, AI translator off; file:// build)
 | Set | Before | After |
 |---|---|---|
-| 538 questions (415 data-driven + 108 FAQ topics + 15 must-pass), used for tuning | 394 (73.2%) | 529 (98.3%) |
-| 15 must-pass questions from the user (greenery/old library, beautiful place to work, quiet library open late, historic buildings, outdoor with shade, intro to civil engineering, study partners, …) | 4 | 15 |
+| 544 questions (415 data-driven + 108 FAQ topics + 21 must-pass), used for tuning | 395 (72.6%) | 534 (98.2%); 533 with hours-check.js (the extra miss is time-of-day: "closing soon") |
+| 21 must-pass questions from the user and the live tester (greenery/old library, quiet library open late, historic buildings, study partners, clubs for people who like hiking, vegetarian food open near Leavey, gate by the Village at night, Engemann hours, …) | 5 | 21 |
 | 119 held-out casual questions, first run before any fix | 76 (63.9%) | 104 (87.4%); 106 (89.1%) hand-adjudicated |
 | same 119 after fixing generalizable misses | 76 (63.9%) | 115 (96.6%); the 4 auto-misses are 3 correct answers (Veterans Day, “Art” events, a random fun fact) + 1 real miss |
 | Translator path: intended command run with intended args (415) | n/a | 415 (100%) |
