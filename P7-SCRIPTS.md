@@ -27,7 +27,7 @@ Kinds: library, study spot, outdoor space, cafe, historic building. Each attribu
 Every Part 7 answer sets `m.covers` on its bot message: the family's own words, the words of its arguments, and (for `place.find`) the kind and attributes it addressed, including ones it addressed by saying the data can't support them (e.g. `beautiful`).
 
 ## Wrapped (not edited) older commands
-- `hours.check` looked places up in `TH.DATA` (absent), so "is evk open" failed: its run now uses the place resolver; its match yields to `place.hours` / `open.now` / `dining.halls`; it gained a `day` arg.
+- `hours.check`: the original looked places up in `TH.DATA` (absent). If that broken version is loaded, `scripts-plus.js` sends its messages to `place.hours` / `open.now` / `dining.halls`. If the integrator's repaired `js/ta/hours-check.js` is loaded first, it keeps "now / this week" questions; only questions about a specific day, time, holiday, meal or game day (which it doesn't read) go to the Part 7 families, and its run hands off to `place.hours` only when a `day` arg is given. Checked both ways: 525/533 and 116/119 with and without `hours-check.js`. It gained a `day` arg.
 - `events.find`, `events.recommend`, `grades.show` yield to a family when that family's matcher claims the message ("events today", "free food today", "what events does X have", "does the ai see my grades", "who can see my grades").
 - `course.who` answers codes the NLU misreads (e.g. "ACCT 410", where "acct" is read as slang).
 

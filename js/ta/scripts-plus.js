@@ -1694,8 +1694,19 @@
     var hc = TS.cmds['hours.check'], ph = TS.cmds['place.hours'];
     if (hc && ph) {
       var m0 = hc.match, r0 = hc.run;
-      hc.match = function (t, raw) { try { if (ph.match(t, raw) || TS.cmds['open.now'].match(t, raw) || TS.cmds['dining.halls'].match(t, raw)) return null; } catch (e) { /* fall through */ } return m0.apply(this, arguments); };
-      hc.run = function (a) { return findPlaces(a && a.place).length ? ph.run({ place: a.place, day: a.day }) : r0.apply(this, arguments); };
+      // The original looked places up in TH.DATA (absent). The integrator's js/ta/hours-check.js repairs it for
+      // "now / this week" questions; when that repaired version is loaded, only questions about a specific day, time
+      // or holiday (which it doesn't read) go to place.hours / open.now / dining.halls.
+      var broken = /TH\.DATA/.test(String(r0));
+      var DAYTIME = /\b(tomorrow|tmrw|tonight|this weekend|weekend|thanksgiving|veterans day|black friday|christmas|new years|game day|gameday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun|at \d{1,2}|\d{1,2}(:\d\d)? ?(am|pm)|midnight|noon|latest|late|breakfast|lunch|dinner|brunch|closing soon|busy|crowded)\b/;
+      hc.match = function (t, raw) {
+        try { if ((broken || DAYTIME.test(t)) && ['place.hours', 'open.now', 'open.late', 'open.weekend', 'open.closing', 'dining.halls', 'dining.meals', 'dining.gameday', 'place.crowd', 'place.find'].some(function (k) { return TS.cmds[k] && TS.cmds[k].match(t, raw); })) return null; } catch (e) { /* fall through */ }
+        return m0.apply(this, arguments);
+      };
+      hc.run = function (a) {
+        if ((broken || (a && a.day)) && findPlaces(a && a.place).length) return ph.run({ place: a.place, day: a.day });
+        return r0.apply(this, arguments);
+      };
       if (hc.args.indexOf('day') < 0) hc.args = hc.args.concat(['day']);
     }
     var ef = TS.cmds['events.find'];
