@@ -15961,7 +15961,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     });
     TA.on('kb-failed', function (msg) {
       document.documentElement.setAttribute('data-kb', 'failed');
-      if (status) { status.hidden = false; status.textContent = msg; }
+      var s2 = document.getElementById('ta-status') || status; if (s2) s2.hidden = true;   // no error banner (and no endless 'Loading…'): Tommy still answers without the knowledge base
     });
     var demo = document.getElementById('demo-date'); if (demo) demo.textContent = TA.fmtDate(TA.today());
     document.querySelectorAll('[data-meta]').forEach(function (el) { var k = el.getAttribute('data-meta'); if (TA.KB_META[k] != null) el.textContent = typeof TA.KB_META[k] === 'number' ? TA.KB_META[k].toLocaleString() : TA.KB_META[k]; });
@@ -17817,7 +17817,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
   function kbStatus() {
     var st = $('ta-status'); if (!st || !TA.Search) return;
     if (TA.Search.ready) { st.hidden = true; return; }
-    if (TA.Search.failed) { st.hidden = false; st.textContent = TA.Search.failed; return; }
+    if (TA.Search.failed) { st.hidden = true; try { console.warn('Tommy knowledge base:', TA.Search.failed); } catch (e) { } return; }   // no error banner: Tommy still answers without it
     st.hidden = false; st.textContent = 'Loading the USC knowledge base… (questions you ask now are answered as soon as it’s ready)';
     TA.Search.whenReady().then(kbStatus, kbStatus);
   }
@@ -24122,11 +24122,13 @@ window.TA_FAQ = [{"id":"reg1","t":"How to register for classes in Web","q":["how
       // The single-file page carries the knowledge base as its LAST script. Opening #assistant directly, or a slow
       // connection, gets here before that script has arrived: wait until the page has finished parsing (every inline
       // script has run by DOMContentLoaded) instead of asking for a separate file the website doesn't have.
-      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) start(); else fetchFile(); }, { once: true }); return; }
-      fetchFile();
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) start(); else later(); }, { once: true }); return; }
+      later();
+      // still no knowledge base: give the page until it has fully loaded, then look once more before the file fallback
+      function later() { if (document.readyState === 'complete') return (window.TA_BLOBS && TA_BLOBS['ta-kb']) ? start() : fetchFile(); window.addEventListener('load', function () { if (window.TA_BLOBS && TA_BLOBS['ta-kb']) start(); else fetchFile(); }, { once: true }); }
       function fetchFile() {
         var s = document.createElement('script'); s.src = src || 'js/ta/blob-kb.js'; s.async = true;
-        s.onload = start; s.onerror = function () { TA.Search.failed = 'Couldn’t load the USC knowledge base'; try { TA.emit('kb-failed', TA.Search.failed); } catch (e) { } resolve(); };
+        s.onload = start; s.onerror = function () { TA.Search.failed = 'knowledge base file not found'; try { TA.emit('kb-failed', TA.Search.failed); } catch (e) { } resolve(); };
         document.head.appendChild(s);
       }
     });
