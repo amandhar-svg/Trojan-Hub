@@ -1,0 +1,186 @@
+Ask Tommy P7 commands: public/private flag (TA.Script.isPublic(name)).
+PUBLIC = output holds only public USC data, so the AI may read it. PRIVATE (default) = reads the account or device state; its output must never leave the device.
+Generated from a build of js/ta/scripts-plus.js + js/ta/faq.js.
+
+PRIVATE (42):
+  private  course.conflict  — Whether a USC course’s lecture times clash with your own classes (on device)
+  private  place.where  — Where a campus place is: building, address, walking time from you
+  private  place.nearest  — Nearest campus place of a kind to you, with walking time: restroom, food, coffee, library,
+  private  place.walk  — Walking time and distance between you (or one place) and a campus place, using the campus 
+  private  cal.registration  — Spring 2027 registration timeline (appointments posted, registration begins, D-clearance r
+  private  club.recommend  — Clubs picked for the student from their interests, major and career goals (on device)
+  private  my.classes  — Your own classes this term or next, with times and instructors
+  private  my.classes_on  — Your classes on a given day
+  private  my.next_class  — Your next class from now: what, when, how long until
+  private  my.units  — How many units the student is taking this term or next, vs
+  private  my.profs  — Who teaches your classes (instructors on your own sections)
+  private  my.finals  — Your own final exam schedule for this term, from their class times (Registrar rules)
+  private  my.registration  — Your registration appointment, holds and D-clearances
+  private  my.completed  — Courses the student has already completed (on their record)
+  private  my.advisor  — Your academic advisor and advising appointments
+  private  my.dining  — Your meal plan: swipes left, Dining Dollars, guest swipes
+  private  my.uscard  — Your USCard status and discretionary balance
+  private  my.balance  — Your account balance, due date, payment plan and recent charges/payments
+  private  my.housing  — Your housing: building, room type, front desk (CSC) contact, open requests
+  private  my.parking  — Your parking permit (if any)
+  private  my.library  — Your library loans (due dates, renewals) and room reservations
+  private  my.health  — Your health appointments, prescriptions and insurance status
+  private  my.appointments  — All your upcoming appointments: health, advising, career
+  private  my.orders  — Your mobile food orders (simulated): status, pickup time, order code
+  private  my.bookings  — Your bookings and reservations: study rooms/courts (Trojan Pass), virtual lines, Zipcar, l
+  private  my.ride  — Your current USC Lyft ride (simulated) and Lyft credit used this month
+  private  my.upass  — Your Metro U-Pass status (simulated in this demo)
+  private  my.clubs  — Clubs the student joined in Trojan Hub and their next events
+  private  my.calendar  — Events the student saved to their Trojan Hub calendar
+  private  my.activity  — What Tommy has done on your account recently (audit log with confirmation numbers)
+  private  my.profile  — Your profile: name, major, school, year, NetID, USC ID
+  private  my.free  — When the student is free on a day (gaps between their classes and saved plans)
+  private  my.guestswipes  — Guest meal swipes the student has left and how they work
+  private  cal.day  — What’s on the academic calendar on a date: deadlines, holidays, finals, game days, and you
+  private  my.week  — Your week at a glance: classes, things due, saved events and bookings per day
+  private  my.notifications  — Your Trojan Hub notifications (unread first)
+  private  my.reports  — Reports the student submitted in Trojan Hub (simulated routing) and their status
+  private  my.wallet  — What’s in your Trojan Hub wallet: USCard, U-Pass, Apple Wallet pass, balances
+  private  my.prefs  — Your saved preferences used for recommendations: interests, career goals, diet, allergies,
+  private  my.final_conflicts  — Whether any of your finals fall in the same slot or on the same day
+  private  my.deadlines  — Your own upcoming deadlines: bill due date, library books due, withdraw deadline, registra
+  private  place.find  — Find a campus spot by what you want it to be like: library / study spot / outdoor space / 
+
+PUBLIC (112):
+  PUBLIC   course.when  — When a USC course meets: days, times, instructor per section
+  PUBLIC   course.seats  — Open seats in a USC course, per section
+  PUBLIC   course.units  — How many units a USC course is worth
+  PUBLIC   course.prereqs  — Prerequisites, corequisites and restrictions of a USC course
+  PUBLIC   course.ge  — Which GE categories a USC course counts for (GE course lists)
+  PUBLIC   course.final  — Final exam day and time for a USC course (Registrar’s final exam schedule)
+  PUBLIC   course.about  — What a USC course is about (official description)
+  PUBLIC   course.sections  — All sections of a USC course: type, ID, days/times, instructor, seats
+  PUBLIC   course.dclear  — Whether a USC course or section needs D-clearance (department clearance)
+  PUBLIC   course.offered  — Which terms (Fall 2026 / Spring 2027) a USC course is offered
+  PUBLIC   course.find  — Find USC courses on a topic, optionally only ones with open seats or on certain days
+  PUBLIC   course.prof  — Which courses a given instructor teaches
+  PUBLIC   course.section  — Details of one USC section by its 5-digit section number
+  PUBLIC   course.dept  — List the courses a department (prefix) offers in a term
+  PUBLIC   course.gelist  — Courses offered in a term that satisfy a GE category (A–H)
+  PUBLIC   course.restrict  — Registration restrictions and duplicate-credit notes on a USC course
+  PUBLIC   place.hours  — Hours of a campus place on a day, and open/closed now (dining halls, cafes, libraries, gym
+  PUBLIC   place.week  — Full weekly hours of a campus place plus upcoming holiday/special hours
+  PUBLIC   open.now  — What’s open right now (or at a given time) by category, optionally near a place or with a 
+  PUBLIC   place.contact  — Phone, website and email for a campus place or office
+  PUBLIC   place.about  — What a campus place offers (description and features)
+  PUBLIC   place.list  — List campus places of a kind: dining halls, cafes, libraries, gyms, offices, parking struc
+  PUBLIC   dining.halls  — Which residential dining halls are open now or on a day, with hours
+  PUBLIC   dining.meals  — Breakfast/lunch/dinner times at USC dining halls (only open–close times are published)
+  PUBLIC   dining.plans  — USC meal plan options and prices (current semester)
+  PUBLIC   dining.dollars  — How Dining Dollars work: add-on blocks, discount, where they work, meal-plan change deadli
+  PUBLIC   dining.swipes  — Where meal swipes work (dining halls) vs
+  PUBLIC   dining.order  — Mobile order-ahead spots on campus with estimated kitchen wait (Est., simulated)
+  PUBLIC   dining.menu  — Link to the posted menu for a USC dining hall or café (menus change daily; Tommy doesn’t c
+  PUBLIC   dining.gameday  — Dining and campus changes on the next home football game day (hours, Lyft, shuttle, parkin
+  PUBLIC   office.info  — Contact, location and hours of a USC office: financial aid, career center, OSAS, ITS help 
+  PUBLIC   office.list  — List the USC offices and service desks Tommy has contact details for
+  PUBLIC   bus.next  — Next USC bus departures (published schedules): UPC ↔ Union Station, Intercampus Shuttle to
+  PUBLIC   bus.routes  — USC bus and shuttle routes with their stops and days
+  PUBLIC   bus.schedule  — Full day timetable for a USC bus route from its first stop
+  PUBLIC   lyft.status  — Is free USC Lyft running now, its hours (UPC 7 PM–2 AM; HSC weekdays), and game-day timing
+  PUBLIC   lyft.rules  — USC Lyft rules: boundary zone, Shared rides only, monthly cap, what isn’t covered, how to 
+  PUBLIC   metro.info  — Metro rail near campus (E Line, J Line stations) and how to get to LAX by transit
+  PUBLIC   upass.info  — Metro U-Pass for USC students: eligibility, cost, how to get or renew it
+  PUBLIC   zipcar.info  — Zipcar and rental cars for USC students (membership, rates, Enterprise)
+  PUBLIC   metrolink.info  — Metrolink student discount (50% off) and how to set it up
+  PUBLIC   parking.info  — Parking at USC: student permit types and prices, visitor daily/hourly rates, structures, g
+  PUBLIC   bike.info  — Bikes, scooters and skateboards: required DPS registration, parking/racks, bike share stat
+  PUBLIC   transport.fee  — The mandatory Student Transportation Fee: amount and what it pays for
+  PUBLIC   transport.lax  — Getting to/from LAX: USC break shuttles (when posted), Metro to LAX, FlyAway from Union St
+  PUBLIC   transport.hsc  — Getting between the University Park Campus (UPC) and the Health Sciences Campus (HSC)
+  PUBLIC   safety.contacts  — USC safety and support phone numbers: DPS emergency and non-emergency (UPC/HSC), Student H
+  PUBLIC   campus.access  — Campus access rules: open to the public by day, controlled access 9 PM–6 AM (only McCarthy
+  PUBLIC   safety.programs  — USC safety programs and apps: LiveSafe (SafeWalk), TrojansAlert, free Lyft, DPS escorts, S
+  PUBLIC   safety.alerts  — Recent DPS Timely Warnings and crime alerts posted by USC DPS (titles, dates, links)
+  PUBLIC   safety.lostfound  — DPS Lost and Found: where it is and how to report or claim an item
+  PUBLIC   safety.gameday  — Game-day safety and logistics: clear bag rule, Lyft and shuttle changes, parking
+  PUBLIC   cal.deadlines  — Key academic deadlines for a term (session 001): add/drop, refund, drop without W, withdra
+  PUBLIC   cal.term  — When a semester starts and ends, and how many days/weeks are left
+  PUBLIC   cal.holidays  — University holidays and recesses (no classes) for Fall 2026 and Spring 2027, and whether a
+  PUBLIC   cal.finals  — When finals week is and how the final exam slot is set (by class meeting time); study days
+  PUBLIC   cal.countdown  — How many days until a date or campus milestone (Thanksgiving, finals, last day of classes,
+  PUBLIC   cal.tuition  — Tuition and mandatory fees for the year (flat rate 12–18 units, per-unit, fees) and the pa
+  PUBLIC   cal.transcript  — Official transcript fees (PDF, paper, overnight, international express)
+  PUBLIC   uscard.info  — USCard (student ID) basics: replacement fee, where to get it, phone, reporting a lost card
+  PUBLIC   safety.escort  — Getting home safely at night: free Lyft hours, DPS escort 2–6 AM, blue light escort, LiveS
+  PUBLIC   safety.bluelight  — Blue light emergency phones: how many, where, how they work
+  PUBLIC   safety.ambassadors  — Security Ambassadors (“yellow jackets”) around campus: who they are and what they do
+  PUBLIC   safety.report  — Ways to report a crime or suspicious activity to USC DPS (including anonymous), and noise 
+  PUBLIC   safety.dps  — About USC DPS: hours, patrol area, station addresses, community service officers
+  PUBLIC   parking.structure  — One parking structure: address, access, public rates, permits, what else is inside
+  PUBLIC   dining.village  — USC Village stores and food (Trader Joe’s, Target, FedEx, Amazon lockers) and where USCard
+  PUBLIC   club.meets  — When and where a USC club meets: posted meeting time if the club lists one, else its next 
+  PUBLIC   club.join  — How to join a specific USC club (EngageSC page, whether online joining is open, registrati
+  PUBLIC   club.find  — Find USC clubs by interest or keyword (EngageSC directory)
+  PUBLIC   club.about  — What a USC club does (EngageSC description, categories, status)
+  PUBLIC   club.events  — Upcoming public events of a USC club or organization
+  PUBLIC   club.category  — Clubs in an EngageSC category (Academic, Cultural, Recreation, Professional, Religious, So
+  PUBLIC   events.day  — Public campus events on a day or tonight/this weekend
+  PUBLIC   events.food  — Campus events with free food, on a day or soon
+  PUBLIC   events.now  — Public events happening right now on campus
+  PUBLIC   events.search  — Search upcoming public events by topic, org or place within a date range
+  PUBLIC   event.info  — Details of one named campus event: when, where, host, description, RSVP link
+  PUBLIC   events.week  — Overview of public events this week or next: count per day and highlights
+  PUBLIC   usc.facts  — Verified fun facts and history about USC (founding, Tommy Trojan, Traveler, traditions)
+  PUBLIC   time.today  — Today’s date, time and what kind of day it is on campus (holiday, finals, game day)
+  PUBLIC   tommy.topics  — What Ask Tommy can answer: the command families by topic
+  PUBLIC   course.code  — The course code for a USC course name
+  PUBLIC   course.bytime  — USC courses on a topic that start after / end before a time, optionally on certain days
+  PUBLIC   course.byunits  — USC courses on a topic with a given number of units (e.g
+  PUBLIC   course.compare  — Compare two USC courses side by side: units, times, instructors, seats, prereqs
+  PUBLIC   course.count  — How many courses or sections USC offers in a term, overall or for a prefix
+  PUBLIC   course.gecat  — What a USC GE category is (A–H titles) and where its course list is
+  PUBLIC   place.search  — Find campus places by what they offer, from their descriptions and features: gluten free, 
+  PUBLIC   open.late  — Which campus places stay open latest tonight (or on a day), by category: food, coffee, lib
+  PUBLIC   place.crowd  — How busy a dining hall or gym usually is now and later today (Est., from typical patterns,
+  PUBLIC   restroom.allgender  — All-gender / gender-neutral restrooms on campus
+  PUBLIC   open.weekend  — What’s open this Saturday and Sunday by category, with hours: food, coffee, libraries, gym
+  PUBLIC   landmark.facts  — Facts about a USC landmark (Tommy Trojan, Traveler statue, Bovard, Coliseum, Galen Center,
+  PUBLIC   open.closing  — Campus places closing soon (within the next hour) by category
+  PUBLIC   bus.holidays  — USC bus service on university holidays (no service) and which days have no buses
+  PUBLIC   transport.cruiser  — Campus Cruiser status (suspended; replaced by free USC Lyft)
+  PUBLIC   bus.stop  — Which USC buses stop at a stop and its next departures (Jefferson turnout, Leavey, Vivian 
+  PUBLIC   lyft.zone  — Whether free USC Lyft covers a destination (must start and end inside the boundary; LAX, H
+  PUBLIC   parking.visitor  — Where visitors and guests can park at USC and what it costs (daily/hourly, Text2Park, chea
+  PUBLIC   safety.trojansalert  — TrojansAlert emergency notifications: who gets them, how to update your number, how parent
+  PUBLIC   safety.livesafe  — The LiveSafe safety app: what it does (call DPS, anonymous tips, SafeWalk) and how to set 
+  PUBLIC   cal.upcoming  — Upcoming academic milestones in the next few weeks (deadlines, holidays, last day of class
+  PUBLIC   club.active  — The most active USC clubs right now (most upcoming EngageSC events), optionally in a categ
+  PUBLIC   events.cat  — Upcoming public events in an EngageSC category (Arts, Social, Academics, Service, Sustaina
+  PUBLIC   events.where  — Upcoming public events at a place or building (Coliseum, Tutor Campus Center, Bovard, HSC,
+  PUBLIC   events.next  — The very next public campus event(s) starting soon
+  PUBLIC   events.ongoing  — Ongoing multi-day campus events and exhibits (running across several days)
+  PUBLIC   tommy.sources  — Where Tommy’s answers come from and how current they are (USC pages, Schedule of Classes, 
+  PUBLIC   tommy.privacy  — What the AI translator sees (only your words, never your account or results) and what stay
+  PUBLIC   study.partners  — Find people to study with or a study group: peer-led group sessions (Supplemental Instruct
+  PUBLIC   faq  — Answer from a USC FAQ page for topics NOT covered by the commands above
+
+Older commands (not set by P7 files; the default is PRIVATE):
+  (unset→private)  plan.day  [not in P7 files]
+  (unset→private)  plan.week  [not in P7 files]
+  (unset→private)  plan.outings  [not in P7 files]
+  (unset→private)  report.problem  [not in P7 files]
+  (unset→private)  events.rate  [not in P7 files]
+  (unset→private)  events.recommend  [not in P7 files]
+  (unset→private)  events.find  [not in P7 files]
+  (unset→private)  hours.check  [not in P7 files]
+  (unset→private)  grades.show  [not in P7 files]
+  (unset→private)  grades.need  [not in P7 files]
+  (unset→private)  hw.due  [not in P7 files]
+  (unset→private)  hw.done  [not in P7 files]
+  (unset→private)  exams.list  [not in P7 files]
+  (unset→private)  breaks.next  [not in P7 files]
+  (unset→private)  building.find  [not in P7 files]
+  (unset→private)  gates.status  [not in P7 files]
+  (unset→private)  zone.check  [not in P7 files]
+  (unset→private)  bikes.nearest  [not in P7 files]
+  (unset→private)  watch.list  [not in P7 files]
+  (unset→private)  guest.list  [not in P7 files]
+  (unset→private)  news.list  [not in P7 files]
+  (unset→private)  course.who  [not in P7 files]
+  (unset→private)  requests.list  [not in P7 files]

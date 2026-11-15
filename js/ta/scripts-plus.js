@@ -1793,6 +1793,15 @@
     }
   })();
 
+  // ============================================================================================ PUBLIC / PRIVATE (AI-first answers)
+  // A command is PUBLIC only if its output holds nothing but public USC data, so the AI may read that output to write
+  // the final answer. Default is PRIVATE. Private here: anything that reads the student's account or device state:
+  // every my.* command, your class conflicts, your club picks (from your profile), your own registration time and bill
+  // (cal.registration, cal.day), and anything measured from where you are (place.where / nearest / walk / find).
+  var PRIVATE = /^(my\.|course\.conflict$|club\.recommend$|cal\.registration$|cal\.day$|place\.(where|nearest|walk|find)$)/;
+  X.names.forEach(function (n) { TS.cmds[n].public = !PRIVATE.test(n); });
+  if (!TS.isPublic) TS.isPublic = function (name) { return !!(TS.cmds[name] && TS.cmds[name].public === true); };
+
   // keep the read commands from Part 7 after the older ones (insertion order = compile order), and expose for tests
   X.count = X.names.length;
 })();

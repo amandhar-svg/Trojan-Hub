@@ -33,6 +33,9 @@ Kinds: library, study spot, outdoor space, cafe, historic building. Each attribu
 - Places with no posted regular hours (Engemann Student Health) are answered by `place.hours`, which says the hours aren't posted and shows what is (closing times, appointments, 24/7 phone), even when hours-check.js is loaded.
 - Every Part 7 answer is scrubbed of internal file or key names (a research note said "See transport.json lyft.").
 
+## Public / private flags (AI-first answers)
+`TS.cmds[name].public === true` marks commands whose output holds only public USC data (112 Part 7 families + `faq`). Everything that reads the student's account or device state is private (42): every `my.*`, `course.conflict`, `club.recommend`, `cal.registration` and `cal.day` (they show your own registration time / bill), and `place.where`, `place.nearest`, `place.walk`, `place.find` (they measure from where you are). `TA.Script.isPublic(name)` is defined once (not overwritten). The full list, including older commands that stay unset (= private), is in `scripts/p7-eval/public-flags.txt`.
+
 ## `covers` for the answer-quality gate
 Every Part 7 answer sets `m.covers` on its bot message: the family's own words, the words of its arguments, and (for `place.find`) the kind and attributes it addressed, including ones it addressed by saying the data can't support them (e.g. `beautiful`).
 

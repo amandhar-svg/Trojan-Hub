@@ -109,7 +109,7 @@
   var DO = /^(please |can you |could you |hey tommy |tommy )*(register|enroll|sign me up|drop|add|book|reserve|order|cancel|pay|request|schedule|renew|change|switch|apply|submit|send|file|get me|set up|update)\b/;
 
   TS.cmds.faq = {
-    name: 'faq', args: ['id'], plus: true,
+    name: 'faq', args: ['id'], plus: true, public: true, // answers are USC page text only
     about: 'Answer from a USC FAQ page for topics NOT covered by the commands above. id: one id from this list (pick the title that matches the question): ' +
       DATA.map(function (e) { return e.id + ' ' + e.t; }).join('; '),
     match: function (t, raw) {
@@ -144,6 +144,8 @@
 
   // build the index when the page is idle, so no message pays for it
   setTimeout(function () { try { build(); } catch (e) { /* built on first use instead */ } }, 0);
+
+  if (!TS.isPublic) TS.isPublic = function (name) { return !!(TS.cmds[name] && TS.cmds[name].public === true); };
 
   TA.FAQ = { strict: false, search: search, confident: confident, toks: toks, data: DATA, count: DATA.length,
     catalogChars: function () { return TS.cmds.faq.about.length; } };
