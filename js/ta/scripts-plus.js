@@ -193,7 +193,7 @@
       });
     }, courseCue(/\b(when|what time|which days?|what days?)\b.{0,30}\b(meet|meets|is|are|does|on)\b|\bmeeting times?\b|\bclass times?\b|\b(days and times|lecture times?|schedule for)\b/, /\b(final|exam|midterm|due|office hours?|register|registration|drop)\b/));
 
-  F('course.seats', 'Open seats in a USC course, per section (Schedule of Classes). "is csci 201 full", "how many seats left in econ 203", "any spots open in psyc 100". course; term?',
+  F('course.seats', 'Open seats in a USC course, per section. "is csci 201 full", "how many seats left in econ 203", "any spots open in psyc 100". course; term?',
     ['course', 'term'], function (a) {
       return courseOr(a, function (c, term, other) {
         var secs = live(c).filter(function (s) { return s.seats; }), L = secs.filter(function (s) { return /lec/i.test(s.type); }); if (!L.length) L = secs;
@@ -257,7 +257,7 @@
       });
     }, courseCue(/\b(about|description|describe|covers?|covered|cover|topics?|what is)\b/, /\b(final|seats?|prereq\w*|units?|teach\w*|when|time|ge)\b/));
 
-  F('course.sections', 'All sections of a USC course: type, ID, days/times, instructor, seats. "sections of csci 103", "list the labs for phys 151", "discussion times for econ 203". course; term?; type? lecture|lab|discussion|quiz',
+  F('course.sections', 'All sections of a USC course: type, ID, days/times, instructor, seats. "sections of csci 103", "list the labs for phys 151". course; term?; type? lecture|lab|discussion|quiz',
     ['course', 'term', 'type'], function (a) {
       return courseOr(a, function (c, term, other) {
         var ty = norm(a.type), secs = live(c).filter(function (s) { return !ty || norm(s.type).indexOf(ty.slice(0, 3)) === 0; });
@@ -284,7 +284,7 @@
       var md = '**' + code + ' · ' + r.list[0].c.title + '** is offered in **' + on.map(function (x) { return SOC.label(x.id) + '** (' + x.n + ' section' + (x.n > 1 ? 's' : '') + ')'; }).join(' and **') +
         (off.length ? '. It isn’t on the ' + off.map(function (x) { return SOC.label(x.id); }).join(' or ') + ' schedule.' : '.');
       return [bot(md + '\n\n_I only carry Fall 2026 and Spring 2027._', [SRC.soc])];
-    }, courseCue(/\b(offered|available|offering|taught in|is there a)\b.{0,25}\b(spring|fall|next semester|next term|this semester)\b|\bwhen is .{2,12} offered\b/));
+    }, courseCue(/\b(offered|available|offering|taught in|is there a)\b.{0,25}\b(spring|fall|next semester|next term|this semester)\b|\bwhen is .{2,12} offered\b|^is .{4,12} in (the )?(spring|fall)( too| also| as well)?$/));
 
   F('course.find', 'Find USC courses on a topic, optionally only ones with open seats or on certain days. "classes about machine learning", "easy film classes in spring", "psychology courses on fridays". topic; term?; days? like "MW"; open? yes',
     ['topic', 'term', 'days', 'open'], function (a) {
@@ -303,7 +303,7 @@
       return [bot('**' + SOC.label(out[0].id) + '** courses matching **' + q + '**' + (dset ? ' (meeting ' + TA.fmtDays(dset) + ')' : '') + ':\n' + list(out.map(function (x) { var s = x.secs[0]; return '**' + x.c.code + '** ' + x.c.title + ' · ' + x.c.units + ' units · ' + meetTxt(s) + (x.secs.length > 1 ? ' (+' + (x.secs.length - 1) + ' more)' : ''); }), 10) + SOC_NOTE, socSrc(out[0].id))];
     });
 
-  F('course.prof', 'Which courses a given instructor teaches (Schedule of Classes). "what does professor slocum teach", "classes taught by mark redekopp". name; term?',
+  F('course.prof', 'Which courses a given instructor teaches. "what does professor slocum teach", "classes taught by mark redekopp". name; term?',
     ['name', 'term'], function (a) {
       if (!SOC || !SOC.ready) return [bot('The class schedule is still loading. Ask me again in a moment.')];
       var nw = words(a.name).filter(function (w) { return !/^(prof|professor|dr|mr|ms|mrs|instructor|teacher)$/.test(w) && w.length > 1; });
@@ -335,7 +335,7 @@
       return [bot(hits.map(function (h) { var s = h.s; return head(h.c, h.t) + '\n- ' + s.type + ' **' + s.id + '** · ' + meetTxt(s) + '\n- Instructor: ' + (s.instr || 'not listed') + '\n- Seats: ' + (s.seats ? SOC.seatsLeft(s) + ' of ' + s.seats + ' open' : 'not listed') + '\n- Units: ' + String(s.units || h.c.units).replace(/\.0$/, '') + (s.d ? '\n- **D-clearance required**' : '') + (s.cancelled ? '\n- **Cancelled**' : '') + (s.notes ? '\n- Note: ' + s.notes : ''); }).join('\n\n') + SOC_NOTE, socSrc(hits[0].t))];
     }, function (t, raw) { var m = /\bsection (?:number |#)?(\d{5})\b/.exec(t) || (/^(what|which) (class|course) is (\d{5})$/.exec(t) || [])[3]; return m ? { section: Array.isArray(m) ? m[1] : m } : null; });
 
-  F('course.dept', 'List the courses a department (prefix) offers in a term. "what CSCI classes are offered in spring", "list of math courses", "all ECON 300-level classes". prefix like CSCI; term?; level? like 300',
+  F('course.dept', 'List the courses a department (prefix) offers in a term. "what CSCI classes are offered in spring", "list of math courses". prefix like CSCI; term?; level? like 300',
     ['prefix', 'term', 'level'], function (a) {
       if (!SOC || !SOC.ready) return [bot('The class schedule is still loading. Ask me again in a moment.')];
       var pre = String(a.prefix || '').toUpperCase().replace(/[^A-Z]/g, ''), id = termIds(a.term || 'spring')[0], map = {};
@@ -346,7 +346,7 @@
       return [bot('**' + pre + '** ' + (lv ? lv + '00-level ' : '') + 'courses in **' + SOC.label(id) + '** (' + codes.length + '):\n' + list(codes.map(function (k) { return '**' + k + '** ' + map[k].title + ' · ' + map[k].units + 'u'; }), 25) + SOC_NOTE, socSrc(id))];
     });
 
-  F('course.gelist', 'Courses offered in a term that satisfy a GE category (A–H). "which classes count for ge-c", "ge a courses in spring with open seats", "easy GE-H options". cat A-H; term?; topic?',
+  F('course.gelist', 'Courses offered in a term that satisfy a GE category (A–H). "which classes count for ge-c", "ge a courses in spring with open seats". cat A-H; term?; topic?',
     ['cat', 'term', 'topic'], function (a) {
       var k = (/\b([a-h])\b/i.exec(String(a.cat || '').replace(/^ge[- ]?/i, ' ')) || [])[1]; k = k && k.toUpperCase();
       var L = TA.GE_LISTS && TA.GE_LISTS[k]; if (!L) return [bot('Which GE category? Use a letter A–H (for example **GE-C**).', [{ url: 'https://dornsife.usc.edu/ge/', title: 'USC General Education' }])];
@@ -355,7 +355,7 @@
       return [bot('**' + L.title + '**: ' + out.length + ' courses on its list are offered in **' + SOC.label(id) + '**' + (tw.length ? ' matching “' + a.topic + '”' : '') + ':\n' + list(out.map(function (c) { var o = live(c).reduce(function (n, s) { return n + SOC.seatsLeft(s); }, 0); return '**' + c.code + '** ' + c.title + ' · ' + o + ' seats open'; }), 15) + SOC_NOTE, [{ url: L.url, title: L.title + ' – USC GE' }, SRC.soc])];
     });
 
-  F('course.conflict', 'Whether a USC course’s lecture times clash with the student’s own classes (on device). "does csci 201 conflict with my schedule", "can i fit math 225 in". course; term?',
+  F('course.conflict', 'Whether a USC course’s lecture times clash with your own classes (on device). "does csci 201 conflict with my schedule", "can i fit math 225 in". course; term?',
     ['course', 'term'], function (a) {
       if (!signedIn()) return needSignIn();
       return courseOr(a, function (c, term) {
@@ -436,7 +436,7 @@
     return md;
   }
   var PLACE_Q = /\b(open|close|closes|closed|closing|hours?|opens?|opening)\b/;
-  F('place.hours', 'Hours of a campus place on a day, and open/closed now (dining halls, cafes, libraries, gyms, health, offices). "is evk open", "what time does the village gym close", "leavey hours saturday". place; day? today|tomorrow|weekday|YYYY-MM-DD',
+  F('place.hours', 'Hours of a campus place on a day, and open/closed now (dining halls, cafes, libraries, gyms, health, offices). "is evk open", "what time does the village gym close". place; day? today|tomorrow|weekday|YYYY-MM-DD',
     ['place', 'day'], function (a) {
       var ps = findPlaces(a.place); if (!ps.length) return noPlace(a.place);
       var day = dayArg(a.day);
@@ -510,7 +510,7 @@
       var ps = findPlaces(m[1]); return ps.length === 1 ? { place: ps[0].id } : null;
     });
 
-  F('place.contact', 'Phone, website and email for a campus place or office from USC pages. "phone number for the health center", "how do i contact the bookstore", "financial aid phone". place',
+  F('place.contact', 'Phone, website and email for a campus place or office. "phone number for the health center", "how do i contact the bookstore", "financial aid phone". place',
     ['place'], function (a) {
       var o = officeFind(a.place); if (o) return officeAnswer(o, 'contact');
       var ps = findPlaces(a.place); if (!ps.length) return noPlace(a.place);
@@ -529,7 +529,7 @@
       return [bot('**' + p.name + '**\n\n' + (p.desc || '') + ((p.features || []).length ? '\n\n' + list(p.features, 8) : '') + ((p.facts || []).length ? '\n\n' + list(p.facts, 5) : ''), pSrc(p), [say('Is it open?', 'is ' + p.name + ' open')])];
     });
 
-  F('place.nearest', 'Nearest campus place of a kind to you, with walking time: restroom, food, coffee, library, gym, blue light, bus stop, parking. "closest bathroom", "nearest place to eat", "nearest blue light phone". cat',
+  F('place.nearest', 'Nearest campus place of a kind to you, with walking time: restroom, food, coffee, library, gym, blue light, bus stop, parking. "closest bathroom", "nearest place to eat". cat',
     ['cat'], function (a) {
       var t = norm(a.cat), c = /bath|rest|toilet/.test(t) ? 'restroom' : /blue|emergency phone|safety/.test(t) ? 'safety' : /bus|shuttle|stop|metro|train/.test(t) ? 'transit' : /park/.test(t) ? 'parking' : /gate|entrance/.test(t) ? 'gate' : catOf(t) || 'dining';
       var ps = (TH.PLACES || []).filter(function (p) { return inCat(p, c); });
@@ -539,11 +539,11 @@
       var top = ps.slice(0, 3).map(function (p) { var r = null; try { r = TH.route(me, p); } catch (e) { r = null; } var st = p.hours ? TH.status(p, now()) : null; return '**' + p.name + '**' + (r && r.minutes ? ' · ~' + r.minutes + ' min walk' : '') + (st ? ' · ' + (st.open ? 'open' : 'closed') + ' now' : ''); });
       return [bot('Nearest to you (' + (me.short || me.label) + '):\n' + list(top) + '\n\n_Walking times are estimates from the campus map._', pSrc(ps[0]), [go('Walk me there', 'map', ps[0].id)])];
     }, function (t) {
-      var m = /^(?:wheres |where is |where are )?(?:the )?(?:closest|nearest|close by|nearby) (bathroom|restroom|toilet|blue light|blue light phone|bus stop|place to eat|food|coffee|library|gym|parking|parking structure|gate|entrance)s?(?: near me| to me| around here)?$/.exec(t) || /^(?:where is|wheres) (?:a|the) (bathroom|restroom)(?: near me| nearby| around here)?$/.exec(t);
+      var m = /^(?:wheres |where is |where are |whats |what is )?(?:the )?(?:closest|nearest|close by|nearby) (bathroom|restroom|toilet|blue light|blue light phone|bus stop|place to eat|food|coffee|library|gym|parking|parking structure|gate|entrance)s?(?: near me| to me| around here)?$/.exec(t) || /^(?:where is|wheres) (?:a|the) (bathroom|restroom)(?: near me| nearby| around here)?$/.exec(t);
       return m ? { cat: m[1] } : null;
     });
 
-  F('place.list', 'List campus places of a kind from the map data: dining halls, cafes, libraries, gyms, offices, parking structures, landmarks, restrooms, gates. "list all dining halls", "what libraries are there", "landmarks on campus". cat',
+  F('place.list', 'List campus places of a kind: dining halls, cafes, libraries, gyms, offices, parking structures, landmarks, restrooms, gates. "list all dining halls", "what libraries are there". cat',
     ['cat'], function (a) {
       var t = norm(a.cat), c = /hall/.test(t) && /din/.test(t) ? 'hall' : /land|statue|sight|museum/.test(t) ? 'landmark' : /park/.test(t) ? 'parking' : /gate|entrance/.test(t) ? 'gate' : /bath|rest/.test(t) ? 'restroom' : catOf(t) || 'dining';
       var ps = (TH.PLACES || []).filter(function (p) { return c === 'hall' ? p.hall || (p.tags || []).indexOf('Dining hall') >= 0 : inCat(p, c); });
@@ -559,6 +559,7 @@
       return [bot('From **' + (from ? from.name : (TH.ME.short || 'you')) + '** to **' + to.name + '**: about **' + r.minutes + ' min** walking (' + (r.meters / 1609).toFixed(2) + ' mi).\n\n_Estimate from the campus map’s walking paths._', pSrc(to), [go('Walk me there', 'map', to.id)])];
     }, function (t, raw) {
       var m = /^how (?:long|far)(?: is it| does it take)?(?: to walk)? (?:to|from) (.{3,30}?)(?: (?:to|from) (.{3,30}))?(?: walking| on foot)?$/.exec(t);
+      var m2 = !m && /^how far (?:away )?is (?:the )?(.{3,30}?)(?: from (?:me|here))?$/.exec(t); if (m2) { var p2 = findPlaces(m2[1]); return p2.length ? { to: p2[0].id } : null; }
       if (!m) return null; var a1 = findPlaces(m[1]); if (!a1.length) return null;
       if (m[2]) { var b1 = findPlaces(m[2]); if (!b1.length) return null; return /^how (long|far)( is it| does it take)?( to walk)? from/.test(t) ? { to: b1[0].id, from: a1[0].id } : { to: a1[0].id, from: b1[0].id }; }
       return { to: a1[0].id };
@@ -572,7 +573,7 @@
       return [bot('**Dining halls** · ' + day.label + ':\n' + list(halls().map(function (p) { return '**' + p.name + '**: ' + rangesTxt(hoursOn(p, day.d)) + (day.today ? ' · ' + (TH.status(p, now()).open ? 'open now' : 'closed now') : ''); })) + '\n\nAll three take meal swipes (all-you-care-to-eat).' + (hoursOn(halls()[0], day.d) == null ? '\n\n_' + halls()[0].hoursNote + '_' : ''), [SRC.hours], [go('Order ahead', 'order')])];
     }, function (t) { return /\b(dining halls?|dhs?)\b/.test(t) && /\b(open|hours|close|closing|closed)\b/.test(t) && !/\b(evk|parkside|village)\b/.test(t) ? { day: (/\b(tomorrow|saturday|sunday|monday|tuesday|wednesday|thursday|friday)\b/.exec(t) || [])[1] } : null; });
 
-  F('dining.meals', 'Breakfast/lunch/dinner times at USC dining halls (only open–close times are published). "when is breakfast at evk", "what time is dinner at parkside", "brunch hours". meal?; place?',
+  F('dining.meals', 'Breakfast/lunch/dinner times at USC dining halls (only open–close times are published). "when is breakfast at evk", "what time is dinner at parkside". meal?; place?',
     ['meal', 'place'], function (a) {
       var ps = a.place ? findPlaces(a.place).filter(function (p) { return p.cat === 'dining'; }) : halls(); if (!ps.length) ps = halls();
       return [bot('USC Hospitality posts only **open and close times**, not separate breakfast, lunch and dinner periods. Today:\n' + list(ps.map(function (p) { return '**' + p.name + '**: ' + rangesTxt(hoursOn(p, now())); })) + '\n\nEach dining hall serves continuously between those times; the menu changes through the day.', [SRC.hours], ps[0].menuUrl ? [{ label: 'Menu', value: '@go:map:' + ps[0].id, kind: '' }] : [])];
@@ -585,7 +586,7 @@
       return [bot('**USC meal plans** (per semester):\n' + list(L.map(function (m) { return '**' + m.name + '** · ' + money(m.price) + ': ' + m.short + (m.note ? ' _' + m.note + '_' : ''); }), 10), [SRC.meal, { url: 'https://mycard.usc.edu/meal-plans/', title: 'Meal Plans – USCard Services' }])];
     });
 
-  F('dining.dollars', 'How Dining Dollars work: add-on blocks, discount, where they work, meal-plan change deadline. "can i buy more dining dollars", "where can i use dining dollars", "meal plan change deadline". topic?',
+  F('dining.dollars', 'How Dining Dollars work: add-on blocks, discount, where they work, meal-plan change deadline. "can i buy more dining dollars", "where can i use dining dollars". topic?',
     ['topic'], function () {
       var Pl = TA.POLICY || {}, md = '**Dining Dollars**\n' + list([
         'Add-on blocks: ' + (Pl.ddBlocks || []).map(money).join(' or '),
@@ -596,7 +597,7 @@
       return [bot(md, [{ url: 'https://mycard.usc.edu/meal-plans/', title: 'Meal Plans – USCard Services' }, SRC.meal])];
     });
 
-  F('dining.swipes', 'Where meal swipes work (dining halls) vs. Dining Dollars / USCard discretionary (retail). "where can i use meal swipes", "does seeds take swipes", "can i use swipes at the village". place?',
+  F('dining.swipes', 'Where meal swipes work (dining halls) vs. Dining Dollars / USCard discretionary (retail). "where can i use meal swipes", "does seeds take swipes". place?',
     ['place'], function (a) {
       var ps = a.place ? findPlaces(a.place) : [];
       if (ps.length) { var p = ps[0], sw = (p.tags || []).indexOf('Meal swipes') >= 0; return [bot('**' + p.name + '** ' + (sw ? '**takes meal swipes**.' : 'is **not** listed as taking meal swipes' + (p.cat === 'dining' ? '; pay with Dining Dollars, USCard discretionary or card' + (p.village ? ' where accepted' : '') + '.' : '.')) + ((p.tags || []).length ? '\n\nTags: ' + p.tags.join(' · ') : ''), pSrc(p))]; }
@@ -618,7 +619,7 @@
       return [bot('Menus change every day, so I don’t carry them. Posted menus:\n' + list(ps.map(function (p) { return '**' + p.name + '**: ' + (p.menuUrl || (TH.MENU_URLS || {})[p.id] || p.url); })), ps.map(function (p) { return srcOf(p.menuUrl || (TH.MENU_URLS || {})[p.id] || p.url, p.name); }).slice(0, 3))];
     }, function (t, raw) { if (!/\b(menu|whats for (lunch|dinner|breakfast)|whats being served|serving)\b/.test(t)) return null; var ps = findPlaces(raw).filter(function (p) { return p.cat === 'dining'; }); return ps.length ? { place: ps[0].id } : null; });
 
-  F('dining.gameday', 'Dining and campus changes on the next home football game day (hours, Lyft, shuttle, parking, clear bag). "game day hours", "is evk open on game day", "what changes for the maryland game". topic?',
+  F('dining.gameday', 'Dining and campus changes on the next home football game day (hours, Lyft, shuttle, parking, clear bag). "game day hours", "is evk open on game day". topic?',
     ['topic'], function () {
       var g = (TH.SAFETY || {}).gameDay || {}, T = (TH.TRANSPORT || {}).gameDay || {}, days = TH.gameDays ? TH.gameDays() : [];
       return [bot('**Next home game:** ' + (g.nextHomeGame || days[0] || 'not listed') + '\n\n**What changes:**\n' + list((g.changes || T.changes || []).concat(T.shuttle ? [T.shuttle] : [])) + (g.clearBag ? '\n\n**Clear bag rule:** ' + g.clearBag : ''), [SRC.gameday, SRC.hours])];
@@ -646,7 +647,7 @@
     if (what === 'hours' && o.hours) md += '\n\nWeek: ' + ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(function (k) { var v = o.hours[k]; return cap(k) + ' ' + (v === 'closed' ? 'closed' : v ? v.split(', ').map(function (r) { var q = r.split('-'); return hm(q[0]) + '–' + hm(q[1]); }).join(', ') : '?'); }).join(' · ');
     return [bot(md, (o.src || []).map(function (u) { return srcOf(u, o.name); }), p ? [go('See on the map', 'map', p.id)] : [])];
   }
-  F('office.info', 'Contact, location and hours of a USC office: financial aid, career center, OSAS, ITS help desk, housing, transportation, mail stop, packages, lost and found, bookstore, student health, pharmacy, housing maintenance, OCRC. "financial aid office hours", "where is the career center", "its help desk number". office; what? contact|hours|where; day?',
+  F('office.info', 'Contact, location and hours of a USC office: financial aid, career center, OSAS, ITS help desk, housing, transportation, mail stop, packages, lost and found, bookstore, student health, pharmacy, housing maintenance, OCRC. "financial aid office hours", "where is the career center". office; what? contact|hours|where; day?',
     ['office', 'what', 'day'], function (a) {
       var o = officeFind(a.office);
       if (!o) { var ps = findPlaces(a.office).filter(function (p) { return p.cat === 'service' || p.cat === 'health'; }); if (ps.length) return [bot(hoursMd(ps[0], dayArg(a.day)) + (ps[0].phone ? '\nPhone: **' + ps[0].phone + '**' : ''), pSrc(ps[0]))]; return [bot('I don’t have contact details for **' + (a.office || 'that office') + '**. Offices I carry: ' + OFFICES.map(function (x) { return x.name; }).join(', ') + '.')]; }
@@ -672,7 +673,7 @@
     else { var h3 = hits.filter(function (b) { return !/^(us|hsc)-upc/.test(b.id); }); if (h3.length) hits = h3; }
     return hits;
   }
-  F('bus.next', 'Next USC bus departures (published schedules): UPC ↔ Union Station, Intercampus Shuttle to HSC, weekend shuttle. "when is the next bus to union station", "next shuttle to hsc", "when does the tram come". route?; at? time',
+  F('bus.next', 'Next USC bus departures (published schedules): UPC ↔ Union Station, Intercampus Shuttle to HSC, weekend shuttle. "when is the next bus to union station", "next shuttle to hsc". route?; at? time',
     ['route', 'at'], function (a) {
       var bs = busFind(a.route), d = now(), m = minOf(d), out = [];
       bs.forEach(function (b) { var dep = (TH.busUpcoming ? TH.busUpcoming(b.id, 0, d, m) : []).slice(0, 3); out.push('**' + b.name + '** from ' + (b.stops[0] || {}).name + ': ' + (dep.length ? dep.map(function (x) { return fmtMin(x.at) + (x.end ? '–' + fmtMin(x.end) + ' (Est.)' : '') + (x.at - m < 60 ? ' (in ' + (x.at - m) + ' min)' : ''); }).join(', ') : 'no more trips today' + (b.days && b.days.indexOf(d.getDay()) < 0 ? ' (doesn’t run today)' : ''))); });
@@ -693,19 +694,19 @@
       return [bot(bs.map(function (b) { var t = (TH.busDepartures ? TH.busDepartures(b.id, 0, day.d) : []); return '**' + b.name + '** · ' + day.label + ' from ' + (b.stops[0] || {}).name + ':\n' + (t.length ? t.map(function (x) { return fmtMin(x.at) + (x.end ? '–' + fmtMin(x.end) + ' (Est.)' : ''); }).join(', ') : 'no service'); }).join('\n\n') + '\n\n_Published Fall 2026 schedule._', [SRC.bus])];
     });
 
-  F('lyft.status', 'Is free USC Lyft running now, its hours (UPC 7 PM–2 AM; HSC weekdays), and game-day timing. "is usc lyft running", "what time does free lyft start", "lyft hours". campus? upc|hsc',
+  F('lyft.status', 'Is free USC Lyft running now, its hours (UPC 7 PM–2 AM; HSC weekdays), and game-day timing. "is usc lyft running", "what time does free lyft start". campus? upc|hsc',
     ['campus'], function () {
       var L = T().lyft || {}, o = TH.lyftOpen ? TH.lyftOpen(now()) : null;
       return [bot((o === true ? '🟢 **Free USC Lyft is running now.**' : o === null ? '🟡 **It’s a game day:** free Lyft starts 5 hours after kickoff.' : '🔴 **Free USC Lyft isn’t running right now.**') + '\n' + list(['UPC: **' + (L.hoursText || '7 PM – 2 AM daily') + '**', L.hsc ? 'HSC: ' + L.hsc : null, L.gameDay ? 'Game days: ' + L.gameDay : null, 'Cost: ' + (L.cost || 'free if the ride qualifies')]), [SRC.lyft], [go('Request a ride', 'lyft')])];
     }, function (t) { return /\b(lyft|free ride|free rides|safe ride|saferide)\b/.test(t) && /\b(running|working|available|open|on|start|starts|hours|what time|when|now)\b/.test(t) && !/\b(rules|zone|boundary|cover|limit|cap|how many|cost|order|get me|call|request|book)\b/.test(t) ? {} : null; });
 
-  F('lyft.rules', 'USC Lyft rules: boundary zone, Shared rides only, monthly cap, what isn’t covered, how to set it up. "where can i take usc lyft", "is lyft free to the airport", "how many free lyft rides". topic?',
+  F('lyft.rules', 'USC Lyft rules: boundary zone, Shared rides only, monthly cap, what isn’t covered, how to set it up. "where can i take usc lyft", "is lyft free to the airport". topic?',
     ['topic'], function () {
       var L = T().lyft || {}, b = L.boundary || {};
       return [bot('**USC Lyft Rides Program**\n' + list([L.eligibility ? 'Who: ' + L.eligibility : null, 'Zone: ' + (b.text || ''), L.limitText || null, 'Cost: ' + (L.cost || '')].concat(L.rules || []), 10), [SRC.lyft])];
     }, function (t) { return /\b(usc )?lyft\b/.test(t) && /\b(rules|zone|boundary|boundaries|cover|covered|limit|cap|how many|how far|airport|lax|where can|setup|set up|not showing|missing)\b/.test(t) ? {} : null; });
 
-  F('metro.info', 'Metro rail near campus (E Line, J Line stations) and how to get to LAX by transit. "closest metro station", "how do i take the train to lax", "which metro line goes to usc". topic?',
+  F('metro.info', 'Metro rail near campus (E Line, J Line stations) and how to get to LAX by transit. "closest metro station", "how do i take the train to lax". topic?',
     ['topic'], function (a) {
       var M = T().metro || {};
       return [bot('**Metro near the University Park Campus:**\n' + list((M.stations || []).map(function (s) { return s.name + ' · ' + s.line; })) + (M.toLAX ? '\n\n**To LAX:** ' + M.toLAX : '') + '\n\n' + (M.note || '') + '\n\nRide free with a **Metro U-Pass**.', [SRC.upass, srcOf('https://www.metro.net/', 'LA Metro')], [go('Metro on the map', 'map', 'transit')])];
@@ -723,7 +724,7 @@
   F('metrolink.info', 'Metrolink student discount (50% off) and how to set it up. "metrolink student discount", "does u-pass work on metrolink". (no args)',
     [], function () { return [bot('**Metrolink:** ' + (T().metrolink || ''), [SRC.metrolink])]; });
 
-  F('parking.info', 'Parking at USC: student permit types and prices, visitor daily/hourly rates, structures, game-day parking. "how much is a parking permit", "where can visitors park", "cheapest parking near usc". topic?',
+  F('parking.info', 'Parking at USC: student permit types and prices, visitor daily/hourly rates, structures, game-day parking. "how much is a parking permit", "where can visitors park". topic?',
     ['topic'], function (a) {
       var PP = (TA.POLICY || {}).parking || {}, TP = T().parking || {}, t = norm(a.topic);
       var md = '';
@@ -732,9 +733,9 @@
       md += '**Visitors / daily:**\n' + list(Object.keys(R).map(function (k) { return cap(k) + ': ' + R[k]; }), 6);
       md += '\n\n**Structures:** ' + (TP.structures || []).map(function (id) { return (P(id) || {}).name; }).filter(Boolean).join(', ');
       return [bot(md, [SRC.parking, { url: 'https://transnet.usc.edu/index.php/daily-and-hourly-parking/', title: 'Daily and Hourly Parking – USC Transportation' }], [go('Parking on the map', 'map', 'parking')])];
-    });
+    }, function (t) { return /^(?:usc |student )?(?:parking )?permit (?:prices?|costs?|rates?)$|^how much (?:is|are|does) (?:a |the )?(?:student )?parking permits?(?: cost)?$|^parking permit (?:prices?|costs?)(?: at usc)?$/.test(t) ? {} : null; });
 
-  F('bike.info', 'Bikes, scooters and skateboards: required DPS registration, parking/racks, bike share stations. "do i need to register my bike", "where can i park my bike", "metro bike share near usc". topic?',
+  F('bike.info', 'Bikes, scooters and skateboards: required DPS registration, parking/racks, bike share stations. "do i need to register my bike", "where can i park my bike". topic?',
     ['topic'], function () {
       var Bk = T().bikes || {};
       return [bot('**Bikes at USC**\n' + list([Bk.text, Bk.parking, Bk.bikeShare ? 'Metro Bike Share near UPC: ' + (Bk.bikeShare.stations_near_UPC || []).join(', ') + '. ' + (Bk.bikeShare.note || '') : null], 5), [SRC.bikes], [say('Nearest bike rack', 'nearest bike rack')])];
@@ -757,7 +758,7 @@
 
   // ============================================================================================ SAFETY (information only; crisis handling stays first in Trojan Assist)
   var SF = function () { return TH.SAFETY || {}; };
-  F('safety.contacts', 'USC safety and support phone numbers: DPS emergency and non-emergency (UPC/HSC), Student Health 24/7, lost and found, housing maintenance. "dps phone number", "non emergency number", "hsc dps". topic?',
+  F('safety.contacts', 'USC safety and support phone numbers: DPS emergency and non-emergency (UPC/HSC), Student Health 24/7, lost and found, housing maintenance. "dps phone number", "non emergency number". topic?',
     ['topic'], function (a) {
       var t = norm(a.topic), ph = SF().phones || [];
       var sel = t ? ph.filter(function (p) { return words(t).some(function (w) { return w.length > 2 && norm(p.label).indexOf(w) >= 0; }); }) : [];
@@ -765,13 +766,13 @@
       return [bot('🚨 **Emergency: call 911 or DPS (213) 740-4321.**\n\n' + list(L.map(function (p) { return p.label + ': **' + p.number + '**' + (p.note && !/^http/.test(p.note) ? ' · ' + p.note : ''); }), 16), [SRC.dps])];
     }, function (t) { return /\b(dps|public safety|campus police)\b/.test(t) && /\b(phone|number|call|contact)\b/.test(t) && !/\b(i need|help me|someone|now)\b/.test(t) ? {} : null; });
 
-  F('campus.access', 'Campus access rules: open to the public by day, controlled access 9 PM–6 AM (only McCarthy and McClintock gates), guest registration. "when does campus close", "can my friend come on campus at night", "which gates are open after 9". topic?',
+  F('campus.access', 'Campus access rules: open to the public by day, controlled access 9 PM–6 AM (only McCarthy and McClintock gates), guest registration. "when does campus close", "can my friend come on campus at night". topic?',
     ['topic'], function () {
       var A = SF().access || {}, g = (A.after9 || []).map(P).filter(Boolean).map(function (p) { return p.name; });
       return [bot('**Campus access (UPC)**\n' + list([A.daytime, 'From **' + (A.idCheck || '9 PM – 6 AM') + '**: controlled access; open gates: ' + (g.join(' and ') || 'McCarthy and McClintock') + '.', 'Guests after hours: ' + (A.guests || 'register them in advance') + '.']), [SRC.access], [say('Register a guest', 'register a guest for tonight'), say('Which gates are open?', 'which gates are open')])];
     }, function (t) { return /\b(campus (close|closes|closing|access|hours)|when does campus close|is campus open|campus open to (the )?public|after 9 ?pm|after hours access)\b/.test(t) && !/\b(register|sign in my|guest pass for)\b/.test(t) ? {} : null; });
 
-  F('safety.programs', 'USC safety programs and apps: LiveSafe (SafeWalk), TrojansAlert, free Lyft, DPS escorts, Security Ambassadors (yellow jackets), blue light phones. "safe walk", "how do i get an escort at night", "what is livesafe", "who are the yellow jackets". program?',
+  F('safety.programs', 'USC safety programs and apps: LiveSafe (SafeWalk), TrojansAlert, free Lyft, DPS escorts, Security Ambassadors (yellow jackets), blue light phones. "safe walk", "how do i get an escort at night", "what is livesafe". program?',
     ['program'], function (a) {
       var t = norm(a.program), Pg = SF().programs || [];
       var sel = Pg.filter(function (p) { return t && (norm(p.name).indexOf(t) >= 0 || t.indexOf(norm(p.name)) >= 0 || (/walk|escort/.test(t) && /livesafe|escort|lyft/i.test(p.name + p.text))); });
@@ -800,7 +801,7 @@
   function rel(k) { var d = iso2date(String(k).slice(0, 10)), n = Math.round((d - dayStart(now())) / 864e5); return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n > 0 ? 'in ' + n + ' days' : n === -1 ? 'yesterday' : Math.abs(n) + ' days ago'; }
   function calRow(k, label) { return label + ': **' + TA.fmtDate(k) + '** (' + rel(k) + ')'; }
   var CALK = { classesBegin: 'Classes begin', lastAddRefund: 'Last day to add / drop for a refund', lastDropNoW: 'Last day to drop without a W', lastWithdraw: 'Last day to withdraw (with a W)', classesEnd: 'Last day of classes', settle: 'Fees due (settlement)', apptAvailable: 'Registration appointments posted', regBegins: 'Registration begins' };
-  F('cal.deadlines', 'Key academic deadlines for a term (session 001): add/drop, refund, drop without W, withdraw, classes begin/end, finals. "last day to drop a class", "when is the withdraw deadline", "spring 2027 add deadline". term?; which? add|drop|withdraw|start|end|finals|registration',
+  F('cal.deadlines', 'Key academic deadlines for a term (session 001): add/drop, refund, drop without W, withdraw, classes begin/end, finals. "last day to drop a class", "when is the withdraw deadline". term?; which? add|drop|withdraw|start|end|finals|registration',
     ['term', 'which'], function (a) {
       var id = termFor(a.term) || '20263', c = CAL()[id] || {}, w = norm(a.which);
       var keys = Object.keys(CALK).filter(function (k) { return c[k]; });
@@ -813,13 +814,13 @@
       return { term: /\bspring\b/.test(t) ? 'spring' : undefined, which: (/(withdraw|drop|add|refund)/.exec(t) || [])[1] };
     });
 
-  F('cal.term', 'When a semester starts and ends, and how many days/weeks are left. "when does spring semester start", "when is the last day of classes", "how many weeks left in the semester". term?',
+  F('cal.term', 'When a semester starts and ends, and how many days/weeks are left. "when does spring semester start", "when is the last day of classes". term?',
     ['term'], function (a) {
       var id = termFor(a.term) || (dk(now()) > (CAL()['20263'] || {}).classesEnd ? '20271' : '20263'), c = CAL()[id] || {};
       return [bot('**' + c.label + '**\n' + list([calRow(c.classesBegin, 'Classes begin'), calRow(c.classesEnd, 'Classes end'), c.finals ? 'Finals: **' + c.finals + '**' : null]), [SRC.cal])];
     }, function (t) { return /\b(when (does|do|is) (the )?(spring|fall|next|this)? ?(semester|term|classes|school) (start|begin|end|over)|first day of (classes|school|spring|fall)|last day of (classes|school|the semester)|weeks? left in the (semester|term)|when is the semester over)\b/.test(t) ? { term: /\bspring|next\b/.test(t) ? 'spring' : /\bfall|this\b/.test(t) ? 'fall' : undefined } : null; });
 
-  F('cal.holidays', 'University holidays and recesses (no classes) for Fall 2026 and Spring 2027, and whether a given day has class. "is there class on veterans day", "university holidays this semester", "do we have school on mlk day". day?',
+  F('cal.holidays', 'University holidays and recesses (no classes) for Fall 2026 and Spring 2027, and whether a given day has class. "is there class on veterans day", "university holidays this semester". day?',
     ['day'], function (a) {
       var Hd = (TA.POLICY || {}).holidays || {};
       if (a.day) { var dd = dayArg(a.day), k = dk(dd.d); return [bot('**' + TA.fmtDate(k) + '**: ' + (Hd[k] ? '**' + Hd[k] + '** — university holiday, no classes.' : 'not a university holiday, so classes meet as scheduled (check your instructor for cancellations).'), [SRC.cal])]; }
@@ -835,7 +836,7 @@
       return [bot(md, [SRC.finals])];
     });
 
-  F('cal.countdown', 'How many days until a date or campus milestone (Thanksgiving, finals, last day of classes, spring semester, next home game). "how many days until thanksgiving break", "days until finals", "countdown to winter break". what',
+  F('cal.countdown', 'How many days until a date or campus milestone (Thanksgiving, finals, last day of classes, spring semester, next home game). "how many days until thanksgiving break", "days until finals". what',
     ['what'], function (a) {
       var t = norm(a.what), c = CAL(), Hd = (TA.POLICY || {}).holidays || {}, k = null, lab = '';
       if (/thanksgiving/.test(t)) { k = Object.keys(Hd).sort().filter(function (x) { return /thanksgiving/i.test(Hd[x]); })[0]; lab = 'Thanksgiving recess'; }
@@ -849,13 +850,13 @@
       return [bot('**' + lab + '**: ' + TA.fmtDate(k) + ' · **' + rel(k) + '**.', [/game/.test(lab) ? SRC.gameday : SRC.cal])];
     }, function (t) { var m = /\b(?:how many (?:days|weeks)|how long) (?:until|till|til|before|left until) (.{3,40})$/.exec(t) || /\bcountdown (?:to|until) (.{3,40})$/.exec(t); return m && /\b(thanksgiving|finals?|winter|break|spring|semester|game|last day)\b/.test(m[1]) ? { what: m[1] } : null; });
 
-  F('cal.registration', 'Spring 2027 registration timeline (appointments posted, registration begins, D-clearance removal note) and the student’s own appointment. "when does registration open", "when can i register for spring", "registration dates". (no args)',
+  F('cal.registration', 'Spring 2027 registration timeline (appointments posted, registration begins, D-clearance removal note) and your own appointment. "when does registration open", "when can i register for spring". (no args)',
     [], function () {
       var c = CAL()['20271'] || {}, mine = signedIn() && D().academics && D().academics.regAppointment;
       return [bot('**Spring 2027 registration**\n' + list([c.apptAvailable ? calRow(c.apptAvailable, 'Registration appointments posted') : null, c.regBegins ? calRow(c.regBegins, 'Registration begins') : null, c.lastAddRefund ? calRow(c.lastAddRefund, 'Last day to add') : null, mine ? 'Your appointment: **' + fdt(mine) + '** (on this device)' : null]), [SRC.cal, { url: 'https://arr.usc.edu/web-registration/', title: 'Web Registration – USC Registrar' }])];
     }, function (t) { return /\b(when (does|is) (spring )?registration( open| start| begin)?|registration dates?|when can i (start )?register(ing)? for (spring|next semester|classes))\b/.test(t) && !/\bmy\b/.test(t) ? {} : null; });
 
-  F('cal.tuition', 'Tuition and mandatory fees for the year (flat rate 12–18 units, per-unit, fees) and the payment plan. "how much is tuition", "cost per unit", "what fees do i pay", "payment plan fee". topic?',
+  F('cal.tuition', 'Tuition and mandatory fees for the year (flat rate 12–18 units, per-unit, fees) and the payment plan. "how much is tuition", "cost per unit", "what fees do i pay". topic?',
     ['topic'], function () {
       var Pl = TA.POLICY || {}, Tu = Pl.tuition || {}, Fe = Pl.fees || {}, Pp = Pl.paymentPlan || {};
       return [bot('**Tuition (per semester, 2026–27)**\n' + list(['Flat rate (' + Tu.flatMin + '–' + Tu.flatMax + ' units): **' + money(Tu.flat) + '**', 'Per unit (outside flat range): **' + money(Tu.unit) + '**', 'Max units without approval: ' + Pl.maxUnits]) + '\n\n**Mandatory fees:**\n' + list(Object.keys(Fe).map(function (k) { return cap(k.replace(/([A-Z])/g, ' $1').toLowerCase()) + ': ' + money(Fe[k]); })) + (Pp.fee ? '\n\n**Payment plan:** ' + money(Pp.fee) + ' fee, ' + Pp.installments + ' installments.' : ''), [SRC.tuition, SRC.fee])];
@@ -865,14 +866,14 @@
     [], function () { var Tr = (TA.POLICY || {}).transcripts || {}; return [bot('**Official transcripts:**\n' + list(['Electronic PDF: ' + money(Tr.pdf), 'Paper: ' + money(Tr.paper), 'Overnight: ' + money(Tr.overnight), 'International express: ' + money(Tr.intlExpress)]), [{ url: 'https://arr.usc.edu/transcripts/', title: 'Transcripts – USC Registrar' }])]; },
     function (t) { return /\btranscripts?\b/.test(t) && /\b(cost|how much|fee|price)\b/.test(t) ? {} : null; });
 
-  F('uscard.info', 'USCard (student ID) basics: replacement fee, where to get it, phone, reporting a lost card. "how much to replace my uscard", "lost my student id what do i do", "uscard office phone". topic?',
+  F('uscard.info', 'USCard (student ID) basics: replacement fee, where to get it, phone, reporting a lost card. "how much to replace my uscard", "lost my student id what do i do". topic?',
     ['topic'], function () { var U = (TA.POLICY || {}).uscard || {}; return [bot('**USCard**\n' + list(['Replacement fee: **' + money(U.replacementFee) + '**', 'USCard Services: **' + U.phone + '**', 'Lost card after hours: DPS ' + U.dpsPhone, 'You can deactivate a lost card and add funds in the USCard portal.']), [SRC.uscard, { url: 'https://mycard.usc.edu/contact/', title: 'Contact – USCard Services' }], [say('Replace my USCard', 'replace my uscard')])]; },
     function (t) { return /\b(uscard|usc card|student id|id card)\b/.test(t) && /\b(replace|replacement|lost|cost|fee|phone|office|how much)\b/.test(t) && !/\b(order|request|get me|for me|my balance|on my|in my|balance)\b/.test(t) ? {} : null; });
 
   // ============================================================================================ MORE SAFETY / PARKING (data/research/facts safety.json, places.json)
   var EXTRA = {"night_rides_and_escorts": {"lyft": "Free USC Lyft Shared rides 7 PM-2 AM daily inside the UPC geofence (HSC 5 PM-2 AM Mon-Fri). See transport.json lyft.", "after_lyft_hours": "From 2 AM to 6 AM DPS may be able to provide an escort within the designated boundaries (call (213) 740-6000).", "blue_light_escort": "Blue light phones can be used to request an escort; USC Safety says \"an escort will meet you within minutes.\"", "livesafe_safewalk": "LiveSafe SafeWalk lets friends or family virtually escort you.", "campus_cruiser": "Suspended.", "src": ["https://transnet.usc.edu/", "https://safety.usc.edu/services/"]}, "security_ambassadors": {"name": "Security Ambassadors (\"Yellow Jackets\")", "who": "Unarmed security officers from Allied Universal Security, contracted by USC; bright yellow jackets.", "what": "Posted on street corners in neighborhoods around campus, especially near USC-owned housing; eyes and ears of DPS with a direct line to DPS.", "posts_note": "DPS does not publish post locations or shift hours (\"routinely evaluates where Yellow Jackets are posted\"). The current Trojan Hub posts and \"6 PM-3 AM\" hours are unverified.", "src": ["https://dps.usc.edu/safety-tips/getting-around/", "https://dps.usc.edu/contact/report/"]}, "blue_light_phones": {"count": "nearly 300", "where": "Around UPC and HSC, in many buildings, and on each level of every parking structure", "how_it_works": "Connects directly to DPS 24-hour communications center and identifies the phone location even if you cannot speak. Use to request help or an escort, report suspicious activity or a crime. Emergencies only.", "locations_note": "Exact coordinates not obtained: the PDF host is not on the allowlist and the OSM Overpass mirror timed out. The map research task may supply them from Concept3D.", "src": ["https://dps.usc.edu/services/blue-light-phones/"]}, "reporting": {"ways": ["Call DPS 24/7", "LiveSafe app (incl. anonymous)", "Blue light phones", "Campus Security Authorities", "Crime Stoppers (completely anonymous)"], "noise_complaints": "DPS non-emergency (213) 740-6000", "src": ["https://dps.usc.edu/contact/report/", "https://dps.usc.edu/loud-or-unruly-gathering-ordinance/"]}, "dps": {"operates": "24 hours a day, 365 days a year; patrols ~2.5 sq mi around UPC and ~1 sq mi around HSC, including off-campus neighborhoods.", "stations": [{"name": "UPC station", "address": "3667 McClintock Ave, Los Angeles, CA 90089 (Parking Structure A, PSA)"}, {"name": "USC Village sub-station", "address": "3131 South Hoover Street, Suite 1300"}, {"name": "HSC station", "address": "2001 Soto Street, Los Angeles, CA 90032"}], "community_service_officers": "Patrol USC Housing facilities from 8 PM until dawn (24 h during semester and spring breaks).", "src": ["https://dps.usc.edu/contact/", "https://ask.usc.edu/s/article/000002171"]}, "village": {"text": "USC Village (Jefferson Blvd between Hoover St and McClintock Ave) has Trader Joe's, Target, a FedEx Office Mail Center (929 W Jefferson Blvd Suite 1670), an Amazon hub with lockers, and other restaurants. Of the Village restaurants, USCard discretionary is accepted at City Tacos and Rock & Reilly's. Store hours for these private tenants were NOT found on allowed hosts.", "src": ["https://village.usc.edu/about/facts/", "https://mycard.usc.edu/accepted-locations/"]}, "parking": [{"id": "p-mccarthy", "name": "McCarthy Way Parking Structure (PSX)", "address": "620 McCarthy Way, Los Angeles, CA 90089", "access": "Via McCarthy Way Entrance (24/7, staffed)", "public_parking": "$20/day (Text2Park adds one-time $0.50; Pay-by-Plate station in NW corner charges no fee)", "permits": ["UPC Gold"], "src": ["https://transnet.usc.edu/index.php/contact-us/", "https://transnet.usc.edu/index.php/daily-and-hourly-parking/"]}, {"id": "p-figueroa", "name": "Figueroa St. Structure", "address": "3520 S Figueroa St, Los Angeles CA 90007", "public_parking": "$4/hour (up to 4 h on Text2Park; 5+ h = $20 daily)", "permits": ["UPC Gold"], "hours": "Weekdays 6am-8pm staffed (24 h with USC ID at entrances); weekends/holidays 24 h USC ID access only", "src": ["https://transnet.usc.edu/index.php/about-us/entrance-hours/", "https://transnet.usc.edu/index.php/daily-and-hourly-parking/"]}, {"id": "p-shrine", "name": "USC Shrine Structure", "address": "686 W 32nd St, Los Angeles CA 90007 (alt. entrance, USCard required: 645 W Jefferson Blvd)", "public_parking": "$4/hour", "permits": ["UPC Gold", "USC Village residents park here by permit"], "hours": "Weekdays 6am-6pm; after hours/weekends/holidays 24 h with USC ID at the Jefferson entrance", "src": ["https://transnet.usc.edu/index.php/about-us/entrance-hours/", "https://transnet.usc.edu/index.php/daily-and-hourly-parking/"]}, {"id": "p-grand", "name": "Grand Ave. Structure (formerly USC Parking Center / UPX)", "address": "357 W 35th St, Los Angeles CA 90007 (corner of Jefferson Blvd and Grand Ave)", "public_parking": "Cheapest: $2/hour or $14/day", "permits": ["UPC Cardinal ($477/semester)"], "hours": "Weekdays 6am-6pm; after hours/weekends/holidays 24 h USC ID access only", "src": ["https://transnet.usc.edu/index.php/about-us/entrance-hours/", "https://transnet.usc.edu/index.php/daily-and-hourly-parking/"]}, {"id": "p-flower", "name": "Flower St. Structure", "address": "3701 Flower St, Los Angeles CA 90007", "public_parking": "No general public parking (game days included)", "permits": ["UPC Gold"], "hours": "24 h, USC ID access only (USCard required)", "src": ["https://transnet.usc.edu/index.php/about-us/entrance-hours/", "https://transnet.usc.edu/index.php/gameday/"]}, {"id": "p-jefferson", "name": "Jefferson Structure", "public_parking": "$4/hour after 12 PM", "permits": ["UPC Gold"], "src": ["https://transnet.usc.edu/index.php/daily-and-hourly-parking/", "https://transnet.usc.edu/index.php/parking-rates/"]}, {"id": "p-downey", "name": "Downey Structure", "access": "Downey Way Entrance (Vermont at 36th Pl) per entrance list; not confirmed which entrance serves the structure", "permits": ["UPC Gold"], "src": ["https://transnet.usc.edu/index.php/parking-rates/"]}, {"id": "p-royal", "name": "Royal Street Structure", "permits": ["UPC Gold"], "src": ["https://transnet.usc.edu/index.php/parking-rates/"]}, {"id": "p-psa", "name": "Parking Structure A (PSA)", "address": "3667 McClintock Ave, Los Angeles, CA 90089", "note": "Houses the DPS UPC station. Public parking rates not found.", "src": ["https://dps.usc.edu/contact/"]}, {"id": "p-village", "name": "USC Village underground garage", "address": "Navigate to 3215 South Hoover Street", "public_parking": "Hourly; validated parking available for shoppers. Unpaid/unvalidated parking is an $80 violation. \"First 30 minutes free\" is NOT stated in any source.", "src": ["https://village.usc.edu/map-and-directions/", "https://transnet.usc.edu/index.php/parking-violations/"]}]};
   function exSrc(o, t) { return (o.src || []).map(function (u) { return srcOf(u, t); }); }
-  F('safety.escort', 'Getting home safely at night: free Lyft hours, DPS escort 2–6 AM, blue light escort, LiveSafe SafeWalk. "can dps walk me home", "safe way home at 3am", "night escort". (no args)',
+  F('safety.escort', 'Getting home safely at night: free Lyft hours, DPS escort 2–6 AM, blue light escort, LiveSafe SafeWalk. "can dps walk me home", "safe way home at 3am". (no args)',
     [], function () { var N = EXTRA.night_rides_and_escorts; return [bot('🚨 **In danger now: call 911 or DPS (213) 740-4321.**\n\n' + list([N.lyft, N.after_lyft_hours, N.blue_light_escort, N.livesafe_safewalk]), exSrc(N, 'USC safety services'), [say('Is Lyft running?', 'is usc lyft running')])]; },
     function (t) { return /\b(escort|walk me home|safe ?walk|safe way home|get home safe(ly)?|walking home at night)\b/.test(t) && !/\b(someone|following|scared|afraid|unsafe|now|help me)\b/.test(t) ? {} : null; });
   F('safety.bluelight', 'Blue light emergency phones: how many, where, how they work. "what are blue light phones", "where are the blue lights". (no args)',
@@ -881,12 +882,12 @@
   F('safety.ambassadors', 'Security Ambassadors (“yellow jackets”) around campus: who they are and what they do. "who are the yellow jackets", "security guards in yellow". (no args)',
     [], function () { var A2 = EXTRA.security_ambassadors; return [bot('**' + A2.name + '**\n' + list([A2.who, A2.what, A2.posts_note]), exSrc(A2, 'Getting around – DPS'))]; },
     function (t) { return /\b(yellow jackets?|security ambassadors?)\b/.test(t) ? {} : null; });
-  F('safety.report', 'Ways to report a crime or suspicious activity to USC DPS (including anonymous), and noise complaints. "how do i report a crime", "anonymous tip to dps", "noise complaint number". (no args)',
+  F('safety.report', 'Ways to report a crime or suspicious activity to USC DPS (including anonymous), and noise complaints. "how do i report a crime", "anonymous tip to dps". (no args)',
     [], function () { var R2 = EXTRA.reporting; return [bot('🚨 **Happening now: call 911 or DPS (213) 740-4321.**\n\n**Ways to report to DPS:**\n' + list(R2.ways) + '\n\nNoise complaints: ' + R2.noise_complaints, exSrc(R2, 'Report a crime – DPS'), [say('Report something', 'report a problem')])]; });
   F('safety.dps', 'About USC DPS: hours, patrol area, station addresses, community service officers. "where is the dps station", "does dps patrol off campus". (no args)',
     [], function () { var Dp = EXTRA.dps; return [bot('**USC Department of Public Safety**\n' + list([Dp.operates].concat((Dp.stations || []).map(function (s) { return s.name + ': ' + s.address; })).concat([Dp.community_service_officers])), exSrc(Dp, 'DPS'))]; },
     function (t) { return /\b(where is (the )?dps|dps station|dps (patrol|area)|does dps patrol)\b/.test(t) ? {} : null; });
-  F('parking.structure', 'One parking structure: address, access, public rates, permits, what else is inside. "where is the mccarthy structure", "how much to park at the shrine structure", "royal street structure hours". structure',
+  F('parking.structure', 'One parking structure: address, access, public rates, permits, what else is inside. "where is the mccarthy structure", "how much to park at the shrine structure". structure',
     ['structure'], function (a) {
       var t = ' ' + norm(a.structure) + ' ', L = EXTRA.parking, hit = L.filter(function (p) { return words(p.name).some(function (w) { return w.length > 4 && !/^(parking|structure|street|garage|entrance)$/.test(w) && t.indexOf(' ' + w + ' ') >= 0; }); })[0];
       if (!hit) return [bot('Which structure? ' + L.map(function (p) { return p.name; }).join(', ') + '.', [SRC.parking])];
@@ -916,7 +917,7 @@
   }
   function engageUrl(c) { return c.engage || (c.slug ? 'https://engage.usc.edu/' + c.slug + '/' : null); }
   function meetTxtC(c) { var m = c.meeting; if (!m) return null; return (m.days || []).join('/') + (m.start ? ' ' + TA.fmtTime(m.start) + (m.end ? '–' + TA.fmtTime(m.end) : '') : '') + (m.place ? ' · ' + m.place : '') + (m.note ? ' (' + m.note + ')' : '') + (m.quote ? '\n> “' + m.quote + '”' : ''); }
-  F('club.meets', 'When and where a USC club meets: posted meeting time if the club lists one, else its next EngageSC events. "when does the robotics club meet", "nikkei student union meeting time", "where does dragon boat practice". club',
+  F('club.meets', 'When and where a USC club meets: posted meeting time if the club lists one, else its next EngageSC events. "when does the robotics club meet", "nikkei student union meeting time". club',
     ['club'], function (a) {
       var cs = findClubs(a.club, 3); if (!cs.length) return [bot('I couldn’t find **' + (a.club || 'that club') + '** on EngageSC. Try its full name.', [SRC.engage])];
       return [bot(cs.map(function (c) { var m = meetTxtC(c), ev = clubEvs(c).slice(0, 2); return '**' + c.name + '**\n' + (m ? '- Meets: ' + m : '- No regular meeting time is posted on its EngageSC page.') + (ev.length ? '\n- Next events: ' + ev.map(function (e) { return e.title + ' · ' + evWhen(e); }).join('; ') : '\n- No upcoming public events listed.'); }).join('\n\n') + '\n\n_From EngageSC; officers can change times, so check the club page._', cSrc(cs[0]), [say('How do I join?', 'how do i join ' + cs[0].name)])];
@@ -937,7 +938,7 @@
         .filter(function (x) { return x.s >= tw.length && (!/^y/i.test(String(a.open || '')) || x.c.open !== false); }).sort(function (x, y) { return y.s - x.s; });
       if (!hits.length) return [bot('No EngageSC groups match **' + a.topic + '**. Try a broader word.', [SRC.engage])];
       return [bot('EngageSC groups for **' + a.topic + '** (' + hits.length + '):\n' + list(hits.map(function (x) { var c = x.c; return '**' + c.name + '** · ' + (c.cats || [c.cat]).slice(0, 2).join(', ') + (c.events ? ' · ' + c.events + ' upcoming events' : '') + (c.open === false ? ' · joining closed' : ''); }), 8), [SRC.engage], [go('Browse clubs', 'clubs')])];
-    }, function (t) { var m = /^(?:are there |is there |find |show me |any |list )?(?:any |some )?(?:clubs?|orgs?|organizations?|student groups?) (?:about|for|on|related to|that do|into|with) (.{3,40})$/.exec(t) || /^(?:any |find |show me )?(.{3,30}) (?:clubs|organizations|orgs)(?: at usc)?$/.exec(t); return m && !/\b(my|join|joined|most active|busiest|biggest|popular|how many)\b/.test(t) ? { topic: m[1] } : null; });
+    }, function (t) { var m = /^(?:are there |is there |find |show me |any |list )?(?:any |some )?(?:clubs?|orgs?|organizations?|student groups?) (?:about|for|on|related to|that do|into|with) (.{3,40})$/.exec(t) || /^(?:any |find |show me )?(.{3,30}) (?:clubs|organizations|orgs)(?: at usc)?$/.exec(t) || /^(?:is there|are there) (?:an? |any )?(.{3,30}?) (?:club|clubs|org|orgs|organization|team)(?: at usc| on campus)?$/.exec(t); return m && !/\b(my|join|joined|most active|busiest|biggest|popular|how many)\b/.test(t) ? { topic: m[1] } : null; });
 
   F('club.about', 'What a USC club does (EngageSC description, categories, status). "what is the whine and cheese club", "tell me about nikkei student union". club',
     ['club'], function (a) {
@@ -945,7 +946,7 @@
       var c = cs[0]; return [bot('**' + c.name + '** · ' + (c.cats || [c.cat]).join(', ') + ' · ' + (c.type || '') + '\n\n' + (c.desc || 'No description on EngageSC.') + (c.events ? '\n\n' + c.events + ' upcoming public events.' : ''), cSrc(c), [say('When do they meet?', 'when does ' + c.name + ' meet')])];
     });
 
-  F('club.events', 'Upcoming public events of a USC club or organization (EngageSC). "what events does viterbi career connections have", "visions and voices events", "next ksa event". club',
+  F('club.events', 'Upcoming public events of a USC club or organization. "what events does viterbi career connections have", "visions and voices events", "next ksa event". club',
     ['club'], function (a) {
       var cs = findClubs(a.club, 3), evs = []; cs.forEach(function (c) { clubEvs(c).forEach(function (e) { evs.push(e); }); });
       if (!evs.length) { var t = norm(a.club); evs = (TH.events() || []).filter(function (e) { return e.e >= now() && t.length > 3 && norm(e.org).indexOf(t) >= 0; }); }
@@ -955,7 +956,7 @@
       return [bot('Upcoming events from **' + (evs[0].org || cs[0].name) + '**:\n' + list(evs.map(function (e) { return '**' + e.title + '** · ' + evWhen(e) + (evWhere(e) ? ' · ' + evWhere(e) : ''); }), 8), [srcOf(evs[0].url, evs[0].title)].concat(cs.length ? cSrc(cs[0]) : []), [go('Events', 'events')])];
     });
 
-  F('club.category', 'Clubs in an EngageSC category (Academic, Cultural, Recreation, Professional, Religious, Social, Service, Sports, Arts…), with counts. "list cultural clubs", "how many clubs are there", "religious organizations at usc". cat?',
+  F('club.category', 'Clubs in an EngageSC category (Academic, Cultural, Recreation, Professional, Religious, Social, Service, Sports, Arts…), with counts. "list cultural clubs", "how many clubs are there". cat?',
     ['cat'], function (a) {
       var cnt = {}; (TH.CLUBS || []).forEach(function (c) { (c.cats || [c.cat]).forEach(function (k) { if (k) cnt[k] = (cnt[k] || 0) + 1; }); });
       var t = norm(a.cat), k = Object.keys(cnt).filter(function (x) { return t && (norm(x).indexOf(t.slice(0, 5)) >= 0 || t.indexOf(norm(x)) >= 0); })[0];
@@ -964,7 +965,7 @@
       return [bot('**' + k + '** groups (' + cs.length + '), most active first:\n' + list(cs.map(function (c) { return c.name + (c.events ? ' · ' + c.events + ' events' : ''); }), 15), [SRC.engage], [go('Browse clubs', 'clubs')])];
     }, function (t) { return /^how many (clubs|student (orgs|organizations)|organizations) (are there|does usc have)/.test(t) ? {} : null; });
 
-  F('club.recommend', 'Clubs picked for the student from their interests, major and career goals (on device). "what clubs should i join", "recommend clubs for me", "clubs that match my interests". (no args)',
+  F('club.recommend', 'Clubs picked for the student from their interests, major and career goals (on device). "what clubs should i join", "recommend clubs for me". (no args)',
     [], function () {
       if (!TH.clubMatch) return [bot('Club matching isn’t available right now.')];
       var r = (TH.CLUBS || []).map(function (c) { var m = TH.clubMatch(c) || {}; return { c: c, m: m }; }).filter(function (x) { return x.m.score > 0; }).sort(function (x, y) { return y.m.score - x.m.score; }).slice(0, 6);
@@ -990,11 +991,11 @@
     var md = title + '\n' + Object.keys(byDay).sort().slice(0, 3).map(function (k) { return (Object.keys(byDay).length > 1 ? '\n**' + TH.fmtDate(iso2date(k)) + '**\n' : '') + list(byDay[k].map(evLine), 8); }).join('\n');
     return [bot(md + '\n\n_Public EngageSC events._', [srcOf(evs[0].url, evs[0].title), SRC.engage], [go('All events', 'events')])];
   }
-  F('events.day', 'Public campus events on a day or tonight/this weekend (EngageSC). "events today", "what’s happening tomorrow", "anything going on tonight", "events this weekend". day? today|tonight|tomorrow|weekday|weekend',
+  F('events.day', 'Public campus events on a day or tonight/this weekend. "events today", "what’s happening tomorrow", "anything going on tonight". day? today|tonight|tomorrow|weekday|weekend',
     ['day'], function (a) { var r = evDays(a), evs = evsBetween(r.s, r.e); return evAnswer(evs, 'Public events **' + r.label + '** (' + evs.length + '):', null, 'No public EngageSC events listed ' + r.label + '.'); },
     function (t) { var m = /^(?:any |are there any |what |whats |show me |list )?(?:events?|things to do|stuff to do|whats happening|what is happening|whats going on|anything going on|anything happening)(?: on campus)? (today|tonight|tomorrow|this weekend|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))(?: on campus)?$/.exec(t); return m ? { day: m[1].replace(/^on /, '') } : null; });
 
-  F('events.food', 'Campus events with free food, on a day or soon (EngageSC). "free food today", "where can i get free food this week", "events with pizza tomorrow". day?',
+  F('events.food', 'Campus events with free food, on a day or soon. "free food today", "where can i get free food this week", "events with pizza tomorrow". day?',
     ['day'], function (a) {
       var r = a.day ? evDays(a) : { s: now(), e: addDays(dayStart(now()), 7), label: 'in the next 7 days' }, evs = evsBetween(r.s, r.e, function (e) { return e.food; });
       return evAnswer(evs, '🍕 Events with food **' + r.label + '** (' + evs.length + '):', null, 'No public events with food listed ' + r.label + '. If you need food help, USC Student Basic Needs offers support.');
@@ -1004,7 +1005,7 @@
     [], function () { var n = now(), evs = evsBetween(n, new Date(+n + 1), function (e) { return e.s <= n; }); return evAnswer(evs, 'Happening **now** (' + evs.length + '):', null, 'No public events are happening right now. Ask “events tonight” for later.'); },
     function (t) { return /^(?:what|whats|anything|any events?) (?:is )?(?:happening|going on) (?:right )?now(?: on campus)?$/.test(t) ? {} : null; });
 
-  F('events.search', 'Search upcoming public events by topic, org or place within a date range. "career fairs this week", "hackathons in november", "events at the coliseum", "film screenings tomorrow". q; day?; days? number of days ahead',
+  F('events.search', 'Search upcoming public events by topic, org or place within a date range. "career fairs this week", "hackathons in november", "events at the coliseum". q; day?; days? number of days ahead',
     ['q', 'day', 'days'], function (a) {
       var q = words(a.q).filter(function (w) { return w.length > 2 && !/^(events?|the|and|for|any|campus|usc)$/.test(w); });
       var r = a.day ? evDays(a) : { s: now(), e: addDays(dayStart(now()), +a.days > 0 ? +a.days : 30), label: 'in the next ' + (+a.days > 0 ? a.days : 30) + ' days' };
@@ -1032,7 +1033,7 @@
   // ============================================================================================ THE STUDENT'S OWN ACCOUNT (TA.State.d / TH.H(): read on this device only)
   var MYC = /\b(my|mine|i have|do i have|am i|have i|ive got|i got|me)\b/;
   function mine(name, about, args, run, re, not) {
-    F(name, about + ' Account data stays on this device.', args, function (a) { return signedIn() ? run(a) : needSignIn(); },
+    F(name, about + ' On device.', args, function (a) { return signedIn() ? run(a) : needSignIn(); },
       re ? function (t, raw) { return re.test(t) && (MYC.test(t) || (re.bare && re.bare.test(t))) && !(not && not.test(t)) ? (typeof re.args === 'function' ? re.args(t, raw) : {}) : null; } : null);
   }
   function curTerm() { return ((TA.POLICY || {}).terms || {}).current ? TA.POLICY.terms.current.code : '20263'; }
@@ -1041,19 +1042,19 @@
   function secTxt(x) { return x[1] + ' ' + (x[2] ? TA.fmtDays(x[2]) + ' ' : '') + (x[3] ? TA.fmtTime(x[3]) + '–' + TA.fmtTime(x[4]) : 'TBA') + (x[5] ? ' · ' + x[5] : ''); }
   function aSrc() { return [ACCT]; }
 
-  mine('my.classes', 'The student’s own classes this term or next, with times and instructors. "what classes am i taking", "my spring schedule", "list my courses".', ['term'], function (a) {
+  mine('my.classes', 'Your own classes this term or next, with times and instructors. "what classes am i taking", "my spring schedule", "list my courses".', ['term'], function (a) {
     var id = termFor(a.term) || curTerm(), cs = myCourses(id);
     if (!cs.length) return [bot('You have no classes on your ' + ((CAL()[id] || {}).label || '') + ' schedule yet.', aSrc(), [go('Academics', 'academics')])];
     return [bot('**Your ' + (CAL()[id] || {}).label + ' classes** (' + TA.State.termUnits(id) + ' units):\n' + list(cs.map(function (c) { return '**' + c.code + '** ' + c.title + ' · ' + c.units + 'u\n  ' + (c.sections || []).map(secTxt).join('\n  '); }), 10), aSrc(), [go('Academics', 'academics')])];
   }, (function () { var r = /\b(what (classes|courses) am i (taking|in|enrolled in)|my (classes|courses|class schedule|course schedule|spring schedule|fall schedule)|list my (classes|courses))\b/; r.args = function (t) { return { term: /\bspring|next\b/.test(t) ? 'spring' : undefined }; }; return r; })(), /\b(today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday|next class|grades?|homework|final|exam|drop|add|register)\b/);
 
-  mine('my.classes_on', 'The student’s classes on a given day. "what classes do i have tomorrow", "do i have class on friday", "my classes today".', ['day'], function (a) {
+  mine('my.classes_on', 'Your classes on a given day. "what classes do i have tomorrow", "do i have class on friday", "my classes today".', ['day'], function (a) {
     var day = dayArg(a.day), L = TH.classesOn ? TH.classesOn(day.d) : [], hol = ((TA.POLICY || {}).holidays || {})[dk(day.d)];
     if (!L.length) return [bot('No classes ' + day.label + (hol ? ' (' + hol + ')' : '') + '.', aSrc())];
     return [bot('**Your classes ' + day.label + ':**\n' + list(L.map(function (c) { return '**' + fmtMin(c.start) + '–' + fmtMin(c.end) + '** ' + c.code + ' ' + (c.type || '') + (c.instr ? ' · ' + c.instr : ''); })), aSrc(), [go('My Day', 'plans')])];
   }, (function () { var r = /\b((what|which) (classes|class) do i have|do i have (class|classes|school)|my classes) (today|tomorrow|tmrw|on (monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b/; r.args = function (t) { return { day: (/(today|tomorrow|tmrw|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/.exec(t) || [])[1] }; }; return r; })());
 
-  mine('my.next_class', 'The student’s next class from now: what, when, how long until. "when is my next class", "what class do i have next".', [], function () {
+  mine('my.next_class', 'Your next class from now: what, when, how long until. "when is my next class", "what class do i have next".', [], function () {
     for (var i = 0; i < 8; i++) {
       var d = addDays(dayStart(now()), i), L = (TH.classesOn ? TH.classesOn(d) : []).filter(function (c) { return i > 0 || c.start > minOf(now()); });
       if (L.length) { L.sort(function (x, y) { return x.start - y.start; }); var c = L[0]; return [bot('Your next class: **' + c.code + ' ' + (c.type || '') + '** · ' + (i === 0 ? 'today' : dLabel(d)) + ' **' + fmtMin(c.start) + '–' + fmtMin(c.end) + '**' + (i === 0 ? ' (in ' + (c.start - minOf(now())) + ' min)' : '') + (c.instr ? ' · ' + c.instr : ''), aSrc(), [go('My Day', 'plans')])]; }
@@ -1066,18 +1067,18 @@
     return [bot('You’re registered for **' + u + ' units** in ' + (CAL()[id] || {}).label + '. ' + (u >= (Tu.flatMin || 12) && u <= (Tu.flatMax || 18) ? 'That’s in the flat-rate tuition range (' + Tu.flatMin + '–' + Tu.flatMax + ' units).' : u < (Tu.flatMin || 12) ? 'That’s below the ' + Tu.flatMin + '-unit flat-rate range.' : 'That’s above ' + Tu.flatMax + ' units (per-unit charges apply).'), aSrc().concat([SRC.tuition]))];
   }, /\bhow many units (am i|do i have|i am)\b|\bmy (total )?units\b|\bam i full ?time\b/);
 
-  mine('my.profs', 'Who teaches the student’s classes (instructors on the student’s own sections). "who are my professors", "who teaches my math class".', ['term'], function (a) {
+  mine('my.profs', 'Who teaches your classes (instructors on your own sections). "who are my professors", "who teaches my math class".', ['term'], function (a) {
     var id = termFor(a.term) || curTerm();
     return [bot('**Your instructors (' + (CAL()[id] || {}).label + '):**\n' + list(myCourses(id).map(function (c) { var n = Array.from(new Set((c.sections || []).map(function (x) { return x[5]; }).filter(Boolean))); return '**' + c.code + '** ' + c.title + ': ' + (n.join(', ') || 'not listed'); })), aSrc())];
   }, /\b(who are my (professors|profs|instructors|teachers)|my (professors|profs|instructors|teachers))\b/, /\b(email|contact|office hours|reach|message|rate|rating)\b/);
 
-  mine('my.finals', 'The student’s own final exam schedule for this term, from their class times (Registrar rules). "when are my finals", "my final exam schedule".', ['term'], function (a) {
+  mine('my.finals', 'Your own final exam schedule for this term, from their class times (Registrar rules). "when are my finals", "my final exam schedule".', ['term'], function (a) {
     var id = termFor(a.term) || curTerm(), rows = [];
     myCourses(id).forEach(function (c) { var lec = (c.sections || []).filter(function (x) { return /lec/i.test(x[1]); })[0] || (c.sections || [])[0]; if (!lec) return; var f = SOC.finalFor(id, c.code, lec[2], lec[3], lec[4]); rows.push('**' + c.code + '**: ' + (f ? f.day + ', ' + f.hour : 'not set by the grid (ask your instructor)')); });
     return [bot('**Your ' + (CAL()[id] || {}).label + ' finals** (' + ((TA.FINALS || {})[id] || {}).dates + '):\n' + list(rows) + '\n\n_Worked out from your class times and the Registrar’s final exam schedule; your instructor confirms the room._', aSrc().concat([SRC.finals]))];
   }, /\b(when are my finals|my finals?( schedule| exam schedule)?|my final exams?)\b/, /\b(grade|need|study)\b/);
 
-  mine('my.registration', 'The student’s registration appointment, holds and D-clearances. "when is my registration appointment", "do i have any holds", "my d clearances".', ['what'], function (a) {
+  mine('my.registration', 'Your registration appointment, holds and D-clearances. "when is my registration appointment", "do i have any holds", "my d clearances".', ['what'], function (a) {
     var Ac = D().academics || {}, t = norm(a.what);
     var rows = [Ac.regAppointment ? 'Registration appointment: **' + fdt(Ac.regAppointment) + '**' : 'No registration appointment on file', (Ac.holds || []).length ? '**Holds:** ' + Ac.holds.map(function (h) { return h.name || h.type || h; }).join(', ') : 'Holds: **none**', (Ac.dclearances || []).length ? 'D-clearances: ' + Ac.dclearances.map(function (x) { return x.code || x; }).join(', ') : 'D-clearances: none'];
     if (/hold/.test(t)) rows = [rows[1]]; else if (/clear/.test(t)) rows = [rows[2]]; else if (/appoint|when/.test(t)) rows = [rows[0]];
@@ -1090,59 +1091,59 @@
     return [bot('**Completed courses** (' + C.length + '):\n' + list(C, 30), aSrc())];
   }, (function () { var r = /\b(what (classes|courses) have i (taken|completed|done)|my completed (classes|courses)|did i (already )?(take|complete|pass))\b/; r.args = function (t, raw) { return { course: (TA.NLU.parse(raw).courses || [])[0] }; }; return r; })());
 
-  mine('my.advisor', 'The student’s academic advisor and advising appointments. "who is my advisor", "my advising appointment".', [], function () {
+  mine('my.advisor', 'Your academic advisor and advising appointments. "who is my advisor", "my advising appointment".', [], function () {
     var Ac = D().academics || {}, ad = Ac.advisor, ap = ((D().advising || {}).appointments || []);
     return [bot(list([ad ? 'Advisor: **' + (ad.name || ad) + '**' + (ad.email ? ' · ' + ad.email : '') + (ad.office ? ' · ' + ad.office : '') : 'No advisor on file', ap.length ? 'Appointments: ' + ap.map(function (x) { return (x.type || 'Advising') + ' · ' + fdt(x.at); }).join('; ') : 'No advising appointments booked']), aSrc(), [{ label: 'Book advising', value: 'book an advising appointment', kind: 'action' }])];
   }, /\b(who is my (academic )?advisor|my (academic )?advisor|my advising appointment)\b/);
 
-  mine('my.dining', 'The student’s meal plan: swipes left, Dining Dollars, guest swipes. "how many swipes do i have left", "dining dollars balance", "my meal plan".', [], function () {
+  mine('my.dining', 'Your meal plan: swipes left, Dining Dollars, guest swipes. "how many swipes do i have left", "dining dollars balance", "my meal plan".', [], function () {
     var d = D().dining || {}, mp = TA.State.mealPlan();
     return [bot('**Your meal plan' + (mp ? ': ' + mp.name : '') + '**\n' + list(['Meal swipes left: **' + d.swipesLeft + '** of ' + d.swipesTotal, 'Dining Dollars: **' + money(d.diningDollars) + '**', 'Guest swipes left: **' + d.guestLeft + '**', mp ? mp.short : null]), aSrc().concat([SRC.meal]), [{ label: 'Add Dining Dollars', value: 'add dining dollars', kind: 'action' }, go('Order food', 'order')])];
-  }, (function () { var r = /\b(swipes?|dining dollars|meal plan|guest swipes?|dd balance)\b/; r.bare = /^(how many )?(meal )?(swipes?|dining dollars|dd)( balance| left| remaining| do i have)?$/; return r; })(), /\b(change|switch|cancel|upgrade|add|buy|which|what are the|options|prices?|cost|where|how do)\b/);
+  }, (function () { var r = /\b(swipes?|dining dollars|meal plan|guest swipes?|dd balance|dd)\b/; r.bare = /^(how many )?(meal )?(swipes?|dining dollars|dd)( balance| left| remaining| do i have)?$/; return r; })(), /\b(change|switch|cancel|upgrade|add|buy|which|what are the|options|prices?|cost|where|how do)\b/);
 
-  mine('my.uscard', 'The student’s USCard status and discretionary balance. "how much is on my uscard", "is my id card active".', [], function () {
+  mine('my.uscard', 'Your USCard status and discretionary balance. "how much is on my uscard", "is my id card active".', [], function () {
     var u = D().uscard || {}; return [bot('**Your USCard:** ' + (u.status || 'active') + ' · discretionary balance **' + money(u.discretionary) + '**' + (u.replacement ? ' · replacement ' + (u.replacement.status || 'requested') : ''), aSrc().concat([SRC.uscard]), [{ label: 'Add funds', value: 'add money to my uscard', kind: 'action' }])];
   }, /\b(uscard|usc card|student id|discretionary)\b.{0,30}\b(balance|how much|money|funds|active|status)\b|\b(balance|how much|money) (is )?on my (uscard|usc card|id|card)\b/);
 
-  mine('my.balance', 'The student’s account balance, due date, payment plan and recent charges/payments. "what do i owe", "when is my bill due", "my tuition balance", "show my charges".', ['what'], function (a) {
+  mine('my.balance', 'Your account balance, due date, payment plan and recent charges/payments. "what do i owe", "when is my bill due", "my tuition balance", "show my charges".', ['what'], function (a) {
     var b = D().billing || {}, t = norm(a.what);
     var md = 'Balance due: **' + money(b.balance) + '**' + (b.due ? ' by **' + TA.fmtDate(b.due) + '** (' + rel(b.due) + ')' : '') + (b.paymentPlan ? '\nPayment plan: ' + (b.paymentPlan.name || 'enrolled') : '');
     if (/charge|item|statement|break|detail/.test(t) || !t) md += '\n\n**Recent items:**\n' + list((b.items || []).slice(-8).map(function (x) { return TA.fmtDate(x.date) + ' · ' + x.desc + ' · ' + (x.amt < 0 ? '−' + money(-x.amt) : money(x.amt)); }), 8);
     return [bot(md, aSrc(), [{ label: 'Make a payment', value: 'pay my balance', kind: 'action' }])];
   }, (function () { var r = /\b(what do i owe|how much do i owe|my (account )?balance|my bill|bill due|my tuition (bill|balance)|my charges|my statement|when is my (bill|payment|tuition) due)\b/; r.args = function (t) { return { what: /charge|statement|item/.test(t) ? 'charges' : 'balance' }; }; return r; })(), /\b(uscard|dining|swipes|library|fine|fees? (are|on)|besides|what is (the|a)|why|explain|charge (for|on)|finance charge|escheat|credit)\b/);
 
-  mine('my.housing', 'The student’s housing: building, room type, front desk (CSC) contact, open requests. "where do i live", "my housing info", "my csc phone number".', [], function () {
+  mine('my.housing', 'Your housing: building, room type, front desk (CSC) contact, open requests. "where do i live", "my housing info", "my csc phone number".', [], function () {
     var h = D().housing || {}, ci = h.cscInfo || {};
     return [bot('**Your housing** (' + (h.term || '') + ')\n' + list([h.building ? 'Building: **' + h.building + '**' : null, h.room ? 'Room: ' + h.room : null, h.address ? 'Address: ' + h.address : null, ci.name ? 'Front desk: ' + ci.name + (ci.where ? ' (' + ci.where + ')' : '') + ' · ' + (ci.phone || '') : h.csc, (h.requests || []).length ? 'Open requests: ' + h.requests.length : null]), aSrc().concat([srcOf('https://housing.usc.edu/index.php/csc/', 'Customer Service Centers – USC Housing')]), [{ label: 'Report a maintenance issue', value: 'submit a maintenance request', kind: 'action' }])];
   }, /^(what is |whats |where is |show me |tell me )?(my (housing|dorm|room|building|apartment)( info| assignment| details| address)?|where do i live|what (dorm|building) (am i in|do i live in)|my (csc|front desk)( phone| number| phone number)?)$/);
 
-  mine('my.parking', 'The student’s parking permit (if any). "do i have a parking permit", "my parking permit".', [], function () {
+  mine('my.parking', 'Your parking permit (if any). "do i have a parking permit", "my parking permit".', [], function () {
     var p = (D().parking || {}).permit || (H().parking); return [bot(p ? 'Your permit: **' + (p.name || p.type || p.id) + '**' + (p.term ? ' · ' + p.term : '') + (p.where ? ' · ' + p.where : '') : 'You don’t have a parking permit on file.', aSrc().concat([SRC.parking]), [say('Permit prices', 'parking permit prices')])];
   }, /\bmy (parking )?permit\b|\bdo i have a (parking )?permit\b/);
 
-  mine('my.library', 'The student’s library loans (due dates, renewals) and room reservations. "when are my library books due", "my library loans", "do i have overdue books".', [], function () {
+  mine('my.library', 'Your library loans (due dates, renewals) and room reservations. "when are my library books due", "my library loans", "do i have overdue books".', [], function () {
     var L = D().library || {}, lo = L.loans || [], rs = L.reservations || [];
     return [bot('**Library loans** (' + lo.length + '):\n' + list(lo.map(function (b) { return '**' + b.title + '** · due ' + TA.fmtDate(b.due) + ' (' + rel(b.due) + ')' + (b.renewals ? ' · renewed ' + b.renewals + '×' : ''); })) + (rs.length ? '\n\n**Room reservations:**\n' + list(rs.map(function (r) { return (r.lib || 'Library') + ' · ' + fdt(r.at); })) : ''), aSrc(), [{ label: 'Renew my books', value: 'renew my library books', kind: 'action' }])];
-  }, /\b(library (books?|loans?)|books? (are )?due|overdue books?|checked out books?)\b/, /\b(renew|return|reserve|book a)\b/);
+  }, (function () { var r = /\b(library (books?|loans?)|books? (are )?due|overdue books?|checked out books?)\b/; r.bare = /^(when are )?(my )?(library )?books? due( back)?( when)?$/; return r; })(), /\b(renew|return|reserve|book a|buyback|sell)\b/);
 
-  mine('my.health', 'The student’s health appointments, prescriptions and insurance status. "do i have a doctor appointment", "my prescriptions", "is my insurance waived".', [], function () {
+  mine('my.health', 'Your health appointments, prescriptions and insurance status. "do i have a doctor appointment", "my prescriptions", "is my insurance waived".', [], function () {
     var h = D().health || {};
     return [bot('**Your health records on this device**\n' + list(['Appointments: ' + ((h.appointments || []).length ? h.appointments.map(function (x) { return (x.type || 'Visit') + ' · ' + fdt(x.at); }).join('; ') : 'none booked'), 'Prescriptions: ' + ((h.prescriptions || []).length ? h.prescriptions.map(function (x) { return x.name + ' (' + x.refills + ' refills, ' + x.pharmacy + ')'; }).join('; ') : 'none'), 'Insurance: ' + (h.insurance || 'not on file')]), aSrc(), [{ label: 'Book an appointment', value: 'book a health appointment', kind: 'action' }])];
   }, /\b(my (health|medical|doctor|doctors) appointments?|my prescriptions?|my (health )?insurance|is my insurance waived)\b/);
 
-  mine('my.appointments', 'All the student’s upcoming appointments: health, advising, career. "what appointments do i have", "my upcoming appointments".', [], function () {
+  mine('my.appointments', 'All your upcoming appointments: health, advising, career. "what appointments do i have", "my upcoming appointments".', [], function () {
     var rows = []; [['Health', (D().health || {}).appointments], ['Advising', (D().advising || {}).appointments], ['Career', (D().careers || {}).appointments]].forEach(function (k) { (k[1] || []).forEach(function (x) { rows.push({ at: x.at, s: '**' + k[0] + '**' + (x.type ? ' · ' + x.type : '') + ' · ' + fdt(x.at) + (x.kind ? ' (' + x.kind + ')' : '') }); }); });
     rows.sort(function (x, y) { return x.at < y.at ? -1 : 1; });
     return [bot(rows.length ? '**Your appointments:**\n' + list(rows.map(function (r) { return r.s; })) : 'You have no health, advising or career appointments booked.', aSrc())];
   }, /\b(what appointments do i have|my (upcoming )?appointments|any appointments)\b/);
 
-  mine('my.orders', 'The student’s mobile food orders (simulated): status, pickup time, order code. "where is my food order", "my orders", "is my order ready".', [], function () {
+  mine('my.orders', 'Your mobile food orders (simulated): status, pickup time, order code. "where is my food order", "my orders", "is my order ready".', [], function () {
     var o = (H().orders || []).slice().reverse();
     if (!o.length) return [bot('You have no food orders yet.', aSrc(), [go('Order food', 'order')])];
     return [bot('**Your orders** (Simulated):\n' + list(o.slice(0, 5).map(function (x) { var p = P(x.at) || {}; var e = TH.orderEta ? (function () { try { return TH.orderEta(x); } catch (er) { return null; } })() : null; return '**' + (p.name || x.at) + '** · code ' + x.code + ' · pickup ' + fmtMin(x.window) + '–' + fmtMin(x.window + 10) + ' · ' + (x.state === 'picked' ? 'picked up' : e && e.stage === 2 ? 'ready' : x.state) + ' · ' + money(x.total); })), aSrc(), [go('Open orders', 'order')])];
   }, /\b(my (food )?orders?|is my (food |order )?(order )?ready|where is my (food|order))\b/);
 
-  mine('my.bookings', 'The student’s bookings and reservations: study rooms/courts (Trojan Pass), virtual lines, Zipcar, library rooms (simulated). "my bookings", "what did i reserve", "am i in any lines".', [], function () {
+  mine('my.bookings', 'Your bookings and reservations: study rooms/courts (Trojan Pass), virtual lines, Zipcar, library rooms (simulated). "my bookings", "what did i reserve", "am i in any lines".', [], function () {
     var Hh = H(), rows = [];
     (Hh.passes || []).forEach(function (b) { var def = (TH.PASSES || []).find(function (x) { return x.id === b.id; }) || {}; rows.push('**' + (def.name || b.id) + '** · ' + TA.fmtDate(b.day) + ' ' + fmtMin(b.start)); });
     (Hh.lines || []).filter(function (l) { return l.state === 'waiting'; }).forEach(function (l) { var q = (TH.QUEUES || []).find(function (x) { return x.id === l.id; }) || {}; rows.push('In line: **' + (q.name || l.id) + '** · #' + l.pos); });
@@ -1151,12 +1152,12 @@
     return [bot(rows.length ? '**Your bookings** (Simulated):\n' + list(rows, 12) : 'You have no bookings, reservations or virtual lines right now.', aSrc(), [go('Passes', 'passes')])];
   }, /\b(my (bookings?|reservations?|passes|trojan pass(es)?)|what did i (book|reserve)|am i in (any|a) (line|queue)|my (spot|place) in line)\b/);
 
-  mine('my.ride', 'The student’s current USC Lyft ride (simulated) and Lyft credit used this month. "where is my ride", "is my lyft here", "how much lyft have i used".', [], function () {
+  mine('my.ride', 'Your current USC Lyft ride (simulated) and Lyft credit used this month. "where is my ride", "is my lyft here", "how much lyft have i used".', [], function () {
     var r = H().ride, used = H().lyftUsedUSD || 0, cap2 = (T().lyft || {}).monthlyCapUSD;
     return [bot((r && r.state !== 'done' ? 'Your ride to **' + r.to + '** is **' + r.state + '**' + (r.left ? ' (~' + r.left + ' min)' : '') + ' · ' + r.car + ' ' + r.plate + ' (Simulated).' : 'You don’t have an active ride.') + '\nUSC Lyft used this month: **' + money(used) + '**' + (cap2 ? ' of the ' + money(cap2) + ' program cap' : '') + '.', aSrc().concat([SRC.lyft]), [go('Lyft', 'lyft')])];
   }, /\b(where is my (ride|lyft|driver)|is my (ride|lyft|driver) here|my (lyft|ride) status|how much lyft have i used)\b/);
 
-  mine('my.upass', 'The student’s Metro U-Pass status (simulated in this demo). "do i have a u-pass", "is my upass active".', [], function () {
+  mine('my.upass', 'Your Metro U-Pass status (simulated in this demo). "do i have a u-pass", "is my upass active".', [], function () {
     var u = H().upass; return [bot(u ? 'Your U-Pass: **' + (u.status || 'requested') + '**' + (u.term ? ' · ' + u.term : '') + ' (Simulated).' : 'You haven’t requested a Metro U-Pass in Trojan Hub.', aSrc().concat([SRC.upass]), [{ label: 'Get a U-Pass', value: 'get me a u-pass', kind: 'action' }])];
   }, /\b(my u ?pass|is my u ?pass|do i have a u ?pass)\b/);
 
@@ -1172,12 +1173,12 @@
     return [bot(cal.length ? '**Your saved events:**\n' + list(cal.map(function (c) { return '**' + c.title + '** · ' + TH.fmtDate(TH.laDate(c.start)) + ' ' + TH.fmtTime(TH.laDate(c.start)) + (c.org ? ' · ' + c.org : ''); }), 10) : 'No saved events' + (a.day ? ' that day' : '') + '.', aSrc(), [go('My Day', 'plans')])];
   }, /\b(my saved events|events i saved|what events did i (save|rsvp)|events i rsvpd|my rsvps|whats on my calendar)\b/);
 
-  mine('my.activity', 'What Tommy has done on the student’s account recently (audit log with confirmation numbers). "what have you done for me", "my recent activity", "show my audit log".', [], function () {
+  mine('my.activity', 'What Tommy has done on your account recently (audit log with confirmation numbers). "what have you done for me", "my recent activity", "show my audit log".', [], function () {
     var L = (D().log || []).slice(0, 8);
     return [bot(L.length ? '**Recent activity** (newest first):\n' + list(L.map(function (x) { return x.action + (x.detail ? ': ' + x.detail : '') + ' · ' + fdt(x.at) + (x.conf ? ' · #' + x.conf : ''); })) : 'Nothing yet.', aSrc())];
   }, /\b(what have you done (for me|on my account)|my (recent )?activity|audit log|history of (my )?actions)\b/);
 
-  mine('my.profile', 'The student’s profile: name, major, school, year, NetID, USC ID. "what’s my usc id", "what is my major", "my netid".', ['what'], function (a) {
+  mine('my.profile', 'Your profile: name, major, school, year, NetID, USC ID. "what’s my usc id", "what is my major", "my netid".', ['what'], function (a) {
     var p = D().profile || {}, t = norm(a.what);
     var rows = [['Name', (p.first || '') + ' ' + (p.last || '')], ['Major', p.major], ['School', p.school], ['Year', p.year || p.level], ['NetID', p.netid], ['USC ID', p.uscid || (TH.student ? TH.student().uscid : '')], ['Email', p.email]].filter(function (r) { return r[1]; });
     var sel = rows.filter(function (r) { return t && norm(r[0]).indexOf(t.replace(/^(my |usc )/, '').split(' ')[0]) >= 0; });
@@ -1195,7 +1196,7 @@
 
   mine('my.guestswipes', 'Guest meal swipes the student has left and how they work. "how many guest swipes do i have", "can i swipe in a friend".', [], function () {
     var d = D().dining || {}; return [bot('You have **' + d.guestLeft + ' guest swipes** left this semester. A guest swipe brings a friend into a dining hall on your meal plan.', aSrc().concat([SRC.meal]))];
-  }, /\bguest swipes?\b|\bswipe (in )?(a )?friend\b/);
+  }, (function () { var r = /\bguest swipes?\b|\bswipe (in )?(a )?friend\b/; r.bare = /^(how many )?guest swipes?( left| remaining| do i have)?$/; return r; })());
 
   // ============================================================================================ MISC
   F('usc.facts', 'Verified fun facts and history about USC (founding, Tommy Trojan, Traveler, traditions). "tell me a fun fact about usc", "when was usc founded", "who is traveler". topic?',
@@ -1221,7 +1222,7 @@
 
   // ============================================================================================ MORE FAMILIES
   // ---- courses
-  F('course.code', 'The course code for a USC course name (Schedule of Classes). "what’s the course code for data structures", "what is intro to psychology called on the schedule". name; term?',
+  F('course.code', 'The course code for a USC course name. "what’s the course code for data structures", "what is intro to psychology called on the schedule". name; term?',
     ['name', 'term'], function (a) {
       var r = findCourse(a.name, a.term); if (!r || !r.list.length) return [bot('I couldn’t find a course called **' + (a.name || '') + '** in Fall 2026 or Spring 2027.', [SRC.soc])];
       var seen = {}, rows = r.list.filter(function (f) { if (seen[f.c.code]) return false; seen[f.c.code] = 1; return f.hit >= r.list[0].hit; }).slice(0, 5);
@@ -1242,7 +1243,7 @@
       return [bot('**' + SOC.label(id) + '** · ' + a.topic + ' · ' + cond + ':\n' + list(out.map(function (x) { return '**' + x.c.code + '** ' + x.c.title + ' · ' + meetTxt(x.s) + (x.n > 1 ? ' (+' + (x.n - 1) + ')' : ''); }), 10) + SOC_NOTE, socSrc(id))];
     });
 
-  F('course.byunits', 'USC courses on a topic with a given number of units (e.g. 1-, 2- or 4-unit classes). "2 unit classes in spring", "1 unit fun classes", "4 unit econ courses". units; topic?; term?',
+  F('course.byunits', 'USC courses on a topic with a given number of units (e.g. 1-, 2- or 4-unit classes). "2 unit classes in spring", "1 unit fun classes". units; topic?; term?',
     ['units', 'topic', 'term'], function (a) {
       var u = String((/(\d)/.exec(String(a.units || '')) || [])[1] || ''), id = termIds(a.term || 'spring')[0], mp = allCourses(id), out = [], tw = words(a.topic).filter(function (w) { return w.length > 2 && !/^(class|classes|course|courses|unit|units|fun|easy)$/.test(w); });
       if (!u || !mp) return [bot('How many units? For example “2 unit classes”.')];
@@ -1273,7 +1274,7 @@
     }, function (t) { var m = /^(?:what is|whats|what does|what are) (?:a |the )?ge[- ]?([a-h])(?: mean| stand for| category)?$/.exec(t) || /^(?:what are the|list the|list of) ge categories$/.exec(t); return m ? { cat: m[1] } : null; });
 
   // ---- places
-  F('place.search', 'Find campus places by what they offer, from their descriptions and features: gluten free, vegan, boba, smoothies, printing, pool, quiet study, microwaves, 24-hour. "where can i get boba", "gluten free food on campus", "where can i print". what',
+  F('place.search', 'Find campus places by what they offer, from their descriptions and features: gluten free, vegan, boba, smoothies, printing, pool, quiet study, microwaves, 24-hour. "where can i get boba", "gluten free food on campus". what',
     ['what'], function (a) {
       var tw = words(a.what).filter(function (w) { return w.length > 2 && !/^(where|can|get|find|campus|usc|the|place|places|food|near|any|some|there|with)$/.test(w); });
       if (!tw.length) return [bot('What are you looking for? For example “boba”, “gluten free” or “printing”.')];
@@ -1285,14 +1286,14 @@
   function lateList(c, d) {
     return (TH.PLACES || []).filter(function (p) { return inCat(p, c) && p.hours; }).map(function (p) { var r = hoursOn(p, d); if (!r || !r.length) return null; var close = Math.max.apply(null, r.map(function (x) { return x[1]; })); return { p: p, close: close }; }).filter(Boolean).sort(function (x, y) { return y.close - x.close; });
   }
-  F('open.late', 'Which campus places stay open latest tonight (or on a day), by category: food, coffee, libraries, gyms. "what’s open latest tonight", "latest food on campus", "which library is open the latest", "anything open 24 hours". cat?; day?',
+  F('open.late', 'Which campus places stay open latest tonight (or on a day), by category: food, coffee, libraries, gyms. "what’s open latest tonight", "latest food on campus", "which library is open the latest". cat?; day?',
     ['cat', 'day'], function (a) {
       var c = catOf(a.cat || 'dining') || 'dining', day = dayArg(a.day), L = lateList(c, day.d).slice(0, 8);
       if (!L.length) return [bot('Nothing in that category has posted hours ' + day.label + '.', [SRC.hours])];
       return [bot('**Open latest ' + day.label + '** (' + c + '):\n' + list(L.map(function (x) { return '**' + x.p.name + '** · until ' + (x.close >= 1440 ? (x.close === 1440 ? 'midnight' : fmtMin(x.close - 1440) + ' (after midnight)') : fmtMin(x.close)); })) + '\n\n_Posted USC hours._', c === 'study' ? [SRC.lib] : c === 'fitness' ? [SRC.rec] : [SRC.hours])];
     }, function (t) { return /\b(open (the )?latest|latest (food|place|dining|coffee|library|gym)|open (24|twenty four) (hours|7)|24 hour (food|library|study|place))\b/.test(t) ? { cat: catOf(t) || (/librar|study/.test(t) ? 'study' : 'dining') } : null; });
 
-  F('place.crowd', 'How busy a dining hall or gym usually is now and later today (Est., from typical patterns, not live). "how busy is evk right now", "when is the lyon center least crowded", "is parkside packed". place',
+  F('place.crowd', 'How busy a dining hall or gym usually is now and later today (Est., from typical patterns, not live). "how busy is evk right now", "when is the lyon center least crowded". place',
     ['place'], function (a) {
       var p = findPlaces(a.place).filter(function (x) { return x.crowd; })[0];
       if (!p) return [bot('I only have typical-busyness estimates for: ' + (TH.PLACES || []).filter(function (x) { return x.crowd; }).map(function (x) { return x.name; }).join(', ') + '.')];
@@ -1302,11 +1303,11 @@
       return [bot('**' + p.name + '** right now: **' + (cur >= 80 ? 'very busy' : cur >= 50 ? 'busy' : cur > 0 ? 'not too busy' : 'closed or empty') + '** (Est. ' + cur + '/100).' + (peak.length ? '\nUsually busiest later today: ' + peak.map(hr).join(', ') + '.' : '') + (quiet.length ? '\nQuieter: ' + quiet.slice(0, 4).map(hr).join(', ') + '.' : '') + '\n\n_Est.: typical busyness by hour, not live counts._', pSrc(p))];
     }, function (t, raw) { if (!/\b(how busy|crowded|packed|busy right now|line long|least busy|least crowded)\b/.test(t)) return null; var p = findPlaces(raw).filter(function (x) { return x.crowd; })[0]; return p ? { place: p.id } : null; });
 
-  F('restroom.allgender', 'All-gender / gender-neutral restrooms on campus from the map data. "all gender bathrooms", "gender neutral restroom near me". (no args)',
+  F('restroom.allgender', 'All-gender / gender-neutral restrooms on campus. "all gender bathrooms", "gender neutral restroom near me". (no args)',
     [], function () { var L = (TH.PLACES || []).filter(function (p) { return p.allGender; }); return [bot('**All-gender / gender-neutral restrooms:**\n' + list(L.map(function (p) { return p.name; })), pSrc(L[0] || {}), [go('Restrooms on the map', 'map', 'restroom')])]; },
     function (t) { return /\b(all.?gender|gender.?neutral|unisex)\b.{0,12}\b(restrooms?|bathrooms?)\b/.test(t) ? {} : null; });
 
-  F('open.weekend', 'What’s open this Saturday and Sunday by category, with hours: food, coffee, libraries, gyms, offices. "what dining is open on the weekend", "libraries open sunday", "is anything open saturday morning". cat?',
+  F('open.weekend', 'What’s open this Saturday and Sunday by category, with hours: food, coffee, libraries, gyms, offices. "what dining is open on the weekend", "libraries open sunday". cat?',
     ['cat'], function (a) {
       var c = catOf(a.cat || 'dining') || 'dining', sat = dayArg('saturday').d, sun = addDays(sat, 1);
       var ps = (TH.PLACES || []).filter(function (p) { return inCat(p, c) && p.hours; });
@@ -1314,7 +1315,7 @@
       return [bot('**This weekend** (' + c + '):\n' + list(ps.filter(function (p) { var x = hoursOn(p, sat), y = hoursOn(p, sun); return (x && x.length) || (y && y.length); }).map(row), 14), c === 'study' ? [SRC.lib] : c === 'fitness' ? [SRC.rec] : [SRC.hours])];
     }, function (t) { return /\b(open|hours)\b.{0,20}\b(weekend|on saturday|on sunday|this saturday|this sunday)\b/.test(t) && /\b(what|whats|which|anything|any)\b/.test(t) && catOf(t) ? { cat: catOf(t) } : null; });
 
-  F('landmark.facts', 'Facts about a USC landmark (Tommy Trojan, Traveler statue, Bovard, Coliseum, Galen Center, Hecuba…). "tell me about tommy trojan", "what is the hecuba statue", "history of bovard". place',
+  F('landmark.facts', 'Facts about a USC landmark (Tommy Trojan, Traveler statue, Bovard, Coliseum, Galen Center, Hecuba…). "tell me about tommy trojan", "what is the hecuba statue". place',
     ['place'], function (a) {
       var p = findPlaces(a.place).filter(function (x) { return x.cat === 'landmark'; })[0];
       if (!p) return [bot('Landmarks I know: ' + (TH.PLACES || []).filter(function (x) { return x.cat === 'landmark'; }).map(function (x) { return x.name; }).join(', ') + '.')];
@@ -1348,13 +1349,13 @@
       return [bot('**' + s.name + '**' + (s.desc ? '\n' + s.desc : '') + '\n\nNext departures: ' + (nb.length ? nb.map(function (x) { return x.short + ' ' + fmtMin(x.at) + (x.est ? ' (Est.)' : ''); }).join(', ') : 'none listed for the rest of today'), [SRC.bus], [go('Show on the map', 'map', s.id)])];
     });
 
-  F('lyft.zone', 'Whether free USC Lyft covers a destination (must start and end inside the boundary; LAX, HSC and far trips are not covered). "can i take usc lyft to lax", "does lyft cover koreatown", "is santa monica in the lyft zone". to',
+  F('lyft.zone', 'Whether free USC Lyft covers a destination (must start and end inside the boundary; LAX, HSC and far trips are not covered). "can i take usc lyft to lax", "does lyft cover koreatown". to',
     ['to'], function (a) {
       var L = T().lyft || {}, b = (L.boundary || {}).text || '', to = String(a.to || ''), out = TH.lyftOutOfZone ? TH.lyftOutOfZone(to) : false, onCampus = findPlaces(to).length > 0;
       return [bot('**' + (to || 'That trip') + '**: ' + (out ? '**not covered** by free USC Lyft (outside the boundary).' : onCampus ? 'on or near campus, so it’s inside the boundary as long as you start inside it too.' : 'I can’t confirm it from the boundary alone.') + '\n\nBoundary: ' + b, [SRC.lyft])];
     }, function (t) { var m = /\b(?:can i (?:take|use) (?:usc |free )?lyft to|does (?:usc |free )?lyft (?:cover|go to)|is (.{3,30}) (?:in|inside) the lyft (?:zone|boundary))\s*(.{3,40})?$/.exec(t); return m ? { to: (m[1] || m[2] || '').trim() } : null; });
 
-  F('parking.visitor', 'Where visitors and guests can park at USC and what it costs (daily/hourly, Text2Park, cheapest option). "where can my parents park", "visitor parking cost", "cheapest parking for a guest". (no args)',
+  F('parking.visitor', 'Where visitors and guests can park at USC and what it costs (daily/hourly, Text2Park, cheapest option). "where can my parents park", "visitor parking cost". (no args)',
     [], function () { var R = (T().parking || {}).rates || {}; return [bot('**Visitor parking**\n' + list(Object.keys(R).map(function (k) { return cap(k) + ': ' + R[k]; })) + '\n\nOn game days parking is cashless and $50.', [{ url: 'https://transnet.usc.edu/index.php/daily-and-hourly-parking/', title: 'Daily and Hourly Parking – USC Transportation' }, SRC.gameday], [go('Parking on the map', 'map', 'parking')])]; },
     function (t) { return /\b(visitor|guest|parents?|family|friend)s?\b.{0,20}\bpark(ing)?\b/.test(t) && !/\b(register|pass for)\b/.test(t) ? {} : null; });
 
@@ -1367,7 +1368,7 @@
     function (t) { return /\blive ?safe\b|\busc safety app\b/.test(t) ? {} : null; });
 
   // ---- calendar
-  F('cal.day', 'What’s on the academic calendar on a date: deadlines, holidays, finals, game days, and the student’s classes that day. "what’s happening academically on nov 13", "anything due on the 25th", "what is december 4". day',
+  F('cal.day', 'What’s on the academic calendar on a date: deadlines, holidays, finals, game days, and your classes that day. "what’s happening academically on nov 13", "anything due on the 25th". day',
     ['day'], function (a) {
       var dd = dayArg(a.day), k = dk(dd.d), rows = [], c = CAL();
       Object.keys(c).forEach(function (id) { Object.keys(CALK).forEach(function (f) { if (c[id][f] === k) rows.push(c[id].label + ': ' + CALK[f]); }); });
@@ -1378,7 +1379,7 @@
       return [bot('**' + TA.fmtDate(k) + '** (' + rel(k) + '):\n' + (rows.length ? list(rows) : '- Nothing on the academic calendar.'), [SRC.cal])];
     });
 
-  F('cal.upcoming', 'Upcoming academic milestones in the next few weeks (deadlines, holidays, last day of classes, finals, registration). "what deadlines are coming up", "anything important in the next two weeks", "upcoming academic dates". days?',
+  F('cal.upcoming', 'Upcoming academic milestones in the next few weeks (deadlines, holidays, last day of classes, finals, registration). "what deadlines are coming up", "anything important in the next two weeks". days?',
     ['days'], function (a) {
       var n = Math.min(120, +a.days > 0 ? +a.days : 30), k0 = dk(now()), k1 = dk(addDays(dayStart(now()), n)), rows = [], c = CAL(), Hd = (TA.POLICY || {}).holidays || {};
       Object.keys(c).forEach(function (id) { Object.keys(CALK).forEach(function (f) { var v = c[id][f]; if (v && v >= k0 && v <= k1) rows.push([v, c[id].label + ': ' + CALK[f]]); }); });
@@ -1387,23 +1388,23 @@
       (TH.gameDays ? TH.gameDays() : []).forEach(function (k) { if (k >= k0 && k <= k1) rows.push([k, 'Home football game']); });
       rows.sort(function (x, y) { return x[0] < y[0] ? -1 : 1; });
       return [bot('**Next ' + n + ' days:**\n' + (rows.length ? list(rows.map(function (r) { return '**' + TA.fmtDate(r[0]) + '** (' + rel(r[0]) + ') · ' + r[1]; }), 14) : '- Nothing on the academic calendar.'), [SRC.cal])];
-    }, function (t) { return /\b(upcoming (academic )?(dates|deadlines)|deadlines (coming up|this month)|what deadlines are coming|important dates)\b/.test(t) && !/\bmy\b/.test(t) ? {} : null; });
+    }, function (t) { return /\b(upcoming (academic )?(dates|deadlines)|deadlines (coming up|this month)|what deadlines are coming|important dates|coming up academically|academic (calendar|dates) (coming up|soon|this month))\b/.test(t) && !/\bmy\b/.test(t) ? {} : null; });
 
   // ---- clubs & events
-  F('club.active', 'The most active USC clubs right now (most upcoming EngageSC events), optionally in a category. "most active clubs", "which clubs have the most events", "active cultural orgs". cat?',
+  F('club.active', 'The most active USC clubs right now (most upcoming EngageSC events), optionally in a category. "most active clubs", "which clubs have the most events". cat?',
     ['cat'], function (a) {
       var t = norm(a.cat), cs = (TH.CLUBS || []).filter(function (c) { return c.events > 0 && (!t || norm((c.cats || []).join(' ')).indexOf(t.slice(0, 5)) >= 0); }).sort(function (x, y) { return y.events - x.events; }).slice(0, 10);
       return [bot(cs.length ? '**Most active' + (t ? ' ' + a.cat : '') + ' groups** (upcoming EngageSC events):\n' + list(cs.map(function (c) { return '**' + c.name + '** · ' + c.events + ' events'; })) : 'No groups with upcoming events' + (t ? ' in ' + a.cat : '') + '.', [SRC.engage], [go('Browse clubs', 'clubs')])];
     }, function (t) { return /\b(most active|most events|busiest) (clubs|orgs|organizations|groups)\b/.test(t) ? {} : null; });
 
-  F('events.cat', 'Upcoming public events in an EngageSC category (Arts, Social, Academics, Service, Sustainability, Spiritual, Research, Tour, Late Night ’SC…) over the next week. "arts events this week", "service events", "late night sc events". cat; days?',
+  F('events.cat', 'Upcoming public events in an EngageSC category (Arts, Social, Academics, Service, Sustainability, Spiritual, Research, Tour, Late Night ’SC…) over the next week. "arts events this week", "service events". cat; days?',
     ['cat', 'days'], function (a) {
       var t = norm(a.cat).replace(/s$/, ''), n = +a.days > 0 ? +a.days : 7;
       var evs = evsBetween(now(), addDays(dayStart(now()), n), function (e) { return (e.cats || []).some(function (c) { return norm(c).indexOf(t) >= 0; }) || norm(e.type || '').indexOf(t) >= 0; });
       return evAnswer(evs, '**' + cap(a.cat || '') + '** events in the next ' + n + ' days (' + evs.length + '):', null, 'No public **' + (a.cat || '') + '** events in the next ' + n + ' days.');
     });
 
-  F('events.where', 'Upcoming public events at a place or building (Coliseum, Tutor Campus Center, Bovard, HSC, Village…). "events at the coliseum", "what’s happening at tcc this week", "events in the village". place; days?',
+  F('events.where', 'Upcoming public events at a place or building (Coliseum, Tutor Campus Center, Bovard, HSC, Village…). "events at the coliseum", "what’s happening at tcc this week". place; days?',
     ['place', 'days'], function (a) {
       var tw = words(a.place).filter(function (w) { return w.length > 2 && !/^(the|at|in|on|campus|usc)$/.test(w); }), n = +a.days > 0 ? +a.days : 14;
       var evs = evsBetween(now(), addDays(dayStart(now()), n), function (e) { var h = norm(e.location || ''); return h && tw.every(function (w) { return h.indexOf(w) >= 0; }); });
@@ -1421,13 +1422,13 @@
     }, function (t) { return /\b(ongoing (events|exhibits?|exhibitions?)|multi.?day events|exhibitions? (on|open) (now|right now))\b/.test(t) ? {} : null; });
 
   // ---- the student's account
-  mine('my.week', 'The student’s week at a glance: classes, things due, saved events and bookings per day. "what does my week look like", "my week", "how busy am i this week".', [], function () {
+  mine('my.week', 'Your week at a glance: classes, things due, saved events and bookings per day. "what does my week look like", "my week", "how busy am i this week".', [], function () {
     var rows = [];
     for (var i = 0; i < 7; i++) { var items = []; try { items = TH.dayItems(i) || []; } catch (e) { items = []; } var d = addDays(dayStart(now()), i); if (items.length) rows.push('**' + (i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : TH.fmtDate(d)) + '** · ' + items.length + ' item' + (items.length > 1 ? 's' : '') + ': ' + items.slice(0, 4).map(function (x) { return x.title; }).join(', ') + (items.length > 4 ? '…' : '')); }
     return [bot(rows.length ? '**Your next 7 days:**\n' + list(rows, 7) : 'Nothing on your calendar this week.', aSrc(), [say('Plan my week', 'plan my week'), go('My Day', 'plans')])];
   }, /\b(what does my week look like|my week( ahead)?$|how busy am i this week|my week at a glance)\b/);
 
-  mine('my.notifications', 'The student’s Trojan Hub notifications (unread first). "any notifications", "do i have new alerts", "my notifications".', [], function () {
+  mine('my.notifications', 'Your Trojan Hub notifications (unread first). "any notifications", "do i have new alerts", "my notifications".', [], function () {
     var N = (H().notes || []).slice().sort(function (x, y) { return (x.read - y.read) || (y.at - x.at); });
     return [bot(N.length ? '**Notifications** (' + N.filter(function (n) { return !n.read; }).length + ' unread):\n' + list(N.map(function (n) { return (n.read ? '' : '🔵 ') + '**' + n.title + '** · ' + n.body; }), 8) : 'No notifications.', aSrc(), [go('Alerts', 'alerts')])];
   }, /\b(any (new )?notifications|my notifications|do i have (new |any )?(alerts|notifications))\b/);
@@ -1437,24 +1438,24 @@
     return [bot(R.length ? '**Your reports** (Simulated routing):\n' + list(R.map(function (r) { return '**' + (r.type || r.kind || 'Report') + '**' + (r.conf ? ' · #' + r.conf : '') + (r.status ? ' · ' + r.status : '') + (r.at ? ' · ' + TH.fmtDate(new Date(r.at)) : ''); }), 8) : 'You haven’t submitted any reports.', aSrc(), [say('Report something', 'report a problem')])];
   }, /\b(my reports?|status of my report|did my report go through)\b/);
 
-  mine('my.wallet', 'What’s in the student’s Trojan Hub wallet: USCard, U-Pass, Apple Wallet pass, balances. "what’s in my wallet", "is my id in apple wallet".', [], function () {
+  mine('my.wallet', 'What’s in your Trojan Hub wallet: USCard, U-Pass, Apple Wallet pass, balances. "what’s in my wallet", "is my id in apple wallet".', [], function () {
     var u = D().uscard || {}, d = D().dining || {};
     return [bot('**Your wallet**\n' + list(['USCard: ' + (u.status || 'active') + ' · ' + money(u.discretionary) + ' discretionary', 'Dining Dollars: ' + money(d.diningDollars) + ' · ' + d.swipesLeft + ' swipes', 'Metro U-Pass: ' + (H().upass ? (H().upass.status || 'requested') : 'not added'), 'Apple Wallet pass: ' + (H().walletPass ? 'added (Simulated)' : 'not added')]), aSrc(), [go('Wallet', 'wallet')])];
   }, /\b(whats in my wallet|my wallet|is my (id|uscard|card) in (apple )?wallet)\b/, /\b(add|put)\b/);
 
-  mine('my.prefs', 'The student’s saved preferences used for recommendations: interests, career goals, diet, allergies, minor. "what are my interests set to", "what allergies did i save", "my preferences".', [], function () {
+  mine('my.prefs', 'Your saved preferences used for recommendations: interests, career goals, diet, allergies, minor. "what are my interests set to", "what allergies did i save".', [], function () {
     var p = TH.prefs ? TH.prefs() : {}, f = function (x) { return (x || []).length ? x.join(', ') : 'not set'; };
     return [bot('**Your preferences** (on this device)\n' + list(['Interests: ' + f(p.interests), 'Career interests: ' + f(p.careerInterests), 'Career goals: ' + f(p.careerGoals), 'Club types: ' + f(p.clubTypes), 'Diet: ' + f(p.diet), 'Allergies: ' + f(p.allergies), 'Major: ' + (p.major || 'not set'), 'Minor: ' + (p.minor || 'not set')]), aSrc(), [go('Edit profile', 'profile')])];
   }, /\b(my (preferences|interests|allergies|diet)|what (are my interests|allergies did i))\b/, /\b(change|update|set|add|remove)\b/);
 
-  mine('my.final_conflicts', 'Whether any of the student’s finals fall in the same slot or on the same day. "do any of my finals conflict", "do i have two finals on the same day".', [], function () {
+  mine('my.final_conflicts', 'Whether any of your finals fall in the same slot or on the same day. "do any of my finals conflict", "do i have two finals on the same day".', [], function () {
     var id = curTerm(), slots = {};
     myCourses(id).forEach(function (c) { var lec = (c.sections || []).filter(function (x) { return /lec/i.test(x[1]); })[0] || (c.sections || [])[0]; if (!lec) return; var f = SOC.finalFor(id, c.code, lec[2], lec[3], lec[4]); if (f) (slots[f.day] = slots[f.day] || []).push(c.code + ' ' + f.hour); });
     var same = Object.keys(slots).filter(function (k) { return slots[k].length > 1; });
     return [bot(same.length ? '**Finals on the same day:**\n' + list(same.map(function (k) { return k + ': ' + slots[k].join(' · '); })) + '\n\nTwo finals at the **same time** can be rescheduled; the Registrar says to check with your instructors and Academic Counseling.' : 'None of your Fall 2026 finals share a day.', aSrc().concat([SRC.finals]))];
   }, /\b(finals? (conflict|overlap|clash)|two finals (on )?the same day|finals on the same day)\b/);
 
-  mine('my.deadlines', 'The student’s own upcoming deadlines: bill due date, library books due, withdraw deadline, registration. "what are my deadlines", "anything i need to do this week", "what’s due for me".', [], function () {
+  mine('my.deadlines', 'Your own upcoming deadlines: bill due date, library books due, withdraw deadline, registration. "what are my deadlines", "anything i need to do this week".', [], function () {
     var rows = [], b = D().billing || {}, k0 = dk(now());
     if (b.due && b.balance > 0) rows.push([b.due, 'Pay ' + money(b.balance) + ' balance']);
     ((D().library || {}).loans || []).forEach(function (l) { rows.push([l.due, 'Return/renew “' + l.title + '”']); });
@@ -1464,13 +1465,13 @@
   }, /\b(my (upcoming )?deadlines|what deadlines do i have|deadlines for me)\b/);
 
   // ---- about Tommy
-  F('tommy.sources', 'Where Tommy’s answers come from and how current they are (USC pages, Schedule of Classes, EngageSC, hours; collected Nov 2026). "where do you get your info", "how accurate are you", "is this data live". (no args)',
+  F('tommy.sources', 'Where Tommy’s answers come from and how current they are (USC pages, Schedule of Classes, EngageSC, hours; collected Nov 2026). "where do you get your info", "how accurate are you". (no args)',
     [], function () {
       var M = TA.KB_META || {};
       return [bot('My answers come only from data on this device:\n' + list(['**USC pages**: ' + (M.pages || '31,000+') + ' pages from ' + ((M.hostList || []).length || 'many') + ' USC sites, collected ' + (M.date || 'Nov 2026'), '**Schedule of Classes**: Fall 2026 and Spring 2027 (classes.usc.edu)', '**Places and hours**: USC Hospitality, Libraries, Rec Sports, Transportation pages', '**Clubs and events**: EngageSC public listings', '**Your account**: the demo student, stored only on this device']) + '\n\nNothing is live: seats, hours and events can change, so check the source links.', [SRC.soc, SRC.engage])];
     }, function (t) { return /\b(where do you get (your )?(info|information|data|answers)|how accurate are you|is (this|your) data (live|real|current|up to date))\b/.test(t) ? {} : null; });
 
-  F('tommy.privacy', 'What the AI translator sees (only your words, never your account or results) and what stays on the device. "does the ai see my grades", "is my data private", "who can see my messages". (no args)',
+  F('tommy.privacy', 'What the AI translator sees (only your words, never your account or results) and what stays on the device. "does the ai see my grades", "is my data private". (no args)',
     [], function () { return [bot('**Privacy in Ask Tommy**\n' + list(['Your message is turned into a script command. When the AI translator is on, it sees **only your words** (and your last few commands), never your account or any result.', 'The command runs **on this device**, which is where your account data lives.', 'Crisis, safety, health and other personal messages are **never sent to the AI**.', 'Settings can turn the AI translator off and hide the script line.']), [SRC.soc], [{ label: 'Settings', value: '@go:assistant', kind: '' }])]; },
     function (t) { return /\b(does (the )?ai see|can (the )?ai see|is my data (private|safe)|who can see my (messages|data)|do you store my)\b/.test(t) ? {} : null; });
 
@@ -1486,7 +1487,7 @@
     if (d) o.days = DAYL[d[1]]; if (/\b(open|seats|full)\b/.test(t)) o.open = 'yes'; if (m[2] || m[3]) o.term = m[2] || m[3];
     return o;
   });
-  setMatch('course.byunits', function (t) { var m = /^(?:any |are there (?:any )?|find |show me |list )?(\d)[ -]?units? (.{0,30}?)(?:classes|courses)(?: (?:in|for) (spring|fall))?$/.exec(t); return m ? { units: m[1], topic: m[2].trim() || undefined, term: m[3] } : null; });
+  setMatch('course.byunits', function (t) { var m = /^(?:any |are there (?:any )?|find |show me |list )?(?:easy |fun |good |chill |cool )?(\d)[ -]?units? (.{0,30}?)(?:classes|courses)(?: (?:in|for) (spring|fall))?$/.exec(t); return m ? { units: m[1], topic: m[2].trim() || undefined, term: m[3] } : null; });
   setMatch('course.dept', function (t) {
     var m = /^(?:what|which|list(?: of)?|all|show me)(?: the)? ([a-z]{2,4}) (?:classes|courses)(?: are)?(?: (?:offered|available))?(?: (?:in|for|next) (spring|fall|semester))?$/.exec(t);
     if (!m) return null; var pre = m[1].toUpperCase(); return SOC && SOC.prefixes && (SOC.prefixes[pre] || (SOC.prefixes.indexOf && SOC.prefixes.indexOf(pre) >= 0)) || allCourses('20271').has(pre + ' 101') || Array.from(allCourses('20271').keys()).some(function (k) { return k.indexOf(pre + ' ') === 0; }) ? { prefix: pre, term: m[2] === 'fall' ? 'fall' : 'spring' } : null;
@@ -1502,6 +1503,15 @@
   setMatch('club.events', function (t, raw) { var m = /^(?:what|any|which) events (?:does|is|are) (.{4,60}?) (?:have|having|hosting|doing|putting on)(?: this week| soon| coming up)?$/.exec(t) || /^(?:upcoming |next )?events (?:from|by|for) (.{4,60})$/.exec(t); if (!m) return null; var cs = findClubs(m[1], 1); return cs.length || (TH.events() || []).some(function (e) { return norm(e.org).indexOf(norm(m[1])) >= 0; }) ? { club: cs.length ? cs[0].name : m[1] } : null; });
   setMatch('my.calendar', function (t) { return /\b(what (did i|have i) (save|saved|add|added|rsvp|rsvpd)( to my calendar)?|my saved events|events i (saved|rsvpd)|whats on my calendar)\b/.test(t) && signedIn() ? {} : null; });
 
+  setMatch('club.about', function (t, raw) {
+    var m = /^(?:what is|whats|tell me about|what does) (?:the )?(.{4,60}?)(?: do| about)?$/.exec(t); if (!m) return null;
+    var q = ' ' + norm(m[1]) + ' ', full = clubIndex().filter(function (x) { return x.n.trim().length > 6 && q.indexOf(x.n) >= 0; }).sort(function (a, b) { return b.n.length - a.n.length; })[0];
+    return full && full.n.trim().split(' ').length >= 2 ? { club: full.c.name } : null;
+  });
+  setMatch('events.search', function (t) {
+    var m = /^(?:any|are there any|are there) (.{3,25}?) (?:events? )?(?:coming up|soon|this week|this month|happening)$/.exec(t); if (!m || /\b(my|club|clubs)\b/.test(t)) return null;
+    return { q: m[1].replace(/s$/, ''), days: /week/.test(t) ? '7' : '30' };
+  });
   // a few older read commands claimed wording that belongs to a Part 7 family: let the family answer instead
   function deferTo(oldName, mine2) {
     var o = TS.cmds[oldName]; if (!o) return;
@@ -1509,7 +1519,7 @@
     o.match = function (t, raw) { try { if (mine2.some(function (k) { return TS.cmds[k] && TS.cmds[k].match(t, raw); })) return null; } catch (e) { /* fall through */ } return m0.apply(this, arguments); };
   }
   deferTo('events.recommend', ['club.events', 'events.food', 'events.cat']);
-  deferTo('events.find', ['events.cat', 'events.food', 'club.events', 'my.calendar', 'event.info', 'events.ongoing', 'events.next']);
+  deferTo('events.find', ['events.cat', 'events.food', 'club.events', 'my.calendar', 'event.info', 'events.ongoing', 'events.next', 'events.search', 'club.find', 'club.about']);
   deferTo('grades.show', ['tommy.privacy', 'my.profs']);
   // "who can see my grades" / "units for research" are policy questions, not a grade lookup
   (function () { var g = TS.cmds['grades.show']; if (!g) return; var m0 = g.match; g.match = function (t, raw) { if (/\b(who can see|can (anyone|my parents|parents) see|ferpa|units? for|credit for|research|privacy|private)\b/.test(t)) return null; return m0.apply(this, arguments); }; })();

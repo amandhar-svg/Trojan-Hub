@@ -78,12 +78,12 @@ def prefix(cat):
     return p
 
 
-def short_title(t, n=48):
+def short_title(t, n=40):
     t = re.sub(r'\s*\(.*?\)\s*', ' ', t).strip()
     t = re.sub(r'\s+', ' ', t)
     if len(t) <= n: return t.rstrip('?')
     cut = t[:n].rsplit(' ', 1)[0]
-    return cut.rstrip(',:;-–') + '…'
+    return cut.rstrip(',:;-–')
 
 
 def main():
