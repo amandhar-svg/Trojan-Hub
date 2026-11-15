@@ -744,41 +744,37 @@
       if (side) { var so = await runCmd(side, text, 'script'), pa = TA.Actions.get(p.aid); return so.concat([{ role: 'bot', md: '_Your request' + (pa ? ' to ' + pa.title.charAt(0).toLowerCase() + pa.title.slice(1) : '') + ' is still waiting above. Answer it there, or say cancel._' }]); }
     }
     if (flagged(n, text) || p || n.undo || n.signin || n.signout || n.yes || n.no || n.cancel || n.greet || n.thanks || n.bye || /^@/.test(text)) return B.handle(text);
-    // 1) the compiler: exact commands run on this device
+    // 1) Tommy's own scripts: exact commands run on this device
     var c = TS.compile(text), out;
     if (c) return runCmd(c, text, 'script');
-    // personal/sensitive wording stays on the device: Tommy's own sensitive check plus personal topics
-    // (health, sexual health, mental health, safety, immigration, identity) are never sent to the AI. Task wording such as
-    // "check my grades" may be translated: the AI sees only the words and the script shows the result on the device.
-    var PERSONAL = TS.PERSONAL || (TS.PERSONAL = /\b(pregnan\w*|abortion|contracepti\w*|plan b|birth control|stds?|stis?|hiv|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|therap\w*|counsel\w*|psychiatr\w*|medicat\w*|prescription\w*|eating disorder|anorexi\w*|bulimi\w*|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|disabilit\w*|immigra\w*|undocumented|daca|visa status|deport\w*|lgbt\w*|gay|lesbian|transgender|coming out|ssn|social security number)\b/);
-    var aiOk = !!(AI && AI.translate && AI.enabled() && !(B.sensitive && B.sensitive(n)) && !PERSONAL.test(String(text).toLowerCase()));
-    var aiCtx = function () { return { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC', actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }; };
-    var useAI = async function (tr) {
-      if (!tr || tr.cmd === 'none' || !(TS.cmds[tr.cmd] || tr.cmd === 'do' || tr.cmd === 'ask')) return null;
-      if (tr.cmd === 'ask' && TA.NLU.normalize && TA.NLU.normalize(String(tr.args.q || '')) === TA.NLU.normalize(text)) return null;
-      var o = null;
-      try { o = await runCmd(tr, text, 'ai'); } catch (e) { console.error(e); o = null; }
-      return o && !missed(o) ? o : null;
-    };
-    var asked = false;
-    // 2) AI first, when this site runs its own translator (AI.firstPass): it reads wording the exact commands
-    //    don't match, before the on-device search guesses. It sees the words, never the result.
-    if (aiOk && AI.firstPass && AI.firstPass()) {
-      asked = true;
-      var tr1 = null;
-      try { tr1 = await AI.translate(text, aiCtx()); } catch (e) { tr1 = null; }
-      var o1 = await useAI(tr1);
-      if (o1) return o1;
-      if (B.pending) B.pending = null; // nothing was pending before this point; drop a half-started request from a failed AI attempt
-    }
-    // 3) Trojan Assist's own on-device search and intents
+    // 2) Tommy's own on-device answers (intents, actions, curated USC answers)
     out = await brain(text, 'script');
-    if (!missed(out) || B.pending || asked || !aiOk) return out;
-    // 4) the AI translator as a last resort, when the scripts could not read it
+    if (!TS.weak(out) || B.pending) return out;
+    // 3) The scripts couldn't recognize it accurately: only now may the AI turn the words into ONE script command.
+    //    Personal topics and help/need wording stay on this device (Tommy's own answer stands).
+    var PERSONAL = TS.PERSONAL || (TS.PERSONAL = /\b(pregnan\w*|abortion|contracepti\w*|plan b|birth control|stds?|stis?|hiv|sexual\w*|rape|assault\w*|abus\w*|harass\w*|diagnos\w*|depress\w*|anxi\w*|panic attacks?|adhd|autis\w*|bipolar|ptsd|therap\w*|counsel\w*|psychiatr\w*|medicat\w*|prescription\w*|eating disorder|anorexi\w*|bulimi\w*|self.?harm|suicid\w*|overdos\w*|addict\w*|drunk|high on|drugs?|disabilit\w*|immigra\w*|undocumented|daca|visa status|deport\w*|lgbt\w*|gay|lesbian|transgender|coming out|ssn|social security number)\b/);
+    var tn = (TA.NLU.normalize ? TA.NLU.normalize(String(text)) : String(text).toLowerCase()).replace(/[\u2019']/g, '');
+    var needsHelp = typeof helpCue === 'function' && helpCue(tn);
+    if (!AI || !AI.translate || !AI.enabled() || (B.sensitive && B.sensitive(n)) || PERSONAL.test(String(text).toLowerCase()) || needsHelp) return out;
     var tr = null;
-    try { tr = await AI.translate(text, aiCtx()); } catch (e) { tr = null; }
-    return (await useAI(tr)) || out;
+    try { tr = await AI.translate(text, { commands: TS.catalog() + '\ndo {action, request} — start one of the ACTIONS below (shows a confirm card)\nask {q} — look the question up in the USC knowledge base\nnone {} — not about USC', actions: TS.actionCatalog(), earlier: TS.history, now: TA.fmtLongDate(TA.today()) + ', ' + now().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }); } catch (e) { tr = null; }
+    if (tr && tr.cmd !== 'none' && (TS.cmds[tr.cmd] || tr.cmd === 'do' || tr.cmd === 'ask') &&
+        !(tr.cmd === 'ask' && TA.NLU.normalize && TA.NLU.normalize(String(tr.args.q || '')) === TA.NLU.normalize(text))) {
+      var out2 = null;
+      try { out2 = await runCmd(tr, text, 'ai'); } catch (e) { console.error(e); out2 = null; }
+      if (out2 && !TS.weak(out2)) return out2;
+    }
+    // 4) No script fits: search USC websites only (when this site provides it) and record that a script is needed.
+    if (AI.uscSearch) {
+      var q = tr && tr.cmd === 'ask' && tr.args && tr.args.q ? String(tr.args.q) : String(text);
+      var found = null;
+      try { found = await AI.uscSearch(q, text); } catch (e) { found = null; }
+      if (found && found.length) return found;
+    }
+    return out;
   };
+  // an answer that didn't really answer: nothing, "couldn't find", an off-topic refusal or a closest-match guess
+  TS.weak = function (out) { return missed(out) || !!(B.r4Unanswered && B.r4Unanswered(out) && !(out || []).some(function (m) { return m && m.card; })); };
 
   // ===================================================================================================
   // UI: every message goes through TS.handle; the script line is shown under the answer
