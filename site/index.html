@@ -18476,7 +18476,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
 
   function bot(md, chips, sources) { return { role: 'bot', kind: 'c', md: md, chips: chips || [], sources: sources || [] }; }
   function go(label, screen, arg) { return { label: label, value: '@go:' + screen + (arg != null ? ':' + arg : ''), kind: '' }; }
-  function norm(s) { return String(s || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9&]+/g, ' ').trim(); }
+  function norm(s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9&]+/g, ' ').trim(); } // 'Café' → 'cafe'
   var WITH_HOURS = function () { return TH.PLACES.filter(function (p) { return p.hours || p.special; }); };
 
   // general words → a group of places
@@ -18496,7 +18496,7 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var named = all.filter(function (p) {
       var n = norm(p.name.replace(/\(.*?\)/g, '')), first = n.split(' ')[0];
       return t.indexOf(' ' + n + ' ') >= 0 || t.indexOf(' ' + p.id.replace(/-/g, ' ') + ' ') >= 0 ||
-        (first.length > 3 && !/^(usc|the|cafe|caf|science|music|east|special|wilson|one|its)$/.test(first) && t.indexOf(' ' + first + ' ') >= 0);
+        (first.length > 3 && !/^(usc|the|cafe|caf|coffee|science|music|east|special|wilson|one|its|law|tutor|trojan|village)$/.test(first) && t.indexOf(' ' + first + ' ') >= 0);
     });
     if (named.length) return { places: named.slice(0, 4) };
     for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i][0].test(t)) return { places: all.filter(GROUPS[i][1]), group: GROUPS[i][2] };
@@ -18522,7 +18522,10 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     if (!/\b(open|opens|close|closes|closing|closed|hours|till|until)\b/.test(t)) return null;
     if (/\b(registration|enrollment|application|portal|applications|deadline|window|position|job|house|office hours with)\b/.test(t)) return null;
     var f = findPlaces(raw);
-    return f.places.length ? { place: raw } : null;
+    if (!f.places.length) return null;
+    // "is there any coffee open", "anything to eat open now": a list of what's open fits open.now better (scripts-plus)
+    if (f.group && /\b(any|anything|something|anywhere|somewhere)\b/.test(t) && TS.cmds['open.now']) return null;
+    return { place: raw };
   };
   cmd.run = function (args) {
     var q = String(args.place || ''), now = TH.clock && TH.clock.now ? TH.clock.now() : new Date();
@@ -20242,8 +20245,19 @@ if (typeof module !== 'undefined') module.exports = TA_ENGINE_FACTORY;
     var hc = TS.cmds['hours.check'], ph = TS.cmds['place.hours'];
     if (hc && ph) {
       var m0 = hc.match, r0 = hc.run;
-      hc.match = function (t, raw) { try { if (ph.match(t, raw) || TS.cmds['open.now'].match(t, raw) || TS.cmds['dining.halls'].match(t, raw)) return null; } catch (e) { /* fall through */ } return m0.apply(this, arguments); };
-      hc.run = function (a) { return findPlaces(a && a.place).length ? ph.run({ place: a.place, day: a.day }) : r0.apply(this, arguments); };
+      // The original looked places up in TH.DATA (absent). The integrator's js/ta/hours-check.js repairs it for
+      // "now / this week" questions; when that repaired version is loaded, only questions about a specific day, time
+      // or holiday (which it doesn't read) go to place.hours / open.now / dining.halls.
+      var broken = /TH\.DATA/.test(String(r0));
+      var DAYTIME = /\b(tomorrow|tmrw|tonight|this weekend|weekend|thanksgiving|veterans day|black friday|christmas|new years|game day|gameday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thurs|fri|sat|sun|at \d{1,2}|\d{1,2}(:\d\d)? ?(am|pm)|midnight|noon|latest|late|breakfast|lunch|dinner|brunch|closing soon|busy|crowded)\b/;
+      hc.match = function (t, raw) {
+        try { if ((broken || DAYTIME.test(t)) && ['place.hours', 'open.now', 'open.late', 'open.weekend', 'open.closing', 'dining.halls', 'dining.meals', 'dining.gameday', 'place.crowd', 'place.find'].some(function (k) { return TS.cmds[k] && TS.cmds[k].match(t, raw); })) return null; } catch (e) { /* fall through */ }
+        return m0.apply(this, arguments);
+      };
+      hc.run = function (a) {
+        if ((broken || (a && a.day)) && findPlaces(a && a.place).length) return ph.run({ place: a.place, day: a.day });
+        return r0.apply(this, arguments);
+      };
       if (hc.args.indexOf('day') < 0) hc.args = hc.args.concat(['day']);
     }
     var ef = TS.cmds['events.find'];
